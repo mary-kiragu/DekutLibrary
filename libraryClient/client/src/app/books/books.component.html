@@ -1,0 +1,71 @@
+<div class="row">
+
+
+    <div class=" col-md-2" *ngFor="let book of books" [routerLink]="['/book-records',book.id]">
+        <div class="books">
+            <img class="img-thumbnail" src="../../assets/images/{{book.imageUrl}}" alt="./assets/images/billionare.jpeg" />
+            <div class=" row ">
+                <label class="" for="id "><strong>Book id:</strong> </label>
+                <p class=""> 1234AB{{book.id}}</p>
+            </div>
+            <div class="row ">
+                <label class=" " for="title "><strong>Title:</strong> </label>
+                <p class=" ">{{book.title}}</p>
+            </div>
+            <div class="row ">
+                <label class=""><strong>Author:</strong></label>
+                <p class="">{{book.author}}</p>
+            </div>
+            <div class="row ">
+                <label><strong>Status:</strong></label>
+                <p>{{book.status}}</p>
+            </div>
+            <div *ngIf="book.status!=='BORROWED'">
+                <button type="button" class="btn btn-outline-primary btn-view" data-bs-toggle="modal" data-bs-target="#bookModal">
+              Borrow Book
+            </button>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- <form name="bookForm" (ngSubmit)="borrowBook()" role="form">
+                  <div class=" form-group">
+                      <label for="title"> Title</label>
+                      <input class="form-control" type="text" name="title" [(ngModel)]="book.title">
+                  </div>
+                  <div class=" form-group">
+                      <label for="author">Author</label>
+                      <input class="form-control" type="text" name="author" [(ngModel)]="book.author">
+                  </div>
+                  <div class=" form-group">
+                      <label for="status">Status</label>
+                      <input class="form-control" type="text" name="status" [(ngModel)]="book.status">
+                  </div>
+                  <div class=" form-group">
+                      <label for="borrowedBy">BorrowedBy</label>
+                      <input class="form-control" type="text" name="borrowedBy" [(ngModel)]="book.borrowedBy">
+
+                  </div>
+                  <div class=" form-group">
+                      <label for="borrowedOn">BorrowedOn</label>
+                      <input class="form-control" type="text" name="borrowedOn" [(ngModel)]="book.borrowedOn">
+
+                  </div>
+
+                  <div class=" form-group">
+                      <label for="returnedOn">ReturnedOn</label>
+                      <input class="form-control" type="text" name="returnedOn" [(ngModel)]="book.returnedOn">
+
+                  </div>
+                  <div class=" form-group">
+                      <label for="issuedBy">IssuedBy</label>
+                      <input class="form-control" type="text" name="issuedBy" [(ngModel)]="book.issuedBy">
+
+                  </div>
+
+              </form> -->

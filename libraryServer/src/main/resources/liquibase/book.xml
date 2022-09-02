@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="20220404092600" author="root">
+        <createTable tableName="tbl_book">
+            <column name="id" type="bigint(50)" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"></constraints>
+            </column>
+            <column name="title" type="varchar(100)"/>
+            <column name="author" type="varchar(100)"/>
+            <column name="status" type="varchar(100)"/>
+            <column name="borrowed_by" type="varchar(100)"/>
+            <column name="borrowed_on" type="varchar(100)"/>
+            <column name="issued_by" type="varchar(100)"/>
+            <column name="returned_on" type="varchar(100)"/>
+
+        </createTable>
+    </changeSet>
+    <changeSet id="2022040583310" author="root">
+        <addColumn tableName="tbl_book">
+            <column name="image_url" type="varchar(200)"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20042022024420" author="root">
+        <addColumn tableName="tbl_book">
+            <column name="copies" type="bigint"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="20042022024421" author="root">
+        <addColumn tableName="tbl_book">
+            <column name="category_id" type="int"></column>
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>

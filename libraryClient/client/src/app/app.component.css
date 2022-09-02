@@ -1,0 +1,26 @@
+.navbar {
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #1378a0;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+.navbar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+}
+
+.navbar a.active {
+    background-color: #04AA6D;
+    color: white;
+}
+
+.navbar a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}

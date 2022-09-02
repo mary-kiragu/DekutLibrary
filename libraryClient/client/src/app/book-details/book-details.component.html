@@ -1,0 +1,74 @@
+<div class="container-fluid" *ngIf="book">
+    <div class="row">
+        <div class="image card col-md-3">
+            <img class="img-thumbnail" src="assets/images/{{book.imageUrl}}" onError="this.onerror=null; this.src='assets/images/billionare.jpeg' " />
+
+        </div>
+
+        <div class=" bookDetail col-md-6">
+            <div class=" row ">
+                <label class="col-md-2 " for="id "><strong>Book id:</strong> </label>
+                <p class="col-md-3 "> 1234AB{{book.id}}</p>
+            </div>
+            <div class="row ">
+                <label class="col-md-2 " for="id "><strong>Title:</strong> </label>
+                <p class="col-md-4 ">{{book.title}}</p>
+            </div>
+            <div class="row ">
+                <label class="col-md-2 "><strong>Author:</strong></label>
+                <p class="col-md-2 ">{{book.author}}</p>
+            </div>
+            <div class="row ">
+                <label class="col-md-2 "><strong>Status:</strong></label>
+                <p class="col-md-2 ">{{book.status}}</p>
+            </div>
+
+            <div>
+                <button *ngIf="book.status!=='BORROWED'" type="button" class="btn btn-outline-primary btn-view" data-bs-toggle="modal" data-bs-target="#bookModal">
+    Borrow Book
+  </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalTitle" aria-hidden="true" *ngIf="book">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Borrow a book</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            </div>
+
+            <div class="modal-body">
+
+                <form (ngSubmit)="borrowBook()" role="form">
+                    <div class=" form-group">
+                        <label for="title"> Title</label>
+                        <input class="form-control" type="text" name="title" [(ngModel)]="book.title">
+                    </div>
+                    <div class=" form-group">
+                        <label for="author">Author</label>
+                        <input class="form-control" type="text" name="author" [(ngModel)]="book.author">
+                    </div>
+                    <div class=" form-group">
+                        <label for="status">Status</label>
+                        <input class="form-control" type="text" name="status" [(ngModel)]="book.status">
+                    </div>
+
+
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="borrowBook()" data-bs-dismiss="modal">submit</button>
+            </div>
+        </div>
+    </div>
+</div>

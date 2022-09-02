@@ -1,0 +1,19 @@
+.login {
+    box-shadow: 0 4px 8px 0 rgba(15, 227, 235, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
+    text-align: center;
+}
+
+img {
+    border-radius: 8 px;
+    object-fit: fill;
+}
+
+body {
+    background-color: rgb(116, 109, 109);
+}
+
+.img-thumbnail {
+    height: max-content;
+    background-color: #d7e6df;
+}

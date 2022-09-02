@@ -1,0 +1,18 @@
+img {
+    border-radius: 8 px;
+    object-fit: fill;
+}
+
+.img-thumbnail {
+    background-color: #d7e6df;
+}
+
+.image {
+    box-shadow: 0 4px 8px 0 rgba(15, 227, 235, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.bookDetail {
+    justify-content: center;
+}

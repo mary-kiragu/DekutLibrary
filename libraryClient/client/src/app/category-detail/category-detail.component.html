@@ -1,0 +1,50 @@
+<div class="container" *ngIf="category">
+    <div class="top-sticky-section ">
+
+        <div class="row mx-0 hide-sm">
+            <div class="col-md-8" style="display:flex;align-items:center">
+                <!-- <span (click)="toLanding()" class="nav-menu-item">Home</span> -->
+                <span *ngIf="category?.parents && category?.parents.length">
+          <span class="right-arrow text-muted">&nbsp;>&nbsp;</span>
+
+                <span (click)="toCategoryDetail(parentCategory.id)" class="nav-menu-item" *ngFor="let parentCategory of category?.parents">{{parentCategory.name}}</span>
+                </span>
+                <span class="right-arrow text-muted"></span>
+                <span class="nav-menu-item disable-item">{{category?.name}}</span>
+            </div>
+            <button *ngIf="category?.categoryType == 'SECTION'" data-toggle="modal" data-target="#create-series" type="button" class="btn btn-upload"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Upload
+        Book</button>
+            <button *ngIf="category?.categoryType == 'CATEGORY'" class="btn btn-create-new" data-bs-toggle="modal" data-bs-target="#createSectionModal" id="openCreateSectionModal"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Create
+        Section</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- create section modal -->
+<form name="categoryForm" [formGroup]="categoryForm" (ngSubmit)="saveSection()">
+    <div class="modal fade" id="createSectionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create section</h5>
+                    <button type="button" class="btn-close" (click)="reset()" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label class="form-control-label" for="fieldName">Name</label>
+
+                            <input type="text" class="form-control" id="fieldName" name="fieldName" placeholder="Section name" formControlName="name" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="closeCreateCategoryModal" type="button" class="btn btn-cancel" (click)="reset()" data-dismiss="modal">CANCEL</button>
+                    <button type="submit" class="btn btn-submit">SUBMIT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

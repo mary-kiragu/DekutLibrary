@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+    <changeSet id="2022040494901" author="root">
+        <createTable tableName="tbl_user">
+            <column name="id" type="bigint(100)" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(200)"/>
+            <column name="email" type="varchar(200)"/>
+            <column name="registration_no" type="varchar(200)"/>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="2022041083600" author="root">
+        <dropColumn tableName="tbl_user">
+            <column name="registration_no"/>
+        </dropColumn>
+    </changeSet>
+
+</databaseChangeLog>

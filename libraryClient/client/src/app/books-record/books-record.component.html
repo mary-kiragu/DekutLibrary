@@ -1,0 +1,121 @@
+<div class="row">
+
+    <div>
+        <button type="button" class="btn btn-outline-primary btn-view" (click)="resetBorrowBookForm()" data-bs-toggle="modal" data-bs-target="#bookModal">
+    Add Book
+  </button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Borrowed by</th>
+                    <th scope="col">Borrowed on</th>
+                    <th scope="col">Returned on</th>
+                    <th scope="col">issued by</th>
+                    <th scope="col">imageUrl</th>
+                    <th scope="col">Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let book of books">
+                    <td>{{book.id}}</td>
+                    <td>{{book.title}}</td>
+                    <td>{{book.author}}</td>
+                    <td>{{book.status}}</td>
+                    <td>{{book.borrowedBy}}</td>
+                    <td>{{book.borrowedOn}}</td>
+                    <td>{{book.returnedOn}}</td>
+                    <td>{{book.issuedBy}}</td>
+                    <td>{{book.imageUrl}}</td>
+                    <td [routerLink]="['/book-records',book.id]"><i class="fa fa-eye" style="font-size:36px"></i></td>
+                    <td> <button type="button" class="btn btn-outline-primary btn-view" (click)="editBook(book)" data-bs-toggle="modal" data-bs-target="#bookModal">
+                      <i class="fas fa-edit"></i>
+                      </button></td>
+                    <td><button type="submit" (click)="deleteBook(book.id)"><i class="fa fa-trash-o" style="font-size:36px"></i></button></td>
+                    <td *ngIf="book.status==='BORROWED'"><button type="submit" (click)="returnBook(book)" class="btn btn-outline-success">ReturnBook</button></td>
+
+
+
+
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                    {{bookId ? 'Edit' : 'Add'}} Book</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="bookForm" [formGroup]="bookForm" role="form" (ngSubmit)="save()">
+
+                    <div class="form-group">
+                        <label for="title">title</label>
+                        <input class="form-control" type="text" name="title" formControlName="title">
+                    </div>
+                    <div class=" form-group">
+                        <label for="author">Author</label>
+                        <input class="form-control" type="text" name="author" formControlName="author">
+                    </div>
+                    <div class=" form-group">
+                        <label for="imageUrl">ImageUrl</label>
+                        <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="save()">submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button> -->
+
+<!-- delete Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation to delete book</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to deletete{{book.title}}?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
