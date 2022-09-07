@@ -22,9 +22,9 @@ public class Book implements Serializable {
         this.author = author;
         this.status = status;
         this.borrowedBy = borrowedBy;
-        this.borrowedOn = borrowedOn;
+        //this.borrowedOn = borrowedOn;
         this.issuedBy = issuedBy;
-        this.returnedOn = returnedOn;
+       // this.returnedOn = returnedOn;
     }
 
     public Book(String title, String author, Status status, String borrowedBy, LocalDateTime borrowedOn, String issuedBy, LocalDateTime returnedOn) {
@@ -32,9 +32,9 @@ public class Book implements Serializable {
         this.author = author;
         this.status = status;
         this.borrowedBy = borrowedBy;
-        this.borrowedOn = borrowedOn;
+       // this.borrowedOn = borrowedOn;
         this.issuedBy = issuedBy;
-        this.returnedOn = returnedOn;
+        //this.returnedOn = returnedOn;
     }
 
     @Id
@@ -45,9 +45,11 @@ public class Book implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
     private String borrowedBy;
-    private LocalDateTime borrowedOn;
+
+   private String borrowedOn;
     private String issuedBy;
-    private LocalDateTime returnedOn;
+
+    private String returnedOn;
 
     private String imageUrl;
 

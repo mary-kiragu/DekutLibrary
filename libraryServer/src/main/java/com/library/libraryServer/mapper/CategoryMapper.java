@@ -2,7 +2,7 @@ package com.library.libraryServer.mapper;
 
 import com.fasterxml.jackson.databind.*;
 import com.library.libraryServer.domain.*;
-import com.library.libraryServer.domain.DTOs.*;
+import com.library.libraryServer.domain.dto.*;
 import org.springframework.stereotype.*;
 
 @Service

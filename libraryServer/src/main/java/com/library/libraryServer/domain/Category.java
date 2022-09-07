@@ -19,11 +19,8 @@ public class Category {
         @Column(name = "parent_category_id")
         private Integer parentCategoryId;
 
-        @Column(name = "rank_in_parent")
-        private Integer rankInParent;
-
         @Column(length = 2000)
-        private String levels;
+        private String description;
         
         @Column(length = 2000)
         private CategoryEnum categoryType;

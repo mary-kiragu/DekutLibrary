@@ -1,4 +1,4 @@
-package com.library.libraryServer.domain.DTOs;
+package com.library.libraryServer.domain.dto;
 
 import com.library.libraryServer.domain.enums.*;
 import lombok.*;

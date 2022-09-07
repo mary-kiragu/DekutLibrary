@@ -15,10 +15,23 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String email;
+
     private String name;
+
     private String password;
+
+    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
+
+    public String getAuthorityName() {
+        if (this.authority != null) {
+            return authority.name();
+        }
+        return "";
+    }
     
 }

@@ -1,9 +1,10 @@
 package com.library.libraryServer.resource;
 
-import com.library.libraryServer.domain.DTOs.*;
-import com.library.libraryServer.security.jwt.*;
+import com.library.libraryServer.domain.*;
+import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.services.*;
 import lombok.extern.slf4j.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public class CategoryResource {
     }
 
     @PostMapping("/categories")
-    public CategoryDTO createCategory( @RequestBody CategoryDTO categoryDTO){
+    public CategoryDTO createCategory(@RequestBody CategoryDTO categoryDTO){
         return categoryService.createCategory(categoryDTO);
     }
     @PutMapping("/categories")
@@ -41,6 +42,12 @@ public class CategoryResource {
         List<CategoryDTO>categoryDTOS = categoryService.filterByParent(categoryId);
 
                return categoryDTOS;
+    }
+
+    @DeleteMapping
+    ResponseEntity deleteCategory(@PathVariable("id") int id){
+        Book deletedBook=categoryService.deleteBook(id);
+        return new ResponseEntity(deletedBook,HttpStatus.OK);
     }
 
 }

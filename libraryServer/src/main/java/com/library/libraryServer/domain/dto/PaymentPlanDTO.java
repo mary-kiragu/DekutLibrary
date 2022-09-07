@@ -4,18 +4,16 @@ import com.library.libraryServer.domain.enums.*;
 import lombok.*;
 
 import java.util.*;
+
 @Data
-public class CategoryDTO {
+public class PaymentPlanDTO {
     private Integer id;
 
     private String name;
 
-    private  Integer parentCategoryId;
+    private Integer paymentAmount;
 
-    private CategoryEnum categoryType;
+    private PayDuration paymentDuration;
 
-    private String description;
-
-
-
+    private List<String> description;
 }

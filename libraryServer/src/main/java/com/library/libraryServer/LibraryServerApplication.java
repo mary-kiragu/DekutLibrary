@@ -1,5 +1,8 @@
 package com.library.libraryServer;
 
+import com.fasterxml.jackson.databind.*;
+import com.library.libraryServer.domain.dto.*;
+import okhttp3.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.*;
@@ -40,6 +43,28 @@ public class LibraryServerApplication {
 			}
 		};
 	}
+
+	@Bean
+	public OkHttpClient getOkHttpClient() {
+		return new OkHttpClient();
+	}
+
+	@Bean
+	public ObjectMapper getObjectMapper() {
+		return new ObjectMapper();
+	}
+
+	@Bean
+	public AcknowledgementResponse getAcknowledgeResponse() {
+		AcknowledgementResponse acknowledgeResponse = new AcknowledgementResponse();
+		acknowledgeResponse.setMessage("Success");
+		return acknowledgeResponse;
+	}
+
+
+
+
+
 
 
 }

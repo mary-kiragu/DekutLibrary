@@ -57,7 +57,7 @@ public class BookService {
                 throw new BorrowedBookException("Book not available for borrowing");
             }
 
-            book.setBorrowedOn(LocalDateTime.now());
+            book.setBorrowedOn(String.valueOf(LocalDateTime.now()));
             book.setReturnedOn(null);
             log.info("current user email",SecurityUtils.getCurrentUserLogin());
             book.setBorrowedBy(SecurityUtils.getCurrentUserLogin().orElse(null));
@@ -81,7 +81,7 @@ public class BookService {
             if (book.getBorrowedBy() != null) {
                 book.setBorrowedBy(null);
                 book.setBorrowedOn(null);
-                book.setReturnedOn(LocalDateTime.now());
+                book.setReturnedOn(String.valueOf(LocalDateTime.now()));
 
             }
 

@@ -1,7 +1,7 @@
 package com.library.libraryServer.services;
 
 import com.library.libraryServer.domain.*;
-import com.library.libraryServer.domain.DTOs.*;
+import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.domain.enums.*;
 import com.library.libraryServer.mapper.*;
 import com.library.libraryServer.repository.*;
@@ -28,15 +28,23 @@ public class CategoryService {
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         log.info("About to save category : {}", categoryDTO);
 
-        // prevent passing null values to mapper
-        if (categoryDTO.getLevels() == null) {
-            categoryDTO.setLevels(new ArrayList<>());
+//        // prevent passing null values to mapper
+//        if (categoryDTO.getLevels() == null) {
+//            categoryDTO.setLevels(new ArrayList<>());        }
+
+        if (categoryDTO.getCategoryType() ==CATEGORY){
+            categoryDTO.setCategoryType(CategoryEnum.SECTION);
+        }else{
+
+            categoryDTO.setCategoryType(CATEGORY);
+
         }
-        categoryDTO.setCategoryType(CATEGORY);
+
+
         // map categoryDTO to entity for saving
         Category category = categoryMapper.toEntity(categoryDTO);
 
-        categoryDTO.setCategoryType(CATEGORY);
+
 
         // call the repo to save category
         category = categoryRepository.save(category);
@@ -47,11 +55,6 @@ public class CategoryService {
 
     public CategoryDTO updateCategory(CategoryDTO categoryDTO) {
         log.info("About to update category  : {}", categoryDTO);
-
-        // check for possible null value for category levels
-        if (categoryDTO.getLevels() == null) {
-            categoryDTO.setLevels(new ArrayList<>());
-        }
 
         // map categoryDTO to category in readiness for save
         Category category = categoryMapper.toEntity(categoryDTO);
@@ -99,6 +102,16 @@ public class CategoryService {
         }
 
         return categoryDTOList;
+    }
+
+    public Book deleteBook(int id) {
+        boolean exist = categoryRepository.existsById(id);
+        if (!exist) {
+            throw new IllegalStateException("Book doesn't exist");
+
+        }
+        categoryRepository.deleteById(id);
+        return null;
     }
 
 }
