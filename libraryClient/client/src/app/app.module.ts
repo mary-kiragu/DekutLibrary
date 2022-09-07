@@ -17,6 +17,7 @@ import { JwtInterceptorService } from './interceptors/jwt-interceptor.service';
 import { CategoriesComponent } from './categories/categories.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { CategoryDetailComponent } from './category-detail/category-detail.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 
@@ -32,6 +33,7 @@ import { CategoryDetailComponent } from './category-detail/category-detail.compo
     CategoriesComponent,
     SubscriptionComponent,
     CategoryDetailComponent,
+    FooterComponent,
 
   ],
   imports: [

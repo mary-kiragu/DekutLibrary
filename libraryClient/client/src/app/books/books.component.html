@@ -20,9 +20,12 @@
                 <label><strong>Status:</strong></label>
                 <p>{{book.status}}</p>
             </div>
-            <div *ngIf="book.status!=='BORROWED'">
-                <button type="button" class="btn btn-outline-primary btn-view" data-bs-toggle="modal" data-bs-target="#bookModal">
+            <div>
+                <button *ngIf="book.status!=='BORROWED'" type="button" class="btn btn-outline-primary btn-view" data-bs-toggle="modal" data-bs-target="#bookModal">
               Borrow Book
+            </button>
+                <button disabled *ngIf="book.status=='BORROWED'" type="button" class="btn btn-outline-secondary btn-view" data-bs-toggle="modal" data-bs-target="#bookModal">
+              Book Borrowed
             </button>
             </div>
 

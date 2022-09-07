@@ -1,5 +1,5 @@
 <div class="container">
-    <button type="button" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#create-category" class="btn-category-add float-end"><i
+    <button type="button" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#createTopicModal" class="btn-category-add float-end"><i
     class="fa fa-plus"></i> Add Category</button>
     <div class="row">
 
@@ -26,14 +26,52 @@
     </div>
 </div>
 
-<!-- Create Category Modal -->
+<!-- Create Topic Modal -->
+<div class="modal fade" id="createTopicModal" tabindex="-1 " aria-labelledby="createTopicModal" aria-hidden="true ">
+    <div class="modal-dialog ">
+        <div class="modal-content ">
+            <div class="modal-header ">
+                <h5 class="modal-title " id="exampleModalLabel ">Create Course</h5>
+                <button type="button " class="btn-close " (click)="reset() " data-dismiss="modal " aria-label="Close "></button>
+            </div>
+            <div class="modal-body ">
+                <form name="categoryForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory() ">
+
+                    <div class="form-group row ">
+                        <div class="col-md-12 ">
+                            <label class="form-control-label " for="fieldName ">Name</label>
+
+                            <input type="text " class="form-control " id="fieldName " name="fieldName " placeholder="Category name " formControlName="name" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row mt-2 ">
+                        <div class="col-md-12 ">
+                            <label class="form-control-label " for="fieldDescription ">Description</label>
+
+                            <textarea class="form-control " id="fieldDescription " name="fieldDescription " placeholder="Briefly describe the course for our new students " formControlName="description"></textarea>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer ">
+                <button id="closeCreateCategoryModal" type="button " class="btn btn-cancel " data-bs-dismiss="modal" (click)="reset() ">CANCEL</button>
+                <button type="submit " class="btn btn-submit" (click)="saveCategory()" data-bs-dismiss="modal">SUBMIT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Create Category Modal
 <div class="modal fade" id="create-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Add Category</h5>
                 <!-- <h5  class="modal-title" id="staticBackdropLabel">Suspend Publisher</h5> -->
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div>
@@ -46,7 +84,7 @@
                           <label for="name">Levels</label>
                           <input [(ngModel)]="levels" id="name" name="levels" placeholder="Comma separated eg beginner,intermediate,expert" type="text" class="category-form-control">
                       </div> -->
-                    </form>
+<!-- </form>
                 </div>
             </div>
             <div class="modal-footer">
@@ -55,7 +93,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->--> -->
 
 <!-- Edit Category Modal -->
 <!-- <div class="modal fade" id="edit-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

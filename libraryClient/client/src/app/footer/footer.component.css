@@ -1,0 +1,23 @@
+.footer {
+    background-color: rgba(29, 69, 4, 0.924);
+    color: white;
+}
+
+.quicklinks a {
+    color: white;
+    text-decoration: none;
+}
+
+.social-links a {
+    color: white;
+    text-decoration: none;
+    margin: 20px;
+}
+
+.social-links a span i {
+    margin: 10px;
+}
+
+img {
+    height: 60%;
+}

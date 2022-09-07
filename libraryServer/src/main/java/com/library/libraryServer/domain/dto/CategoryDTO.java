@@ -10,10 +10,12 @@ public class CategoryDTO {
 
     private String name;
 
-    private List<String> levels;
+    private  Integer parentCategoryId;
 
-    private List<CategoryDTO> parents;
+    private CategoryEnum categoryType;
 
-    private CategoryEnum categoryType=CategoryEnum.CATEGORY;
+    private String description;
+
+
 
 }

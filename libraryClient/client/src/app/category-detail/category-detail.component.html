@@ -12,7 +12,7 @@
                 <span class="right-arrow text-muted"></span>
                 <span class="nav-menu-item disable-item">{{category?.name}}</span>
             </div>
-            <button *ngIf="category?.categoryType == 'SECTION'" data-toggle="modal" data-target="#create-series" type="button" class="btn btn-upload"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Upload
+            <button *ngIf="category?.categoryType == 'SECTION'" data-toggle="modal" data-bs-target="#create-series" type="button" class="btn btn-upload"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Upload
         Book</button>
             <button *ngIf="category?.categoryType == 'CATEGORY'" class="btn btn-create-new" data-bs-toggle="modal" data-bs-target="#createSectionModal" id="openCreateSectionModal"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Create
         Section</button>
@@ -28,7 +28,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Create section</h5>
-                    <button type="button" class="btn-close" (click)="reset()" data-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" (click)="reset()" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group row">
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button id="closeCreateCategoryModal" type="button" class="btn btn-cancel" (click)="reset()" data-dismiss="modal">CANCEL</button>
+                    <button id="closeCreateCategoryModal" type="button" class="btn btn-cancel" (click)="reset()" data-bs-dismiss="modal">CANCEL</button>
                     <button type="submit" class="btn btn-submit">SUBMIT</button>
                 </div>
             </div>
