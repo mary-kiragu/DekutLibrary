@@ -44,7 +44,7 @@ public class CategoryResource {
                return categoryDTOS;
     }
 
-    @DeleteMapping
+    @DeleteMapping(path="/categories/{id}")
     ResponseEntity deleteCategory(@PathVariable("id") int id){
         Book deletedBook=categoryService.deleteBook(id);
         return new ResponseEntity(deletedBook,HttpStatus.OK);

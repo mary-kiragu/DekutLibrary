@@ -26,28 +26,37 @@ public class CategoryService {
         this.bookResource = bookResource;
     }
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        log.info("About to save category : {}", categoryDTO);
+//        log.info("About to save category : {}", categoryDTO);
 
 //        // prevent passing null values to mapper
 //        if (categoryDTO.getLevels() == null) {
 //            categoryDTO.setLevels(new ArrayList<>());        }
 
-        if (categoryDTO.getCategoryType() ==CATEGORY){
+        if (categoryDTO.getCategoryType() == CategoryEnum.SECTION){
             categoryDTO.setCategoryType(CategoryEnum.SECTION);
+            log.info("About to save section : {}", categoryDTO);
+
         }else{
 
-            categoryDTO.setCategoryType(CATEGORY);
+            categoryDTO.setCategoryType(CategoryEnum.CATEGORY);
+            log.info("creating new category : {}", categoryDTO);
+
 
         }
 
 
         // map categoryDTO to entity for saving
         Category category = categoryMapper.toEntity(categoryDTO);
+        log.info("sending cat : {}", category);
+
+
 
 
 
         // call the repo to save category
         category = categoryRepository.save(category);
+        log.info("saved : {}", category);
+
 
 
         return categoryMapper.toDTO(category);

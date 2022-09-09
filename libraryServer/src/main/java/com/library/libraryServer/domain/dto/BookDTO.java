@@ -3,11 +3,11 @@ package com.library.libraryServer.domain.dto;
 import com.library.libraryServer.domain.enums.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.time.*;
 @Data
-public class BookDto {
+public class BookDTO {
     private Long id;
+    private Long isbn;
     private String title;
     private String author;
     private Status status;

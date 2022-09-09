@@ -27,7 +27,7 @@ public class ProfileService {
 
     private final ProfileMapper profileMapper;
 
-    public ProfileService(ProfileRepository profileRepository,@Lazy UserService userService, PaymentPlanService paymentPlanService,@Lazy ProfileMapper profileMapper) {
+    public ProfileService(ProfileRepository profileRepository, @Lazy UserService userService, PaymentPlanService paymentPlanService, @Lazy ProfileMapper profileMapper) {
         this.profileRepository = profileRepository;
         this.userService = userService;
         this.paymentPlanService = paymentPlanService;
@@ -48,6 +48,7 @@ public class ProfileService {
 
         return profileDTOList;
     }
+
     // save a profile
     public ProfileDTO save(Profile profile) throws EntityNotFoundException, EntityExistsException {
 
@@ -94,6 +95,7 @@ public class ProfileService {
 
         return false;
     }
+
     public List<Profile> findAllByAccount(Long userId) {
         log.info("About to get all profiles for logged in user");
 
@@ -123,5 +125,39 @@ public class ProfileService {
                 .collect(Collectors.toList());
 
         return profileDTOS;
+    }
+
+    // get profile by accountId
+    public Profile getOne(Long id) {
+
+        log.debug("Request to get profile with id : {}", id);
+
+        Optional<Profile> optionalProfile = profileRepository.findById(id);
+
+        Profile profile = null;
+        if (optionalProfile.isPresent()) {
+            profile = optionalProfile.get();
+        }
+
+        return profile;
+    }
+
+    public Profile update(Profile profile) {
+        log.info("Request to update profile : {} for user : {}", profile.getName(),
+                profile.getAccount());
+
+        profile = profileRepository.save(profile);
+
+        return profile;
+    }
+
+    public ProfileDTO getOneDTO(Long id) {
+        log.debug("About to map profile to dto");
+
+        Profile profile = getOne(id);
+
+        ProfileDTO profileDTO = profileMapper.toDTO(profile);
+
+        return profileDTO;
     }
 }

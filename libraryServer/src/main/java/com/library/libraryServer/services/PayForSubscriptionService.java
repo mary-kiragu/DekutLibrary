@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.*;
 import com.fasterxml.jackson.databind.*;
 import com.library.libraryServer.config.*;
+import com.library.libraryServer.domain.*;
 import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.domain.dto.daraja.*;
+import com.library.libraryServer.domain.enums.*;
+import com.library.libraryServer.repository.*;
 import com.library.libraryServer.util.*;
 import lombok.extern.slf4j.*;
 import okhttp3.*;
@@ -18,20 +21,29 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class PayForSubscription {
+public class PayForSubscriptionService {
     private final PaymentPlanService paymentPlanService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final MpesaConfiguration mpesaConfiguration;
 
+    private final PaymentRepository paymentRepository;
+
+    private final ProfileService profileService;
+
+    private final AuditLogService auditLogService;
+
     private LocalDateTime nextRefreshTime;
 
     private String accessToken;
 
-    public PayForSubscription(PaymentPlanService paymentPlanService, MpesaConfiguration mpesaConfiguration) {
+    public PayForSubscriptionService(PaymentPlanService paymentPlanService, MpesaConfiguration mpesaConfiguration, PaymentRepository paymentRepository, ProfileService profileService, AuditLogService auditLogService) {
         this.paymentPlanService = paymentPlanService;
         this.mpesaConfiguration = mpesaConfiguration;
+        this.paymentRepository = paymentRepository;
+        this.profileService = profileService;
+        this.auditLogService = auditLogService;
     }
 
     public DarajaRequestResponseDTO initiatePayment(PaymentRequestDTO paymentRequestDTO) {
@@ -211,6 +223,127 @@ public class PayForSubscription {
 
 
         return year + monthString + dayString + hourString + minuteString + secondString;
+    }
+
+
+    public void processPayment(LipaNaDarajaCallBackDTO callBackDTO) {
+
+        // find payment by merchant id
+        Payment payment = findOneByMerchantRequestId(callBackDTO.getBody().getStkCallBack().getMerchantRequestId());
+
+        PaymentDTO paymentDTO = new PaymentDTO();
+
+        Map<String, Object> customFields = new HashMap<>();
+
+        for (CallBackItem callBackItem : callBackDTO.getBody().getStkCallBack().getCallBackMetaData().getItem()) {
+            customFields.put(callBackItem.getName(), callBackItem.getValue());
+        }
+        paymentDTO.setStatus("SUCCESS");
+        paymentDTO.setStatusReason(callBackDTO.getBody().getStkCallBack().getResultDescription());
+        paymentDTO.setPhoneNumber((Long) customFields.get("PhoneNumber"));
+        paymentDTO.setTransactionCode((String) customFields.get("MpesaReceiptNumber"));
+        paymentDTO.setAmount((Integer) customFields.get("Amount"));
+
+        Profile profile = profileService.getOne(payment.getProfileId());
+
+        paymentDTO.setProfileId(payment.getProfileId());
+
+        // check if the payment was successfull
+        Integer resultCode = callBackDTO.getBody().getStkCallBack().getResultCode();
+
+        // this means that the transaction failed
+        if (resultCode != 0) {
+
+            // write audit logs here
+            AuditLog auditLog = new AuditLog(
+                    AuditAction.PAYMENT,
+                    TransactionStatus.FAILURE,
+                    callBackDTO.getBody().getStkCallBack().getResultDescription(),
+                    payment.getEmail(),
+                    payment.getPhoneNumber(),
+                    payment.getProfileId()
+            );
+
+
+            //auditLogService.save(auditLog);
+
+            paymentDTO.setStatus("ERROR");
+            paymentDTO.setStatusReason(callBackDTO.getBody().getStkCallBack().getResultDescription());
+        }
+
+        profile.setAccountStatus(AccountStatus.PAID);
+        profile.setLastBillingDate(LocalDate.now());
+        // get profile plan
+        Integer planId = profile.getPlan();
+
+        PaymentPlan paymentPlan = paymentPlanService.getOneEntity(planId);
+        profile.setLastBillingDate(LocalDate.now());
+        if (paymentPlan != null) {
+            if (paymentPlan.getPaymentDuration().equals(PayDuration.MONTH)) {
+                profile.setNextBillingDate(LocalDate.now().plusMonths(1));
+            } else if (paymentPlan.getPaymentDuration().equals(PayDuration.YEAR)) {
+                profile.setNextBillingDate(LocalDate.now().plusYears(1));
+            } else if (paymentPlan.getPaymentDuration().equals(PayDuration.HOLIDAY)) {
+                profile.setNextBillingDate(LocalDate.now().plusYears(1));
+            }
+        }
+
+        profileService.update(profile);
+
+        payment.setTransactionCode(paymentDTO.getTransactionCode());
+        payment.setStatus(PaymentStatus.COMPLETE);
+        payment.setAmount(paymentDTO.getAmount());
+        updatePayment(payment);
+
+        // write audit logs
+        AuditLog auditLog = new AuditLog(
+                AuditAction.PAYMENT,
+                TransactionStatus.SUCCESS,
+                callBackDTO.getBody().getStkCallBack().getResultDescription(),
+                payment.getEmail(),
+                payment.getPhoneNumber(),
+                profile.getId()
+        );
+
+       auditLogService.save(auditLog);
+
+
+    }
+
+    private Payment updatePayment(Payment payment) {
+        log.info("Request to update payment by : {} on profile : {}", payment.getEmail(), payment.getProfileId());
+
+        Payment updatedPayment = paymentRepository.save(payment);
+
+        return updatedPayment;
+    }
+    public Payment findOneByMerchantRequestId(String merchantRequestId) {
+
+        log.info("Request to find payment with merchant request id : {}", merchantRequestId);
+
+        Payment payment = null;
+
+        Optional<Payment> optionalPayment = paymentRepository.findOneByMerchantRequestId(merchantRequestId);
+
+        if (optionalPayment.isPresent()) {
+            payment = optionalPayment.get();
+        }
+
+        return payment;
+    }
+
+    public Payment findByTransactionCode(String transactionCode) {
+
+        Payment payment = null;
+        log.info("About to find payment with transaction code : {}", transactionCode);
+
+        Optional<Payment> optionalPayment = paymentRepository.findOneByTransactionCode(transactionCode);
+
+        if (optionalPayment.isPresent()) {
+            payment = optionalPayment.get();
+        }
+
+        return payment;
     }
 
 }

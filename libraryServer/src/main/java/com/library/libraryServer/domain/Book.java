@@ -22,9 +22,9 @@ public class Book implements Serializable {
         this.author = author;
         this.status = status;
         this.borrowedBy = borrowedBy;
-        //this.borrowedOn = borrowedOn;
+        this.borrowedOn = String.valueOf(borrowedOn);
         this.issuedBy = issuedBy;
-       // this.returnedOn = returnedOn;
+        this.returnedOn = String.valueOf(returnedOn);
     }
 
     public Book(String title, String author, Status status, String borrowedBy, LocalDateTime borrowedOn, String issuedBy, LocalDateTime returnedOn) {
@@ -40,6 +40,8 @@ public class Book implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long isbn;
     private String title;
     private String author;
     @Enumerated(EnumType.STRING)

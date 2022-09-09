@@ -37,5 +37,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="09092022115000" author="root">
+        <addDefaultValue columnName="fine"
+                         defaultValue="0"
+                         tableName="tbl_book" columnDataType="int(255)"/>
+
+    </changeSet>
+
 
 </databaseChangeLog>

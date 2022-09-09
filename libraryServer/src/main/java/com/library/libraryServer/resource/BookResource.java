@@ -1,6 +1,7 @@
 package com.library.libraryServer.resource;
 
 import com.library.libraryServer.domain.*;
+import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.exceptions.*;
 import com.library.libraryServer.resource.vms.*;
 import com.library.libraryServer.services.*;
@@ -78,6 +79,17 @@ public class BookResource {
     ResponseEntity deleteBook(@PathVariable("id") Long id){
        Book deletedBook=bookService.deleteBook(id);
         return new ResponseEntity(deletedBook,HttpStatus.OK);
+    }
+
+    @GetMapping("/books/filter-by-category/{categoryId}")
+    public List<BookDTO> filterByParentCategory(@PathVariable Integer categoryId) {
+        log.info("Request to filter by parent");
+
+        List<BookDTO> bookDTOS = bookService.filterByCategoryId(categoryId);
+        log.info("saved to filter by parent {}",bookDTOS);
+
+
+        return bookDTOS;
     }
 
 

@@ -1,8 +1,10 @@
 package com.library.libraryServer.services;
 
 import com.library.libraryServer.domain.*;
+import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.domain.enums.*;
 import com.library.libraryServer.exceptions.*;
+import com.library.libraryServer.mapper.*;
 import com.library.libraryServer.repository.*;
 import com.library.libraryServer.security.jwt.*;
 import lombok.extern.slf4j.*;
@@ -15,10 +17,13 @@ import java.util.*;
 @Slf4j
 public class BookService {
     private final BookRepository bookRepository;
+
+    private final BookMapper bookMapper;
     private final UserRepository userRepository;
 
-    public BookService(BookRepository bookRepository, UserRepository userRepository) {
+    public BookService(BookRepository bookRepository, BookMapper bookMapper, UserRepository userRepository) {
         this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
         this.userRepository = userRepository;
     }
 
@@ -131,6 +136,18 @@ public class BookService {
         return bookOptional;
 
     }
+
+    public List<BookDTO> filterByCategoryId(Integer categoryId) {
+        log.info("About to get all books in category : {}", categoryId);
+        List<BookDTO> bookDTOList = new ArrayList<>();
+
+        for (Book book : bookRepository.findByCategoryId(categoryId)) {
+            bookDTOList.add(bookMapper.toDTO(book));
+        }
+
+        return bookDTOList;
+    }
+
 
 
 }
