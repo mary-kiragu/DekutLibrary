@@ -12,10 +12,54 @@
                 <span class="right-arrow text-muted"></span>
                 <span class="nav-menu-item disable-item">{{category?.name}}</span>
             </div>
-            <button *ngIf="category?.categoryType == 'SECTION'" data-toggle="modal" data-bs-target="#create-series" type="button" class="btn btn-upload"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Upload
-        Book</button>
-            <button *ngIf="category?.categoryType == 'CATEGORY'" class="btn btn-create-new" data-bs-toggle="modal" data-bs-target="#createSectionModal" id="openCreateSectionModal"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Create
-        Section</button>
+
+            <div class="col-md-4 text-end">
+
+                <button [disabled]="subCategories?.length < 2" data-toggle="modal" data-target="#sortVideoModal" type="button" class="btn btn-upload me-3"> <span><i class="fas fa-sort"></i></span> Sort
+                  {{category?.categoryType == 'SECTION' ? 'Videos' : 'Topics'}}</button>
+
+                <button *ngIf="category?.categoryType == 'CATEGORY'" class="btn btn-create-new" data-bs-toggle="modal" data-bs-target="#createSectionModal" id="openCreateSectionModal"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Create
+                    Section</button>
+
+            </div>
+
+            <div class="row mx-0 mt-4" *ngIf="category?.categoryType == 'CATEGORY'">
+                <h4 class="section-title">Sub Topics</h4>
+
+                <div class="text-center my-5" *ngIf="!loadingSubCats && subCategories && subCategories.length === 0">
+                    <span>No sub topics found</span>
+                </div>
+
+                <div class="donut-wrapper" *ngIf="loadingCats || loadingSubCats">
+                    <div class="donut multi"></div>
+                </div>
+
+                <div class="col-6 col-md-2 px-0 mb-2" *ngFor="let category of subCategories">
+                    <div class="card category-item" *ngIf="!loadingCats && !loadingSubCats">
+                        <div class="thumbnail" (click)="toCategoryDetail(category.id)">
+                            <img class="" src="./assets/images/video-f" alt="book thumbnail">
+                        </div>
+
+                        <div class="flex-div">
+                            <p (click)="toCategoryDetail(category.id)" class="vid-title">
+                                {{category.name.length > 85 ? (category.name | slice:0:85) + '...' : category.name}}
+                            </p>
+                            <div class="dropdown">
+                                <button class="btn btn-dropdown" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <span><i class="fas fa-ellipsis-v"></i></span>
+            </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" (click)="editSection(category)">Edit</a></li>
+                                    <li><a class="dropdown-item" data-toggle="modal" data-target="#deleteConfirmationModal" (click)="setCategoryId(category.id)">Delete</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
     </div>
 
@@ -48,3 +92,25 @@
         </div>
     </div>
 </form>
+
+
+<!-- Delete confirmation modal -->
+<div class="modal" tabindex="-1" role="dialog" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Confirmation</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <p> Are you sure you want to delete ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="deleteCategory(selectedCategoryId)"> Yes
+        </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -16,4 +16,5 @@ public class BookDto {
     private String issuedBy;
     private String returnedOn;
     private String imageUrl;
+    private Integer categoryId;
 }

@@ -8,6 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
+import { SectionsComponent } from './categories/sections/sections.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
   {
     path: 'categories',
     component: CategoriesComponent,
+  },
+  {
+    path: 'categories/:id/:id',
+    component: SectionsComponent,
   },
   {
     path: 'categories/:id',

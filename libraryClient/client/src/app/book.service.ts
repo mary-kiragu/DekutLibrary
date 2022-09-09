@@ -43,4 +43,9 @@ export class BookService {
   deleteBook(id:number):Observable<Book>{
     return this.httpClient.delete<Book>(this.apiServerUrl+"/api/books/"+id)
   }
+
+  filterByParent(categoryId: number): Observable<any> {
+
+    return this.httpClient.get(this.apiServerUrl + "/api/books/filter-by-category/" + categoryId);
+  }
 }

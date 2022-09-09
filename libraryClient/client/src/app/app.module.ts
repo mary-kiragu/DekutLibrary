@@ -18,6 +18,7 @@ import { CategoriesComponent } from './categories/categories.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { CategoryDetailComponent } from './category-detail/category-detail.component';
 import { FooterComponent } from './footer/footer.component';
+import { SectionsComponent } from './categories/sections/sections.component';
 
 
 
@@ -34,6 +35,7 @@ import { FooterComponent } from './footer/footer.component';
     SubscriptionComponent,
     CategoryDetailComponent,
     FooterComponent,
+    SectionsComponent,
 
   ],
   imports: [

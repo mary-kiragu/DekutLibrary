@@ -15,6 +15,7 @@ export class Book{
   returnedOn?:string;
   issuedBy?:string;
   imageUrl?:string;
+  categoryId?:number;
   constructor(
     id?:number,
     title?:string,
@@ -24,7 +25,8 @@ export class Book{
     borrowedOn?:string,
     returnedOn?:string,
     issuedBy?:string,
-    imageUrl?:string
+    imageUrl?:string,
+    categoryId?:number
     ){
 
       this.id=id;
@@ -35,6 +37,7 @@ export class Book{
       this.issuedBy=issuedBy;
       this.returnedOn=returnedOn;
       this.imageUrl=imageUrl;
+      this.categoryId=categoryId;
 
   }
 

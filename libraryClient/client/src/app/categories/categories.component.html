@@ -5,7 +5,7 @@
 
         <div class=" col-md-2" *ngFor="let category of categories" [routerLink]="['/categories/',category.id]">
             <div class="books">
-                <!-- <img class="img-thumbnail" src="../../assets/images/{{cal}}" alt="./assets/images/billionare.jpeg" /> -->
+                <img class="img-thumbnail" src="../../assets/images/" alt="./assets/images/billionare.jpeg" />
                 <div class=" row ">
                     <label class="" for="id "><strong>Category id:</strong> </label>
                     <p class="">{{category.id}}</p>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="row ">
                     <label class="" for="name"><strong>Parent:</strong></label>
-                    <p class="">{{category.parentId}}</p>
+                    <p class="">{{category.parentCategoryId}}</p>
                 </div>
 
 

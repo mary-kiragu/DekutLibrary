@@ -9,6 +9,7 @@ export class User{
   email?:string;
   password?:string;
   authority?:Authority;
+  
 
   constructor(id?:number,name?:string,email?:string ,password?:string,authority?:Authority){
     this.id=id;

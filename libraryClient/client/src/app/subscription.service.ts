@@ -24,4 +24,14 @@ export class SubscriptionService {
   getOne(id: number): Observable<PaymentPlan> {
     return this.httpClient.get<PaymentPlan>(this.apiServerUrl + "/api/payment-plan/" + id);
   }
+
+  update(paymentPlan:PaymentPlan):Observable<PaymentPlan>{
+    return this.httpClient.put<PaymentPlan>(this.apiServerUrl+"/api/books/update/"+paymentPlan.id,paymentPlan);
+  }
+
+  initiatePayment(data:any): Observable<any>{
+    return this.httpClient.post<any>(this.apiServerUrl + "/api/payment",data);
+
+
+  }
 }

@@ -1,0 +1,44 @@
+<div class="container" *ngIf="category">
+    <button data-bs-toggle="modal" data-bs-target="#bookModal" type="button" class="btn btn-upload"> <span><i class="fas fa-plus-circle"></i></span> Upload
+  Book</button>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                    {{bookId ? 'Edit' : 'Add'}} Book</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="bookForm" [formGroup]="bookForm" role="form" (ngSubmit)="save()">
+
+                    <div class="form-group">
+                        <label for="title">title</label>
+                        <input class="form-control" type="text" name="title" formControlName="title">
+                    </div>
+                    <div class=" form-group">
+                        <label for="author">Author</label>
+                        <input class="form-control" type="text" name="author" formControlName="author">
+                    </div>
+                    <div class=" form-group">
+                        <label for="imageUrl">ImageUrl</label>
+                        <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="save()">submit</button>
+            </div>
+        </div>
+    </div>
+</div>

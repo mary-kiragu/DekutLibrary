@@ -23,7 +23,8 @@ export class CategoriesComponent implements OnInit {
     name: [''],
     description: [''],
     parentCategoryId: [],
-    rankInParent: [],
+    categoryType: [],
+
   })
 
 
@@ -103,9 +104,9 @@ protected createcategoryFromForm(): any {
     name: this.categoryForm.get('name')!.value,
     description: this.categoryForm.get('description')!.value,
     parentCategoryId: this.categoryForm.get('parentCategoryId')!.value,
-    rankInParent: this.categoryForm.get('rankInParent')!.value,
+    // rankInParent: this.categoryForm.get('rankInParent')!.value,
    // cpLogin: this.user ?.email,
-    categoryType: 'CATEGORY'
+    categoryType:this.categoryForm.get('categoryType')!.value,
   };
 }
 

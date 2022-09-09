@@ -31,6 +31,7 @@ export class CategoryDetailComponent implements OnInit {
   loadingCats = false;
   loadingVideos = false;
   sortableSubCats: any;
+  selectedCategoryId!: number;
 
   bookCategory!: number;
 
@@ -64,7 +65,8 @@ export class CategoryDetailComponent implements OnInit {
         console.log('category : ', this.category);
 
         // // this.filterVideosByCategory(this.category.id);
-        // this.getSubCategories(this.category.id);
+
+         console.log("subcats",this.getSubCategories(this.category.id));
       },
       (err) => {
         console.log(err);
@@ -90,8 +92,7 @@ export class CategoryDetailComponent implements OnInit {
       id: this.categoryForm.get('id')!.value,
       name: this.categoryForm.get('name')!.value,
       description: this.categoryForm.get('description')!.value,
-      parentCategoryId: this.category.id,
-      //cpLogin: this.user ?.email,
+      parentCategoryId:this.category.id,
       categoryType: 'SECTION',
     };
   }
@@ -104,7 +105,7 @@ export class CategoryDetailComponent implements OnInit {
 
     this.categoriesService.save(category).subscribe((result) => {
       this.getSubCategories(this.category.id);
-      console.log('Successfully created Course : ', result);
+      console.log('Successfully created Section : ', result);
       document.getElementById('closeCreateCategoryModal')?.click();
       this.reset();
     });
@@ -121,7 +122,9 @@ export class CategoryDetailComponent implements OnInit {
   }
 
   toCategoryDetail(id: number) {
-    this.router.navigate(['/categories', id]);
+     this.router.navigate(['/categories',this.category.id,id]);
+    //this.router.navigate(['/categories', id]);
+    //window.location.reload();
   }
 
   toLanding() {
@@ -130,5 +133,29 @@ export class CategoryDetailComponent implements OnInit {
 
   reset(): void {
     this.categoryForm.reset();
+  }
+  setCategoryId(id: number): void {
+
+    console.log(id);
+    this.selectedCategoryId = id;
+
+  }
+
+  deleteCategory(id: any): void {
+
+    this.categoriesService.deleteOne(id).subscribe(
+
+      (res) => {
+
+        console.log(res);
+
+
+
+      },
+      (err) => {
+        console.log(err);
+
+      }
+    );
   }
 }

@@ -27,11 +27,14 @@ export class CategoriesService {
     return this.httpClient.get(this.apiServerUrl + "/api/categories/" + id);
   }
   filterByParent(parentId: number,adminView?:boolean): Observable<any> {
-    if (!adminView) {
-      adminView = false;
-    }
-    return this.httpClient.get(this.apiServerUrl + "/api/categories/filter-by-parent/" + parentId + '?adminView=' + adminView);
+
+    return this.httpClient.get(this.apiServerUrl + "/api/categories/filter-by-parent/" + parentId);
   }
+
+  deleteOne(id: number): Observable<any> {
+    return this.httpClient.get(this.apiServerUrl + "/api/categories/" + id);
+  }
+
 
 
 }
