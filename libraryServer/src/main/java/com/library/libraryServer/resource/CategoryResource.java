@@ -50,4 +50,15 @@ public class CategoryResource {
         return new ResponseEntity(deletedBook,HttpStatus.OK);
     }
 
+    @GetMapping(path= "/categories/search")
+    public List<Category> findAll(@RequestParam(required = false) String text) {
+        log.debug("REST request to search all categories with text : {}", text);
+
+        if (text  == null) {
+            text = "";
+        }
+
+        return categoryService.search(text);
+    }
+
 }

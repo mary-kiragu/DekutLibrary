@@ -34,16 +34,23 @@ public class PayForSubscriptionService {
 
     private final AuditLogService auditLogService;
 
+    private final UserService userService;
+
+    private final UserRepository userRepository;
+
     private LocalDateTime nextRefreshTime;
 
     private String accessToken;
 
-    public PayForSubscriptionService(PaymentPlanService paymentPlanService, MpesaConfiguration mpesaConfiguration, PaymentRepository paymentRepository, ProfileService profileService, AuditLogService auditLogService) {
+
+    public PayForSubscriptionService(PaymentPlanService paymentPlanService, MpesaConfiguration mpesaConfiguration, PaymentRepository paymentRepository, ProfileService profileService, AuditLogService auditLogService, UserService userService, UserRepository userRepository) {
         this.paymentPlanService = paymentPlanService;
         this.mpesaConfiguration = mpesaConfiguration;
         this.paymentRepository = paymentRepository;
         this.profileService = profileService;
         this.auditLogService = auditLogService;
+        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public DarajaRequestResponseDTO initiatePayment(PaymentRequestDTO paymentRequestDTO) {
@@ -230,6 +237,14 @@ public class PayForSubscriptionService {
 
         // find payment by merchant id
         Payment payment = findOneByMerchantRequestId(callBackDTO.getBody().getStkCallBack().getMerchantRequestId());
+        // check if the payment involved paying damage fee
+        User user = userService.getCurrentLoggedInUser();
+
+        if (payment.getIsSubscriptionFeePaid()) {
+            log.info("User paid subscription fee, updating the user....");
+            // user.setIsDamageFeePaid(true);
+            userService.update(user);
+        }
 
         PaymentDTO paymentDTO = new PaymentDTO();
 
@@ -310,6 +325,16 @@ public class PayForSubscriptionService {
 
     }
 
+    public Payment savePayment(Payment payment) {
+        log.info("About to save successful payment  : {}", payment);
+
+        Payment savedPayment = paymentRepository.save(payment);
+
+        return savedPayment;
+    }
+
+
+
     private Payment updatePayment(Payment payment) {
         log.info("Request to update payment by : {} on profile : {}", payment.getEmail(), payment.getProfileId());
 
@@ -345,5 +370,6 @@ public class PayForSubscriptionService {
 
         return payment;
     }
+
 
 }

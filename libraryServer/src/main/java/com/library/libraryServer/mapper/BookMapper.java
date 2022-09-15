@@ -19,14 +19,14 @@ public class BookMapper {
         bookDTO.setId(book.getId());
         bookDTO.setTitle(book.getTitle());
         bookDTO.setIsbn(book.getIsbn());
+        bookDTO.setImageUrl(book.getImageUrl());
         bookDTO.setAuthor(book.getAuthor());
+        bookDTO.setStatus(book.getStatus());
         bookDTO.setCategoryId(book.getCategoryId());
-        bookDTO.setBorrowedBy(bookDTO.getBorrowedBy());
-        bookDTO.setReturnedOn(bookDTO.getReturnedOn());
-
-
-
-
+        bookDTO.setBorrowedBy(book.getBorrowedBy());
+        bookDTO.setReturnedOn(book.getReturnedOn());
+        bookDTO.setFine(book.getFine());
+        bookDTO.setAccessionNumber(book.getAccessionNumber());
 
 
         return bookDTO;

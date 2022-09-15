@@ -123,4 +123,12 @@ public class CategoryService {
         return null;
     }
 
+    public List<Category> search(String text) {
+        log.debug("Request to search categories with text : {}", text);
+        List<Category> categories = categoryRepository.findByNameContainingOrDescriptionContaining(text, text);
+        log.info("found categories",categories);
+
+         return categories;
+    }
+
 }

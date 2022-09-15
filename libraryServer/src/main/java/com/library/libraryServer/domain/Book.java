@@ -32,7 +32,7 @@ public class Book implements Serializable {
         this.author = author;
         this.status = status;
         this.borrowedBy = borrowedBy;
-       // this.borrowedOn = borrowedOn;
+        // this.borrowedOn = borrowedOn;
         this.issuedBy = issuedBy;
         //this.returnedOn = returnedOn;
     }
@@ -44,11 +44,13 @@ public class Book implements Serializable {
     private Long isbn;
     private String title;
     private String author;
+
+    private String accessionNumber;
     @Enumerated(EnumType.STRING)
     private Status status;
     private String borrowedBy;
 
-   private String borrowedOn;
+    private String borrowedOn;
     private String issuedBy;
 
     private String returnedOn;
@@ -59,6 +61,7 @@ public class Book implements Serializable {
 
     private Integer categoryId;
 
+    private Integer fine=0;
 
 
 }

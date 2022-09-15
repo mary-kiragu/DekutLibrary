@@ -69,9 +69,12 @@ public class BookResource {
     }
 
     @PutMapping(path ="/update/{id}")
-    ResponseEntity updateBook(@RequestBody Book book){
+    ResponseEntity updateBook(@RequestBody Book book, @PathVariable Long id){
+        System.out.println("========================================================================================");
+        log.info("Hit update route");
+        System.out.println("cnsjdnmckdsmckmk");
         Optional<Book> updatedBook=null;
-        updatedBook=bookService.updateBook(book.getId(), book.getTitle(), book.getAuthor(), book.getImageUrl());
+        updatedBook=bookService.updateBook(id, book.getTitle(), book.getAuthor(), book.getImageUrl());
         return new ResponseEntity(updatedBook,HttpStatus.OK);
     }
 
@@ -81,9 +84,9 @@ public class BookResource {
         return new ResponseEntity(deletedBook,HttpStatus.OK);
     }
 
-    @GetMapping("/books/filter-by-category/{categoryId}")
+    @GetMapping(path="/filter-by-category/{categoryId}")
     public List<BookDTO> filterByParentCategory(@PathVariable Integer categoryId) {
-        log.info("Request to filter by parent");
+        log.info("Request to filter by category");
 
         List<BookDTO> bookDTOS = bookService.filterByCategoryId(categoryId);
         log.info("saved to filter by parent {}",bookDTOS);
@@ -91,6 +94,26 @@ public class BookResource {
 
         return bookDTOS;
     }
+
+    @GetMapping("/filter-by-user{borrowedBy}")
+    public List<BookDTO> filterByParentCategory(@PathVariable String borrowedBy, @RequestParam(required = false) Boolean adminView) {
+
+        List<BookDTO>bookDTOS = bookService.filterByUser(borrowedBy);
+
+        return bookDTOS;
+    }
+
+    @GetMapping(path= "/search")
+    public List<Book> findAll(@RequestParam(required = false) String text) {
+        log.debug("REST request to search all books with text : {}", text);
+
+        if (text  == null) {
+            text = "";
+        }
+
+        return bookService.search(text);
+    }
+
 
 
 

@@ -101,5 +101,12 @@ public class UserService {
         return user;
     }
 
+    public User update(User user) {
+
+        log.info("Request to update user with id : {}", user.getEmail());
+
+        return userRepository.save(user);
+    }
+
 
 }

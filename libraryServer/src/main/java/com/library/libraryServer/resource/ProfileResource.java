@@ -25,6 +25,8 @@ public class ProfileResource {
         @PostMapping("/profiles")
         public ResponseEntity save(@RequestBody Profile profile){
 
+            log.info("Request to create profile");
+
             ProfileDTO profileDTO = null;
             try {
                 profileDTO = profileService.save(profile);

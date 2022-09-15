@@ -47,25 +47,58 @@ public class BookService {
 
     public Optional<Book> getOneBook(Long id) {
         Optional<Book> bookOptional = bookRepository.findById(id);
+
+        if(bookOptional.isPresent()){
+            Book book = bookOptional.get();
+           if(book.getBorrowedBy() !=null) {
+               book.setFine(book.getFine());
+           }
+
+        }
         return bookOptional;
     }
+
 
     //borrow book
     public Optional<Book> borrowBook(Long id) throws BorrowedBookException {
         Optional<Book> bookOptional = bookRepository.findById(id);
 
+        LocalDate dueDate;
+
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
             book.setStatus(Status.BORROWED);
 
+            User user = new User();
+
             if (book.getBorrowedBy() != null) {
                 throw new BorrowedBookException("Book not available for borrowing");
+
             }
+
+//            if(user.getAuthority().equals(Authority.STUDENT)){
+//
+//                dueDate= LocalDate.parse(book.getBorrowedOn()).plusDays(14);
+//
+//            } else if (user.getAuthority().equals(Authority.STAFF)) {
+//
+//                dueDate= LocalDate.parse(book.getBorrowedBy()).plusDays(21);
+//
+//            }else {
+//
+//                dueDate= LocalDate.parse(book.getBorrowedBy()).plusDays(30);
+//
+//            }
+//
+//            log.info("due date: {}",dueDate);
+
 
             book.setBorrowedOn(String.valueOf(LocalDateTime.now()));
             book.setReturnedOn(null);
             log.info("current user email",SecurityUtils.getCurrentUserLogin());
             book.setBorrowedBy(SecurityUtils.getCurrentUserLogin().orElse(null));
+            //compute fine.
+
 
 
             book = bookRepository.save(book);
@@ -145,11 +178,29 @@ public class BookService {
             bookDTOList.add(bookMapper.toDTO(book));
         }
 
+        log.info("books {}",bookDTOList);
+
         return bookDTOList;
     }
 
 
+    public List<BookDTO> filterByUser(String borrowedBy) {
+        log.info("About to get all books borrowed by user : {}", borrowedBy);
+        List<BookDTO> bookDTOList = new ArrayList<>();
 
+        for (Book book : bookRepository.findByBorrowedBy(borrowedBy)) {
+            bookDTOList.add(bookMapper.toDTO(book));
+        }
+
+        return bookDTOList;
+    }
+
+    public List<Book> search(String text) {
+        log.debug("Request to search books with text : {}", text);
+        List<Book> books = bookRepository.findByTitleContainingOrAuthorContaining(text, text);
+
+        return books;
+    }
 }
 
 

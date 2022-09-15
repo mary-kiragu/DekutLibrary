@@ -29,7 +29,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    private Boolean isDamageFeePaid;
+    private Boolean isSubscriptionFeePaid;
+
 
     private Integer amount;
 
