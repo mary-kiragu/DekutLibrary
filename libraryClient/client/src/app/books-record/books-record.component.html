@@ -11,6 +11,8 @@
                     <th scope="col">Title</th>
                     <th scope="col">Author</th>
                     <th scope="col">Status</th>
+                    <th scope="col">ISBN</th>
+                    <th scope="col">Accession number</th>
                     <th scope="col">Borrowed by</th>
                     <th scope="col">Borrowed on</th>
                     <th scope="col">Returned on</th>
@@ -28,11 +30,13 @@
                     <td>{{book.title}}</td>
                     <td>{{book.author}}</td>
                     <td>{{book.status}}</td>
+                    <td>{{book.isbn}}</td>
+                    <td>{{book.accessionNumber}}</td>
                     <td>{{book.borrowedBy}}</td>
                     <td>{{book.borrowedOn}}</td>
                     <td>{{book.returnedOn}}</td>
                     <td>{{book.issuedBy}}</td>
-                    <td>{{book.imageUrl}}</td>
+                    <td><img src="{{book.imageUrl}}" height="50px" width="50px" /></td>
                     <td [routerLink]="['/book-records',book.id]"><i class="fa fa-eye" style="font-size:36px"></i></td>
                     <td> <button type="button" class="btn btn-outline-primary btn-view" (click)="editBook(book)" data-bs-toggle="modal" data-bs-target="#bookModal">
                       <i class="fas fa-edit"></i>
@@ -44,6 +48,7 @@
 
 
                 </tr>
+
 
             </tbody>
         </table>
@@ -82,6 +87,15 @@
                     <div class=" form-group">
                         <label for="imageUrl">ImageUrl</label>
                         <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
+
+                    </div>
+                    <div class=" form-group">
+                        <label for="isbn">ISBN</label>
+                        <input class="form-control" type="text" name="isbn" formControlName="isbn">
+                    </div>
+                    <div class=" form-group">
+                        <label for="accessionNumber">Accession number</label>
+                        <input class="form-control" type="text" name="accessionNumber" formControlName="accessionNumber">
 
                     </div>
 

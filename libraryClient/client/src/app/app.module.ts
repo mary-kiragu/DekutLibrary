@@ -19,6 +19,8 @@ import { SubscriptionComponent } from './subscription/subscription.component';
 import { CategoryDetailComponent } from './category-detail/category-detail.component';
 import { FooterComponent } from './footer/footer.component';
 import { SectionsComponent } from './categories/sections/sections.component';
+import { AuthorityDirective } from './authority.directive';
+import { FilterPipe } from './filter.pipe';
 
 
 
@@ -36,6 +38,8 @@ import { SectionsComponent } from './categories/sections/sections.component';
     CategoryDetailComponent,
     FooterComponent,
     SectionsComponent,
+    AuthorityDirective,
+    FilterPipe,
 
   ],
   imports: [
@@ -44,7 +48,8 @@ import { SectionsComponent } from './categories/sections/sections.component';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+
   ],
   providers: [
     {

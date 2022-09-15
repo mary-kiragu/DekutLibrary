@@ -5,6 +5,9 @@ import { BookService } from 'src/app/book.service';
 import { Book } from 'src/app/books/book.model';
 import { CategoriesService } from '../../categories.service';
 
+
+
+
 @Component({
   selector: 'app-sections',
   templateUrl: './sections.component.html',
@@ -14,16 +17,24 @@ export class SectionsComponent implements OnInit {
 
   bookId!: number;
   bookForm = this.formBuilder.group({
+    isbn: [],
     title: [],
     author: [],
     imageUrl: [],
     categoryId:[],
+    accessionNumber:[]
   });
   books: any = [];
   category: any;
   bookCategory:any;
-  book: Book = {} as Book;
+  book!: Book;
   loadingBooks = false;
+  searchText: string = '';
+  foundBooks:any;
+  foundCategories:any;
+  booksToRender: Book[]=[];
+  booksFromDB: Book[] = [];
+  isFiltered = false;
   constructor(
     private bookService: BookService,
     private categoriesService:CategoriesService,
@@ -50,7 +61,7 @@ export class SectionsComponent implements OnInit {
         });
         console.log('category : ', this.category);
 
-         this.filterBooksByCategory(this.category.id);
+         this.books=this.filterBooksByCategory(this.category.id);
 
          //console.log("subcats",this.getSubCategories(this.category.id));
       },
@@ -73,12 +84,16 @@ export class SectionsComponent implements OnInit {
       }
     );
   }
+
+
   extractBookDetails(): Book {
     return {
-      author: this.bookForm.get('title')!.value,
-      title: this.bookForm.get('author')!.value,
+      title: this.bookForm.get('title')!.value,
+      isbn: this.bookForm.get('isbn')!.value,
+      author: this.bookForm.get('author')!.value,
       imageUrl: this.bookForm.get('imageUrl')!.value,
       categoryId: this.category.id,
+      accessionNumber:this.bookForm.get('accessionNumber')!.value,
     };
 
   }
@@ -113,7 +128,7 @@ export class SectionsComponent implements OnInit {
   }
 
   save(): void {
-    if (this.book.id) {
+    if (this.bookId) {
       this.updateBook();
     } else {
       this.addNewBook();
@@ -126,9 +141,11 @@ export class SectionsComponent implements OnInit {
     this.bookService.filterByParent(id).subscribe(
       (res) => {
         // console.log("Video Data", res);
-        this.books = res;
+        this.booksFromDB = res;
+        console.log("books:",this.booksFromDB);
 
         this.loadingBooks = false;
+        this.booksToRender=this.booksFromDB;
 
 
         // this.books.forEach((book: any) => {
@@ -142,6 +159,36 @@ export class SectionsComponent implements OnInit {
         console.log("Error retrieving data", err);
       }
     );
+  }
+
+  SearchBooks(): void {
+
+    this.bookService.searchBooks(this.searchText.trim()).subscribe(
+      (result )=> {
+        console.log(result);
+        this.foundBooks=result;
+        console.log("found",this.foundBooks)
+
+   },
+
+    (error) => {
+        console.error('error getting books', error);
+      }
+    );
+  }
+
+  filter(): void {
+    let filteredbooks = this.booksFromDB.filter((book)=>book.title?.includes(this.searchText))
+    console.log(filteredbooks)
+      this.booksToRender = filteredbooks;
+      this.isFiltered = true;
+    if(this.searchText == "") {
+this.isFiltered = false
+    }
+  }
+  unfilter(): void {
+    this.booksToRender = this.booksFromDB;
+    this.isFiltered = false
   }
 
 

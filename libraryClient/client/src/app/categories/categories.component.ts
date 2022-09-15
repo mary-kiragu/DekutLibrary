@@ -2,12 +2,36 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { CategoriesService } from '../categories.service';
 
+
+interface Category {
+  id: number;
+  name: string;
+  parentCategoryId: number;
+  description: string;
+}
+
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css']
 })
 export class CategoriesComponent implements OnInit {
+  searchText: string = '';
+  foundCategories:any;
+  categoriesToRender: Category[]=[];
+  categoriesFromDB: Category[] = [];
+  isFiltered = false;
+  selectedCategory: Category | null = null
+  categoryForm = this.fb.group({
+    id: [],
+    name: [''],
+    description: [''],
+    parentCategoryId: [],
+    categoryType: [],
+
+  })
+
+  category!: Category;
 
   constructor(
     private categoriesService:CategoriesService,
@@ -18,30 +42,15 @@ export class CategoriesComponent implements OnInit {
     this.getAll();
 
   }
-  categoryForm = this.fb.group({
-    id: [],
-    name: [''],
-    description: [''],
-    parentCategoryId: [],
-    categoryType: [],
 
-  })
-
-
-// category = {
-//     id: '',
-//     name: '',
-//     parentCategoryId:''
-//   };
-
-  categories:any;
 
   getAll():void{
     this.categoriesService.getAll().subscribe(
       (res) => {
       console.log('Array categories available', res);
-      this.categories=res;
-      console.log("yeeey",this.categories);
+      this.categoriesFromDB=res;
+      console.log("yeeey",this.categoriesFromDB);
+      this.categoriesToRender = this.categoriesFromDB
         },
         (err) => {
           console.log("no category found")
@@ -84,6 +93,21 @@ saveCategory(): void {
   )
 
 }
+
+updateCategory(): void {
+  const categoryDetails = this.createcategoryFromForm();
+  categoryDetails.id=this.selectedCategory?.id;
+  console.log('category details', categoryDetails);
+  this.categoriesService.update(categoryDetails).subscribe(
+    (res) => {
+      console.log('updated category', res);
+      this.getAll();
+    },
+    (err) => {
+      console.log('category not updated book', err);
+    }
+  );
+}
 editCategory(category: any): void {
 
   this.categoryForm = this.fb.group({
@@ -98,6 +122,12 @@ editCategory(category: any): void {
 
 }
 
+setSelectedCategory(category: Category){
+  this.selectedCategory = category;
+}
+removeSelectedCategory(){
+  this.selectedCategory = null;
+}
 protected createcategoryFromForm(): any {
   return {
     id: this.categoryForm.get('id')!.value,
@@ -109,6 +139,47 @@ protected createcategoryFromForm(): any {
     categoryType:this.categoryForm.get('categoryType')!.value,
   };
 }
+
+filter(): void {
+  let filteredCaregories = this.categoriesFromDB.filter((category)=>category.name.includes(this.searchText))
+  console.log(filteredCaregories)
+    this.categoriesToRender = filteredCaregories;
+    this.isFiltered = true;
+    if(this.searchText == "") {
+      this.isFiltered = false
+          }
+
+}
+unfilter(): void {
+  this.categoriesToRender = this.categoriesFromDB;
+  this.isFiltered = false
+}
+
+deleteCategory(): any {
+  this.categoriesService.deleteOne(this.selectedCategory?.id as number).subscribe(
+    (res) => {
+      console.log('deleted category', res);
+      this.getAll();
+    },
+    (error) => {
+      console.log('category not deleted');
+    }
+  );
+  this.selectedCategory = null;
+}
+
+save(): void {
+  console.log(this.selectedCategory?.id)
+   if (this.selectedCategory?.id) {
+    this.updateCategory();
+  } else {
+    this.saveCategory();
+  }
+}
+
+
+
+
 
 }
 

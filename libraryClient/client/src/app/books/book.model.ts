@@ -16,6 +16,8 @@ export class Book{
   issuedBy?:string;
   imageUrl?:string;
   categoryId?:number;
+  isbn?:string;
+  accessionNumber?:string;
   constructor(
     id?:number,
     title?:string,
@@ -26,7 +28,9 @@ export class Book{
     returnedOn?:string,
     issuedBy?:string,
     imageUrl?:string,
-    categoryId?:number
+    categoryId?:number,
+    isbn?:string,
+  accessionNumber?:string
     ){
 
       this.id=id;
@@ -38,6 +42,8 @@ export class Book{
       this.returnedOn=returnedOn;
       this.imageUrl=imageUrl;
       this.categoryId=categoryId;
+      this.accessionNumber=accessionNumber;
+      this.isbn=isbn;
 
   }
 

@@ -31,10 +31,10 @@ export class SubscriptionComponent implements OnInit {
 
   planId!:number;
   paymentRequest:any;
-  plan!:any;
+  //paymentPlan!:PaymentPlan;
 
   paymentRequestForm=this.fb.group({
-    paymentPlanId:[''],
+    paymentPlan:[''],
     phoneNumber:['']
   })
 
@@ -111,12 +111,17 @@ export class SubscriptionComponent implements OnInit {
     this.subscriptionService.getOne(id).subscribe(
       (res) => {
         console.log(res);
-        this.plan = res;
+        this.paymentPlan = res;
       },
       (err) => {
         console.log('plan not found');
       }
     );
+  }
+
+  setPaymentPlanId(paymentPlanID: number){
+    this.paymentPlan.id = paymentPlanID;
+    console.log(this.paymentPlan.id)
   }
 
 
@@ -139,9 +144,8 @@ export class SubscriptionComponent implements OnInit {
   }
   extractPaymentRequestDetails(): any {
     return{
-      phoneNumber: this.paymentRequestForm.get('phoneNumber')!.value,
-      paymentPlanId:this.paymentPlan.id,
-
+      phoneNumber:this.paymentRequestForm.get('phoneNumber')!.value,
+      paymentPlan:this.paymentPlan.id,
 
     }
 

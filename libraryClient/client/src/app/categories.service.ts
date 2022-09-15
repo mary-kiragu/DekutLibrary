@@ -32,7 +32,12 @@ export class CategoriesService {
   }
 
   deleteOne(id: number): Observable<any> {
-    return this.httpClient.get(this.apiServerUrl + "/api/categories/" + id);
+    return this.httpClient.delete(this.apiServerUrl + "/api/categories/" + id);
+
+  }
+
+  searchCategories(text?: string): Observable<any> {
+    return this.httpClient.get(this.apiServerUrl + '/api/categories/search?text='  + text);
   }
 
 

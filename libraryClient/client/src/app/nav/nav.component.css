@@ -17,3 +17,8 @@
     background-color: rgba(29, 69, 4, 0.924);
     height: 80px;
 }
+
+#navbarTogglerDemo02 ul li a {
+    text-decoration: black;
+    color: white;
+}

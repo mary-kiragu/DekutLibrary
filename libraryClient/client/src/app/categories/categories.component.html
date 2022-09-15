@@ -1,55 +1,85 @@
-<div class="container">
-    <button type="button" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#createTopicModal" class="btn-category-add float-end"><i
-    class="fa fa-plus"></i> Add Category</button>
+<div class="">
     <div class="row">
+        <div class="col-md-9 mb-3 mt-3">
+            <div class="input-group" style="margin-left: 20px ">
+                <div class="form-outline">
+                    <input type="text" class="form-control form-control-sm" name="searchText" [(ngModel)]="searchText" (keyup)="filter()" placeholder="Search category" aria-label="Categoryname" aria-describedby="button-addon2">
+                </div>
+                <button *ngIf="!isFiltered" class="btn button-3" [ngClass]="{'activate-button':searchText}" (click)="filter()"><span>
+                  <i  class="fas fa-search"></i>
+                </span></button>
+                <button *ngIf="isFiltered" class="btn button-3" [ngClass]="{'activate-button':searchText}" (click)="unfilter()"><span>
+                  <i  class="fas fa-close"></i>
+                </span></button>
+                <!-- <button type="button" class="btn button-3">
+          <i class="fas fa-search"></i>
+        </button> -->
+            </div>
+        </div>
+        <div class="col-md-2 mt-3 " style="margin-right: 5px ">
+            <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#createTopicModal" class="btn-category-add float-end button-3"><i
+      class="fa fa-plus"></i> Add Category</button></div>
+    </div>
 
-        <div class=" col-md-2" *ngFor="let category of categories" [routerLink]="['/categories/',category.id]">
+    <div class="row mb-3">
+        <div class=" col-md-2 categories" *ngFor="let category of categoriesToRender">
             <div class="books">
-                <img class="img-thumbnail" src="../../assets/images/" alt="./assets/images/billionare.jpeg" />
-                <div class=" row ">
-                    <label class="" for="id "><strong>Category id:</strong> </label>
-                    <p class="">{{category.id}}</p>
-                </div>
+                <img class="img-thumbnail" src="../../assets/images/login.jpg" alt="./assets/images/billionare.jpeg" [routerLink]="['/categories/',category.id]" />
+
                 <div class="row ">
-                    <label class=" " for="name"><strong>Name:</strong> </label>
-                    <p class=" ">{{category.name}}</p>
+                    <label class=" " for="name"><strong>Name:</strong> {{category.name}}</label>
+
                 </div>
+                <!-- <div class="row ">
+                    <label class="" for="name"><strong>Parent:</strong> {{category.parentCategoryId}}</label>
+
+                </div> -->
                 <div class="row ">
-                    <label class="" for="name"><strong>Parent:</strong></label>
-                    <p class="">{{category.parentCategoryId}}</p>
+                    <label class="" for="name"><strong>Description:</strong> {{category.description}}</label>
+
                 </div>
+
+
+
+                <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
+
+                <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)"><i class="fas fa-edit" style="font-size:24px"></i></button>
 
 
 
             </div>
         </div>
     </div>
+
+
+
 </div>
+
 
 <!-- Create Topic Modal -->
 <div class="modal fade" id="createTopicModal" tabindex="-1 " aria-labelledby="createTopicModal" aria-hidden="true ">
     <div class="modal-dialog ">
         <div class="modal-content ">
             <div class="modal-header ">
-                <h5 class="modal-title " id="exampleModalLabel ">Create Course</h5>
-                <button type="button " class="btn-close " (click)="reset() " data-dismiss="modal " aria-label="Close "></button>
+                <h5 class="modal-title " id="createTopicModal "> Create Category</h5>
+                <button type="button " class="btn-close " (click)="reset() " data-bs-dismiss="modal" aria-label="Close "></button>
             </div>
             <div class="modal-body ">
-                <form name="categoryForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory() ">
+                <form name="categoryForm" [formGroup]="categoryForm" (ngSubmit)="save()">
 
                     <div class="form-group row ">
                         <div class="col-md-12 ">
-                            <label class="form-control-label " for="fieldName ">Name</label>
+                            <label class="form-control-label " for="name ">Name</label>
 
-                            <input type="text " class="form-control " id="fieldName " name="fieldName " placeholder="Category name " formControlName="name" />
+                            <input type="text " class="form-control" name="name" formControlName="name" />
                         </div>
                     </div>
 
                     <div class="form-group row mt-2 ">
                         <div class="col-md-12 ">
-                            <label class="form-control-label " for="fieldDescription ">Description</label>
+                            <label class="form-control-label " for="description ">Description</label>
 
-                            <textarea class="form-control " id="fieldDescription " name="fieldDescription " placeholder="Briefly describe the course for our new students " formControlName="description"></textarea>
+                            <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea>
                         </div>
                     </div>
                 </form>
@@ -63,59 +93,60 @@
     </div>
 </div>
 
-
-<!-- Create Category Modal
-<div class="modal fade" id="create-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Add Category</h5>
-                <!-- <h5  class="modal-title" id="staticBackdropLabel">Suspend Publisher</h5> -->
-<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation to delete book</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
             </div>
             <div class="modal-body">
-                <div>
-                    <form>
-                        <div>
-                            <label for="name">Name</label>
-                            <input [(ngModel)]="category.name" id="name" name="name" type="text" class="category-form-control">
-                        </div>
-                        <!-- <div class="mt-3">
-                          <label for="name">Levels</label>
-                          <input [(ngModel)]="levels" id="name" name="levels" placeholder="Comma separated eg beginner,intermediate,expert" type="text" class="category-form-control">
-                      </div> -->
-<!-- </form>
-                </div>
+                <p>Are you sure you want to delete</p>
+                <p>{{selectedCategory?.name}}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button (click)="createCategory()" type="button" class="btn-category-add" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="removeSelectedCategory()">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="deleteCategory()">Delete</button>
             </div>
         </div>
     </div>
-</div> -->--> -->
+</div>
 
-<!-- Edit Category Modal -->
-<!-- <div class="modal fade" id="edit-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Edit Category - {{selectedCategory?.name}}</h5>
-              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <div>
-                  <div class="mb-3">
-                      <input [(ngModel)]="levelName" placeholder="separate with comma to send multiple" id="level-name" name="level-name" type="text" class="add-level-input">
-                      <button type="button" (click)="addLevel()" class="add-level-button">Add Level</button>
-                  </div>
-                  <p class="level-tag" *ngFor="let level of selectedCategory?.levels">{{level}} <span (click)="removeLevel(level)" class="cancel">x</span></p>
-              </div>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button (click)="updateCategory()" type="button" class="btn-category-add" data-dismiss="modal">Confirm</button>
-          </div>
-      </div>
-  </div>
-</div> -->
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                    Edit Category</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="categoryForm" [formGroup]="categoryForm" role="form" (ngSubmit)="save()">
+
+                    <div class="form-group">
+                        <label for="name">name</label>
+                        <input class="form-control" type="text" name="name" formControlName="name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label " for="description ">Description</label>
+
+                        <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="save()">submit</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+.button-3 {
+    margin: 20px;
+    appearance: none;
+    background-color: rgba(29, 69, 4, 0.924);
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 6px 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.button-3:focus:not(:focus-visible):not(.focus-visible) {
+    box-shadow: none;
+    outline: none;
+}
+
+.button-3:hover {
+    background-color: rgba(29, 69, 4, 0.924);
+}
+
+.button-3:focus {
+    box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+    outline: none;
+}
+
+.button-3:disabled {
+    background-color: rgba(29, 69, 4, 0.924);
+    border-color: rgba(27, 31, 35, .1);
+    color: rgba(255, 255, 255, .8);
+    cursor: default;
+}
+
+.button-3:active {
+    background-color: rgba(29, 69, 4, 0.924);
+    box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
+
+.thumbnail {
+    max-height: 100 px;
+    max-width: 100 px;
+}
+
+img {
+    border-radius: 8 px;
+    height: 100%;
+    width: 100%;
+}
+
+.subcategories {
+    box-shadow: 0 4px 8px 0 rgba(15, 227, 235, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
+    text-align: center;
+    margin: 20px;
+}
+
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background-color: rgb(153, 139, 118);
+}
+
+.dropdown {
+    float: right;
+}
+
+.edit {
+    border: #fff;
+}

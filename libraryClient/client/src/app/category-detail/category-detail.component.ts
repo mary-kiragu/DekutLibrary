@@ -2,6 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoriesService } from '../categories.service';
+interface Category {
+  id: number;
+  name: string;
+  parentCategoryId: number;
+  description: string;
+}
 
 @Component({
   selector: 'app-category-detail',
@@ -21,7 +27,7 @@ export class CategoryDetailComponent implements OnInit {
     name: [],
     description: [],
     parentCategoryId: [],
-    rankInParent: [],
+
   });
   category: any;
   user: any;
@@ -32,6 +38,7 @@ export class CategoryDetailComponent implements OnInit {
   loadingVideos = false;
   sortableSubCats: any;
   selectedCategoryId!: number;
+  selectedCategory: Category | null = null
 
   bookCategory!: number;
 
@@ -118,7 +125,7 @@ export class CategoryDetailComponent implements OnInit {
       parentCategoryId: [category.parentCategoryId],
     });
 
-    document.getElementById('openCreateSectionModal')?.click();
+    document.getElementById('editModal')?.click();
   }
 
   toCategoryDetail(id: number) {
@@ -140,22 +147,42 @@ export class CategoryDetailComponent implements OnInit {
     this.selectedCategoryId = id;
 
   }
-
-  deleteCategory(id: any): void {
-
-    this.categoriesService.deleteOne(id).subscribe(
-
+  updateCategory(): void {
+    const categoryDetails = this.createcategoryFromForm();
+    categoryDetails.id=this.selectedCategory?.id;
+    console.log('category details', categoryDetails);
+    this.categoriesService.update(categoryDetails).subscribe(
       (res) => {
-
-        console.log(res);
-
-
-
+        console.log('updated category', res);
+        this.getSubCategories(this.category?.id as number);
       },
       (err) => {
-        console.log(err);
-
+        console.log('category not updated book', err);
       }
     );
+  }
+
+deleteCategory(): any {
+  this.categoriesService.deleteOne(this.selectedCategory?.id as number).subscribe(
+    (res) => {
+      console.log('deleted category', res);
+      this.getSubCategories(this.category.id as number);
+    },
+    (error) => {
+      console.log('category not deleted');
+    }
+  );
+  this.selectedCategory = null;
+}
+
+
+  setSelectedCategory(category: Category){
+    this.selectedCategory = category;
+    this.categoryForm = this.fb.group({
+      id: [category.id],
+      name: [category.name],
+      description: [category.description],
+      parentCategoryId: [category.parentCategoryId],
+    });
   }
 }

@@ -48,4 +48,8 @@ export class BookService {
 
     return this.httpClient.get(this.apiServerUrl + "/api/books/filter-by-category/" + categoryId);
   }
+  searchBooks(text?: string): Observable<any> {
+    return this.httpClient.get(this.apiServerUrl + '/api/books/search?text='  + text);
+  }
+
 }

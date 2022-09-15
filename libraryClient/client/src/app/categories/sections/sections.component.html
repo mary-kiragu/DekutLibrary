@@ -1,6 +1,65 @@
 <div class="container" *ngIf="category">
-    <button data-bs-toggle="modal" data-bs-target="#bookModal" type="button" class="btn btn-upload"> <span><i class="fas fa-plus-circle"></i></span> Upload
-  Book</button>
+
+
+    <div class="row">
+        <div class="col-md-10 mb-3 mt-3">
+            <div class="input-group">
+                <div class="form-outline">
+                    <input type="text" class="form-control form-control-sm" name="searchText" [(ngModel)]="searchText" (keyup)="filter()" placeholder="Search book" aria-label="Categoryname" aria-describedby="button-addon2">
+                </div>
+                <button *ngIf="!isFiltered" class="btn button-3" [ngClass]="{'activate-button':searchText}" (click)="filter()"><span>
+                  <i  class="fas fa-search"></i>
+                </span></button>
+                <button *ngIf="isFiltered" class="btn button-3" [ngClass]="{'activate-button':searchText}" (click)="unfilter()"><span>
+                  <i  class="fas fa-close"></i>
+                </span></button>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <button data-bs-toggle="modal" data-bs-target="#bookModal" type="button" class="btn button-3 mt-3"> <span><i class="fas fa-plus-circle"></i></span> Upload
+      Book</button>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class=" col-md-2 py-1 px-1" *ngFor="let book of booksToRender" [routerLink]="['/book-records',book.id]">
+            <div class="books mb-3 justify-content-center">
+                <img class="img-thumbnail" src="{{book.imageUrl}}" alt="../../../assets/images/write.jpg" />
+
+                <div class="row " id="book-id">
+                    <label class=" " for="title "><strong>Title: </strong> {{book.title}}</label>
+
+                </div>
+                <div class="row " id="book-id">
+                    <label class=""><strong>Author:</strong> {{book.author}}</label>
+
+                </div>
+                <div class="row " id="book-id">
+                    <label><strong>ISBN:</strong> {{book.isbn}}</label>
+
+                </div>
+                <div class="row " id="book-id">
+                    <label><strong>Status:</strong> {{book.status}}</label>
+
+                </div>
+                <div>
+                    <button *ngIf="book.status!=='BORROWED'" type="button" class="btn button-3">
+              Borrow Book
+            </button>
+                    <button disabled *ngIf="book.status=='BORROWED'" type="button" class="btn btn-outline-secondary btn-view">
+              Book Borrowed
+            </button>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
 
 </div>
 
@@ -32,12 +91,23 @@
                         <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
 
                     </div>
+                    <div class=" form-group">
+                        <label for="isbn">ISBN</label>
+                        <input class="form-control" type="text" name="isbn" formControlName="isbn">
+
+                    </div>
+                    <div class=" form-group">
+                        <label for="accessionNumber">Accession number</label>
+                        <input class="form-control" type="text" name="accessionNumber" formControlName="accessionNumber">
+
+                    </div>
+
 
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" (click)="save()">submit</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="save()">submit</button>
             </div>
         </div>
     </div>

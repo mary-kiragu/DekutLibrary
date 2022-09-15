@@ -1,8 +1,8 @@
-<div class="container text-align-center align-item-center">
+<div class="container text-align-center align-item-center" *ngIf="paymentPlan">
     <h2 class="text-align-center">Subscribe</h2>
-    <P>Take your design plan to get access to our library</P>
+    <h4>Take your design plan to get access to our library</h4>
     <div>
-        <button type="button" class="btn btn-outline-primary btn-view" data-bs-toggle="modal" data-bs-target="#planModal">
+        <button type="button" class="btn button-3" data-bs-toggle="modal" data-bs-target="#planModal">
   Add Plan
 </button>
         <div class="row justify-content-center mt-5">
@@ -18,7 +18,7 @@
 
                     <div>
 
-                        <button type="submit " class=" mt-2 button-3" data-bs-toggle="modal" data-bs-target="#subscriptionModal">Pay</button>
+                        <button type="submit " class=" mt-2 button-3" data-bs-toggle="modal" data-bs-target="#subscriptionModal" (click)="setPaymentPlanId(paymentPlan.id)">Pay</button>
 
                     </div>
 
@@ -35,7 +35,7 @@
         </div>
     </div>
     <!-- Modal to create or update  payment plan  -->
-    <div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionModalTitle" aria-hidden="true" *ngIf="paymentPlan">
+    <div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -123,5 +123,3 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal to get phone number -->

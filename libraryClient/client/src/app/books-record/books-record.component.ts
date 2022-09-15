@@ -14,8 +14,10 @@ export class BooksRecordComponent implements OnInit {
   bookId!: number;
   bookForm = this.formBuilder.group({
     title: [],
+    isbn:[],
     author: [],
     imageUrl: [],
+    accessionNumber:[]
   });
   books: any = [];
 
@@ -39,6 +41,8 @@ export class BooksRecordComponent implements OnInit {
     this.bookForm = this.formBuilder.group({
       id: [book.id],
       title: [book.title],
+      isbn: [book.isbn],
+      accessionNumber: [book.accessionNumber],
       author: [book.author],
       imageUrl: [book.imageUrl],
     });
@@ -55,11 +59,14 @@ export class BooksRecordComponent implements OnInit {
     );
   }
 
+
   extractBookDetails(): Book {
     return {
-      author: this.bookForm.get('title')!.value,
-      title: this.bookForm.get('author')!.value,
+      author: this.bookForm.get('author')!.value,
+      isbn:this.bookForm.get('isbn')!.value,
+      title: this.bookForm.get('title')!.value,
       imageUrl: this.bookForm.get('imageUrl')!.value,
+      accessionNumber:this.bookForm.get('accessionNumber')!.value,
     };
   }
 
@@ -130,8 +137,9 @@ export class BooksRecordComponent implements OnInit {
     this.setBook();
   }
 
-  updateBook(): void {
+  updateBook(bookId:number): void {
     const bookDetails = this.extractBookDetails();
+    bookDetails.id=bookId;
     console.log('book details', bookDetails);
     this.bookService.updateBook(bookDetails).subscribe(
       (res) => {
@@ -145,8 +153,9 @@ export class BooksRecordComponent implements OnInit {
   }
 
   save(): void {
-    if (this.book.id) {
-      this.updateBook();
+    console.log(this.bookId)
+     if (this.bookId) {
+      this.updateBook(this.bookId);
     } else {
       this.addNewBook();
     }
