@@ -26,7 +26,7 @@ export class SubscriptionService {
   }
 
   update(paymentPlan:PaymentPlan):Observable<PaymentPlan>{
-    return this.httpClient.put<PaymentPlan>(this.apiServerUrl+"/api/books/update/"+paymentPlan.id,paymentPlan);
+    return this.httpClient.put<PaymentPlan>(this.apiServerUrl+"/api/payment-plan",paymentPlan);
   }
 
   initiatePayment(data:any): Observable<any>{
@@ -34,4 +34,16 @@ export class SubscriptionService {
 
 
   }
+
+  processPayment(data:any): Observable<any>{
+    return this.httpClient.post<any>(this.apiServerUrl + "/api/payment/callback",data);
+
+
+  }
+
+  deleteOne(id: number): Observable<any> {
+    return this.httpClient.delete(this.apiServerUrl + "/api/payment-plan/" + id);
+
+  }
+
 }

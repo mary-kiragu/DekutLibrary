@@ -33,10 +33,10 @@ export class UserService {
   }
 
 
-  register(user:User):Observable<User>{
-    return this.httpClient.post<User>(this.apiServerUrl+"/api/register",user);
+  register(entry:any):Observable<User>{
+    return this.httpClient.post<User>(this.apiServerUrl+"/api/register",entry);
   }
-  authenticate(user:User):Observable<any>{
-    return this.httpClient.post<any>(this.apiServerUrl+"/api/authenticate",user);
+  authenticate(entry:any):Observable<any>{
+    return this.httpClient.post<any>(this.apiServerUrl+"/api/authenticate",entry);
   }
 }

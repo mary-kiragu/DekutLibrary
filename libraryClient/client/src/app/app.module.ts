@@ -21,6 +21,7 @@ import { FooterComponent } from './footer/footer.component';
 import { SectionsComponent } from './categories/sections/sections.component';
 import { AuthorityDirective } from './authority.directive';
 import { FilterPipe } from './filter.pipe';
+import { ProfileComponent } from './login/profile/profile.component';
 
 
 
@@ -40,6 +41,7 @@ import { FilterPipe } from './filter.pipe';
     SectionsComponent,
     AuthorityDirective,
     FilterPipe,
+    ProfileComponent,
 
   ],
   imports: [

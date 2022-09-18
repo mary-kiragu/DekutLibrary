@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { CategoriesService } from '../categories.service';
+import { User } from '../login/user.model';
+import { UserService } from '../user.service';
 
 
 interface Category {
@@ -32,14 +34,17 @@ export class CategoriesComponent implements OnInit {
   })
 
   category!: Category;
+  user!:User;
 
   constructor(
     private categoriesService:CategoriesService,
+    private userService:UserService,
     protected fb: FormBuilder,
   ) { }
 
   ngOnInit(): void {
     this.getAll();
+    this.getCurrentUser();
 
   }
 
@@ -51,6 +56,7 @@ export class CategoriesComponent implements OnInit {
       this.categoriesFromDB=res;
       console.log("yeeey",this.categoriesFromDB);
       this.categoriesToRender = this.categoriesFromDB
+      // window.location.reload()
         },
         (err) => {
           console.log("no category found")
@@ -66,6 +72,18 @@ reset(): void {
 
 cancel(): void {
   document.getElementById("closeCreateCategoryModal") ?.click();
+}
+
+getCurrentUser(): void {
+  // this.user = window.localStorage.getItem('user');
+  // this.user = JSON.parse(this.user);
+  this.userService.getProfile().subscribe(
+    userProfile => {
+       this.user = userProfile;
+      console.log("user profs",this.user);
+
+    });
+
 }
 
 

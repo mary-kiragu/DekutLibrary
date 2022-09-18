@@ -9,6 +9,7 @@ import { RegisterComponent } from './register/register.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { SectionsComponent } from './categories/sections/sections.component';
+import { ProfileComponent } from './login/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
   {
     path: '',
     component: LoginComponent,
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
   },
   {
     path: 'register',

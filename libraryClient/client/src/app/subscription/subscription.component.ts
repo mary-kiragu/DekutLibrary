@@ -3,6 +3,15 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { SubscriptionService } from '../subscription.service';
 import { PaymentPlan, PaymentDuration , duration2LabelMapping} from './paymentPlanModel';
+import { UserService } from '../user.service';
+
+interface Plan {
+  id?:number;
+  name?:string;
+  paymentAmount?:number;
+  paymentDuration?:PaymentDuration;
+  description :[];
+}
 
 
 @Component({
@@ -13,16 +22,7 @@ import { PaymentPlan, PaymentDuration , duration2LabelMapping} from './paymentPl
 export class SubscriptionComponent implements OnInit {
 
 
-  constructor(private subscriptionService:SubscriptionService,
-    protected fb: FormBuilder,private route:ActivatedRoute) { }
 
-  ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (id) {
-      this.getOne(id);
-    }
-    this.getAll();
-  }
 
 
   public duration2LabelMapping = duration2LabelMapping;
@@ -33,9 +33,12 @@ export class SubscriptionComponent implements OnInit {
   paymentRequest:any;
   //paymentPlan!:PaymentPlan;
 
+  selectedPlan: Plan | null = null
+
   paymentRequestForm=this.fb.group({
     paymentPlan:[''],
-    phoneNumber:['']
+    phoneNumber:[''],
+    userId:['']
   })
 
   paymentPlanForm = this.fb.group({
@@ -47,9 +50,41 @@ export class SubscriptionComponent implements OnInit {
 
 
   })
+
+  callback={
+    merchantRequestId:'',
+    checkOutRequestId:'',
+    resultCode:'',
+    resultDescription:''
+
+  }
   paymentPlan: PaymentPlan = {} as PaymentPlan;
   paymentPlans: any = [];
+  user:any;
 
+  constructor(
+    private subscriptionService:SubscriptionService,
+    private userService:UserService,
+    protected fb: FormBuilder,private route:ActivatedRoute) { }
+
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (id) {
+      this.getOne(id);
+    }
+    this.getAll();
+    this.getCurrentUser();
+  }
+
+  getCurrentUser(): void {
+    this.userService.getProfile().subscribe(
+      userProfile => {
+         this.user = userProfile;
+        console.log("user profs",this.user);
+
+      });
+
+  }
 
 
   getAll(): void {
@@ -132,6 +167,7 @@ export class SubscriptionComponent implements OnInit {
       (res)=>{
 
         console.log("paymentrequest",res);
+        this.processPayment()
 
       },
       (err)=>{
@@ -139,16 +175,53 @@ export class SubscriptionComponent implements OnInit {
 
       }
     )
+  }
 
+
+
+  processPayment():any{
+    this.subscriptionService.processPayment(this.callback).subscribe(
+      (res)=>{
+
+        console.log("callback",res);
+
+      },
+      (err)=>{
+        console.log("callback error",err);
+
+      }
+    );
 
   }
+
   extractPaymentRequestDetails(): any {
     return{
       phoneNumber:this.paymentRequestForm.get('phoneNumber')!.value,
       paymentPlan:this.paymentPlan.id,
+      userId:this.user.id
 
     }
 
+  }
+
+  setSelectedCategory(plan: Plan){
+    this.selectedPlan = plan;
+  }
+
+  deletePlan(): any {
+    this.subscriptionService.deleteOne(this.paymentPlan?.id as number ).subscribe(
+      (res) => {
+        console.log('deleted plan', res);
+        this.getAll();
+      },
+      (error) => {
+        console.log('plan not deleted');
+      }
+    );
+
+  }
+  removeSelectedPlan(){
+    this.selectedPlan = null;
   }
 
 

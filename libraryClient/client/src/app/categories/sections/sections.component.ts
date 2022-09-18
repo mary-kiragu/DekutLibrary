@@ -3,7 +3,9 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookService } from 'src/app/book.service';
 import { Book } from 'src/app/books/book.model';
+import { User } from 'src/app/login/user.model';
 import { CategoriesService } from '../../categories.service';
+import { UserService } from '../../user.service';
 
 
 
@@ -35,9 +37,11 @@ export class SectionsComponent implements OnInit {
   booksToRender: Book[]=[];
   booksFromDB: Book[] = [];
   isFiltered = false;
+  user!:any;
   constructor(
     private bookService: BookService,
     private categoriesService:CategoriesService,
+    private userService:UserService,
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute) { }
@@ -46,8 +50,20 @@ export class SectionsComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.getCategory(id);
+      this.getCurrentUser();
     }
   }
+
+  getCurrentUser(): void {
+    this.userService.getProfile().subscribe(
+      userProfile => {
+         this.user = userProfile;
+        console.log("user profs",this.user);
+
+      });
+
+  }
+
 
   getCategory(id: number) {
 

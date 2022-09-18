@@ -16,7 +16,9 @@
         </button> -->
             </div>
         </div>
-        <div class="col-md-2 mt-3 " style="margin-right: 5px ">
+        <div class="col-md-2 mt-3 " style="margin-right: 5px " *ngIf="user.authority ==='ADMIN'">
+            {{user.authority}}
+
             <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#createTopicModal" class="btn-category-add float-end button-3"><i
       class="fa fa-plus"></i> Add Category</button></div>
     </div>
@@ -24,7 +26,7 @@
     <div class="row mb-3">
         <div class=" col-md-2 categories" *ngFor="let category of categoriesToRender">
             <div class="books">
-                <img class="img-thumbnail" src="../../assets/images/login.jpg" alt="./assets/images/billionare.jpeg" [routerLink]="['/categories/',category.id]" />
+                <img class="img-thumbnail" src="../../assets/images/pexels-janko-ferlic-590493.jpg" alt="./assets/images/billionare.jpeg" [routerLink]="['/categories/',category.id]" />
 
                 <div class="row ">
                     <label class=" " for="name"><strong>Name:</strong> {{category.name}}</label>
@@ -41,9 +43,9 @@
 
 
 
-                <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
+                <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)" *ngIf="user.authority ==='ADMIN'"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
 
-                <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)"><i class="fas fa-edit" style="font-size:24px"></i></button>
+                <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)" *ngIf="user.authority ==='ADMIN'"><i class="fas fa-edit" style="font-size:24px"></i></button>
 
 
 

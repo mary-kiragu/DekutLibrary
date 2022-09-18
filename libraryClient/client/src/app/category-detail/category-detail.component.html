@@ -1,7 +1,7 @@
 <div class="container" *ngIf="category">
     <div class="top-sticky-section ">
 
-        <div class="row mx-0 hide-sm">
+        <div class="row mx-0 ">
             <div class="col-md-8" style="display:flex;align-items:center">
                 <!-- <span (click)="toLanding()" class="nav-menu-item">Home</span> -->
                 <span *ngIf="category?.parents && category?.parents.length">
@@ -11,12 +11,18 @@
                 </span>
                 <span class="right-arrow text-muted"></span>
                 <span class="nav-menu-item disable-item"><h1>{{category?.name}}</h1></span>
+
             </div>
 
-            <div class="col-md-4 text-end">
+
+            <div class="col-md-4 text-end" *ngIf="user.authority ==='ADMIN'">
+
+
 
                 <button *ngIf="category?.categoryType == 'CATEGORY'" class="btn button-3" data-bs-toggle="modal" data-bs-target="#createSectionModal" id="openCreateSectionModal"> <span><i class="fas fa-plus-circle"></i></span>&nbsp; Create
-                    Sub-category</button>
+                  Sub-category</button>
+
+
 
             </div>
 
@@ -34,7 +40,7 @@
                 <div class="col-4 col-md-2 px-0 mb-2 subcategories" *ngFor="let category of subCategories">
                     <div class="card category-item" *ngIf="!loadingCats && !loadingSubCats">
                         <div class="thumbnail" (click)="toCategoryDetail(category.id)">
-                            <img src="../../assets/images/write.jpg" alt="book thumbnail">
+                            <img src="../../assets/images/pexels-wallace-chuck-3728085.jpg" alt="book thumbnail">
                         </div>
 
                         <div class="flex-div">
@@ -44,9 +50,9 @@
                             <p class="vid-title">
                                 {{category.name.length > 85 ? (category.name | slice:0:85) + '...' : category.description}}
                             </p>
-                            <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
+                            <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)" *ngIf="user.authority ==='ADMIN'"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
 
-                            <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)"><i class="fas fa-edit" style="font-size:24px"></i></button>
+                            <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)" *ngIf="user.authority ==='ADMIN'"><i class="fas fa-edit" style="font-size:24px"></i></button>
                         </div>
                     </div>
                 </div>

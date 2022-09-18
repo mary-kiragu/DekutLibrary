@@ -1,0 +1,23 @@
+.profile {
+    background-color: rgb(252, 252, 252);
+    height: 500px;
+}
+
+.texty {
+    box-shadow: 0 4px 8px 0 rgba(15, 227, 235, 0.2), 0 6px 20px 0 rgba(70, 46, 46, 0.19);
+    border: #d7e6df;
+    border-radius: 20px;
+    object-fit: cover;
+    margin: 20px;
+    align-items: flex-start;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+img {
+    border-radius: 8 px;
+    object-fit: cover;
+    height: 500px;
+    width: 100%;
+    background-color: #d7e6df;
+}

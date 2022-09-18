@@ -2,6 +2,32 @@
     box-shadow: 0 4px 8px 0 rgba(15, 227, 235, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 10px;
     text-align: center;
+    width: 400px;
+    height: 450px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 10px;
+}
+
+.register h2 {
+    margin-top: 50px;
+}
+
+.register label {
+    float: left;
+}
+
+img {
+    border-radius: 8 px;
+    object-fit: cover;
+    height: 500px;
+    width: 100%;
+    background-color: #d7e6df;
+}
+
+body {
+    background-color: rgb(116, 109, 109);
 }
 
 .img-thumbnail {
@@ -9,14 +35,13 @@
     background-color: #d7e6df;
 }
 
-img {
-    border-radius: 8 px;
-    object-fit: fill;
+.loginbtn {
+    background-color: rgba(29, 69, 4, 0.924);
+    color: white;
 }
 
-body {
-    background-color: rgb(116, 109, 109);
-}
+
+/* CSS */
 
 .button-3 {
     appearance: none;

@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2" *ngIf="user.authority ==='ADMIN'">
             <button data-bs-toggle="modal" data-bs-target="#bookModal" type="button" class="btn button-3 mt-3"> <span><i class="fas fa-plus-circle"></i></span> Upload
       Book</button>
         </div>

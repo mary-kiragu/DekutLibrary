@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from './user.model';
+import { User, AccountStatus } from './user.model';
 import { UserService } from '../user.service';
 import { TokenService } from '../token.service';
 import { Book } from '../books/book.model';
 import { ActivatedRoute, Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-login',
@@ -12,47 +11,68 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  ngOnInit(): void {}
   book = {
     id: '',
     title: '',
   };
-  user = {
+  entry = {
     email: '',
     password: '',
   };
+  user: any;
   loggedInUser?: any;
 
-  loginFailure=""
+  loginFailure = '';
 
   constructor(
     private userService: UserService,
     private tokenService: TokenService,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) {}
+  ngOnInit(): void {
+
+  }
+
+
 
   login(): void {
-    this.userService.authenticate(this.user).subscribe(
+    console.log('about');
+    this.userService.authenticate(this.entry).subscribe(
       (res) => {
-        console.log('loged in user', res);
+        console.log('loged in user');
+        console.log(res);
+        // console.log(res.email)
         this.tokenService.saveToken(res.bearerToken);
-        this.toLanding();
 
+        this.userService.getProfile().subscribe((userProfile) => {
+
+          localStorage.setItem("user",JSON.stringify(userProfile))
+
+          if (userProfile.authority === 'SUBSCRIBER') {
+            this.toPlan();
+          }
+        });
+
+        this.toLanding();
       },
       (err) => {
         console.log(err);
 
-        this.loginFailure="Login failed! wrong username or password try again"
-        setTimeout(()=>{
-          this.loginFailure=""
-
-        },3000)
+        this.loginFailure =
+          'Login failed! wrong username or password try again';
+        setTimeout(() => {
+          this.loginFailure = '';
+        }, 3000);
       }
     );
   }
 
   toLanding() {
     this.router.navigate(['/categories']);
+  }
+
+  toPlan() {
+    this.router.navigate(['/subscribe']);
   }
 }

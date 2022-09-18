@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoriesService } from '../categories.service';
+import { User } from '../login/user.model';
+import { UserService } from '../user.service';
 interface Category {
   id: number;
   name: string;
@@ -15,12 +17,6 @@ interface Category {
   styleUrls: ['./category-detail.component.css'],
 })
 export class CategoryDetailComponent implements OnInit {
-  constructor(
-    private categoriesService: CategoriesService,
-    private route: ActivatedRoute,
-    private router: Router,
-    protected fb: FormBuilder
-  ) {}
 
   categoryForm = this.fb.group({
     id: [],
@@ -30,7 +26,7 @@ export class CategoryDetailComponent implements OnInit {
 
   });
   category: any;
-  user: any;
+
 
   subCategories!: any;
   loadingSubCats = false;
@@ -42,6 +38,17 @@ export class CategoryDetailComponent implements OnInit {
 
   bookCategory!: number;
 
+  user!:User;
+
+  constructor(
+    private categoriesService: CategoriesService,
+    private userService:UserService,
+    private route: ActivatedRoute,
+    private router: Router,
+    protected fb: FormBuilder
+  ) {}
+
+
   ngOnInit(): void {
     // window.scroll(0, 0);
     // this.getCurrentUser();
@@ -52,12 +59,17 @@ export class CategoryDetailComponent implements OnInit {
     // this.route.params.subscribe((params) => {
     // this.getCategory(params['id']);
     // });
+    this.getCurrentUser();
   }
-  // getCurrentUser(): void {
-  //   if (window.localStorage.getItem('nat-role') === 'SUPPORT') {
-  //     // this.isAdmin = true;
-  //   }
-  // }
+  getCurrentUser(): void {
+    this.userService.getProfile().subscribe(
+      userProfile => {
+         this.user = userProfile;
+        console.log("user profs",this.user);
+
+      });
+
+  }
 
   getCategory(id: number) {
     this.loadingCats = true;
@@ -185,4 +197,7 @@ deleteCategory(): any {
       parentCategoryId: [category.parentCategoryId],
     });
   }
+
+
+
 }
