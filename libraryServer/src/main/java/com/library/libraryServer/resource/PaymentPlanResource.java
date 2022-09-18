@@ -30,6 +30,7 @@ public class PaymentPlanResource {
 
     @PutMapping(path="/payment-plan")
     public PaymentPlanDTO update(@RequestBody PaymentPlanDTO paymentPlanDTO) {
+        log.debug("Request to update plan");
 
         return paymentPlanService.update(paymentPlanDTO);
     }
@@ -42,7 +43,6 @@ public class PaymentPlanResource {
 
     @DeleteMapping("/payment-plan/{id}")
     public void deleteOne(@PathVariable Integer id) {
-
         paymentPlanService.deleteOne(id);
     }
 }

@@ -27,6 +27,7 @@ public class BookMapper {
         bookDTO.setReturnedOn(book.getReturnedOn());
         bookDTO.setFine(book.getFine());
         bookDTO.setAccessionNumber(book.getAccessionNumber());
+        bookDTO.setDueDate(book.getDueDate());
 
 
         return bookDTO;

@@ -4,6 +4,7 @@ import com.library.libraryServer.domain.enums.*;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.*;
 
 @Data
 public class UserDTO {
@@ -18,4 +19,15 @@ public class UserDTO {
     private String phoneNumber;
 
     private Authority authority;
+
+    private Integer plan;
+
+    @Enumerated(EnumType.STRING)
+    private AccountStatus accountStatus;
+
+    private Long account;
+
+    private LocalDate lastBillingDate;
+
+    private LocalDate nextBillingDate;
 }

@@ -3,6 +3,7 @@ package com.library.libraryServer.services;
 import com.library.libraryServer.domain.*;
 import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.domain.enums.*;
+import com.library.libraryServer.exceptions.*;
 import com.library.libraryServer.repository.*;
 import com.library.libraryServer.security.jwt.*;
 import lombok.extern.slf4j.*;
@@ -33,6 +34,10 @@ public class UserService {
         log.info("Found user : {}", user);
         return user;
     }
+    public User save(User user) {
+        log.info("Request to save user : {}", user);
+        return userRepository.save(user);
+    }
 
     public User create(String email, String name, String password) {
         log.debug("Request to register user with email : {}, and name : {}", email, name);
@@ -43,6 +48,7 @@ public class UserService {
 
         user.setAuthority(Authority.SUBSCRIBER);
         user.setPassword(this.passwordEncoder.encode(password));
+        user.setAccountStatus(AccountStatus.UNPAID);
 
         user = userRepository.save(user);
         return user;
@@ -106,6 +112,38 @@ public class UserService {
         log.info("Request to update user with id : {}", user.getEmail());
 
         return userRepository.save(user);
+    }
+
+    public void updateUser(UserDTO userDTO) throws UserNotFoundException {
+        log.debug("Request to update user : {}", userDTO);
+
+        //get the user
+        Optional<User> userOptional = this.userRepository.findById(userDTO.getId());
+
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            //Update the relevant fields
+            user.setAuthority(userDTO.getAuthority());
+            user.setName(userDTO.getName());
+            user.setAccountStatus(userDTO.getAccountStatus());
+            user.setPhoneNumber(userDTO.getPhoneNumber());
+            user.setPassword(userDTO.getPassword());
+            user.setLastBillingDate(userDTO.getLastBillingDate());
+            user.setNextBillingDate(userDTO.getNextBillingDate());
+            user.setAccount(userDTO.getAccount());
+            user.setEmail(userDTO.getEmail());
+            user.setId(userDTO.getId());
+
+
+            //Update the user info
+            save(user);
+
+        } else {
+            throw new UserNotFoundException("No user found with id " + userDTO.getId());
+        }
+
+
     }
 
 

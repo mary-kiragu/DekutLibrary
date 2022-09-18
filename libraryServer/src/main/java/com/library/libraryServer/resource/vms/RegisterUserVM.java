@@ -8,6 +8,8 @@ import javax.validation.constraints.Email;
     public class RegisterUserVM {
         private String name;
 
+        private String phoneNumber;
+
         @Email
         private String email;
         private String password;

@@ -21,10 +21,13 @@ public class BookService {
     private final BookMapper bookMapper;
     private final UserRepository userRepository;
 
-    public BookService(BookRepository bookRepository, BookMapper bookMapper, UserRepository userRepository) {
+    private final UserService userService;
+
+    public BookService(BookRepository bookRepository, BookMapper bookMapper, UserRepository userRepository, UserService userService) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public List<Book> getAllBooks() {
@@ -45,6 +48,17 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    public List<Book> findBookByBorrowedBy(String borrowedBy){
+        User user = userService.getCurrentLoggedInUser();
+        borrowedBy=user.getEmail();
+        List<Book> books = bookRepository.findByBorrowedBy(borrowedBy);
+        log.info("books borrowed by{}",borrowedBy);
+        return books;
+
+    }
+
+
+
     public Optional<Book> getOneBook(Long id) {
         Optional<Book> bookOptional = bookRepository.findById(id);
 
@@ -63,41 +77,50 @@ public class BookService {
     public Optional<Book> borrowBook(Long id) throws BorrowedBookException {
         Optional<Book> bookOptional = bookRepository.findById(id);
 
-        LocalDate dueDate;
 
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
             book.setStatus(Status.BORROWED);
 
-            User user = new User();
+
 
             if (book.getBorrowedBy() != null) {
                 throw new BorrowedBookException("Book not available for borrowing");
 
             }
+            User user = userService.getCurrentLoggedInUser();
 
-//            if(user.getAuthority().equals(Authority.STUDENT)){
-//
-//                dueDate= LocalDate.parse(book.getBorrowedOn()).plusDays(14);
-//
-//            } else if (user.getAuthority().equals(Authority.STAFF)) {
-//
-//                dueDate= LocalDate.parse(book.getBorrowedBy()).plusDays(21);
-//
-//            }else {
-//
-//                dueDate= LocalDate.parse(book.getBorrowedBy()).plusDays(30);
-//
-//            }
-//
-//            log.info("due date: {}",dueDate);
+            log.info("looged in user",user);
 
+            if (user == null) {
+
+            }
 
             book.setBorrowedOn(String.valueOf(LocalDateTime.now()));
             book.setReturnedOn(null);
             log.info("current user email",SecurityUtils.getCurrentUserLogin());
             book.setBorrowedBy(SecurityUtils.getCurrentUserLogin().orElse(null));
-            //compute fine.
+
+
+            assert user != null;
+            if(user.getAuthority().equals(Authority.STUDENT)){
+                book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(14)));
+
+            } else if (user.getAuthority().equals(Authority.STAFF)) {
+
+                book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(21)));
+
+
+            }else if(user.getAuthority().equals(Authority.SUBSCRIBER)){
+
+                book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(30)));
+
+
+            }
+
+            log.info("due date: {}",book.getDueDate());
+
+//           // compute fine.
 
 
 

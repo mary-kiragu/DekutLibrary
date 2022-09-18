@@ -8,4 +8,6 @@ public class PaymentRequestDTO {
     private Integer paymentPlan;
 
     private Long phoneNumber;
+
+    private Long userId;
 }

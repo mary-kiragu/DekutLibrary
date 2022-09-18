@@ -63,6 +63,12 @@ public class PayForSubscriptionService {
             //throw exception
         }
 
+        User user=userService.findById(paymentRequestDTO.getUserId());
+
+        if(user==null){
+            //throw exception
+        }
+
         DarajaRequestDTO darajaRequestDTO = new DarajaRequestDTO();
 
         Integer paymentAmount = paymentPlanDTO.getPaymentAmount();
@@ -127,6 +133,10 @@ public class PayForSubscriptionService {
         if (darajaACKDTO != null) {
             darajaRequestResponseDTO.setResponse(darajaACKDTO);
         }
+        log.info("About to set payment plan for user");
+        User loggedInUser = userService.getCurrentLoggedInUser();
+        user.setPlan(paymentRequestDTO.getPaymentPlan());
+        userService.update(user);
 
 
         return darajaRequestResponseDTO;
@@ -242,7 +252,7 @@ public class PayForSubscriptionService {
 
         if (payment.getIsSubscriptionFeePaid()) {
             log.info("User paid subscription fee, updating the user....");
-            // user.setIsDamageFeePaid(true);
+
             userService.update(user);
         }
 
@@ -259,9 +269,9 @@ public class PayForSubscriptionService {
         paymentDTO.setTransactionCode((String) customFields.get("MpesaReceiptNumber"));
         paymentDTO.setAmount((Integer) customFields.get("Amount"));
 
-        Profile profile = profileService.getOne(payment.getProfileId());
+        User profile = userService.findById(payment.getUserId());
 
-        paymentDTO.setProfileId(payment.getProfileId());
+        paymentDTO.setProfileId(payment.getUserId());
 
         // check if the payment was successfull
         Integer resultCode = callBackDTO.getBody().getStkCallBack().getResultCode();
@@ -276,7 +286,7 @@ public class PayForSubscriptionService {
                     callBackDTO.getBody().getStkCallBack().getResultDescription(),
                     payment.getEmail(),
                     payment.getPhoneNumber(),
-                    payment.getProfileId()
+                    payment.getUserId()
             );
 
 
@@ -303,7 +313,7 @@ public class PayForSubscriptionService {
             }
         }
 
-        profileService.update(profile);
+        userService.update(profile);
 
         payment.setTransactionCode(paymentDTO.getTransactionCode());
         payment.setStatus(PaymentStatus.COMPLETE);
@@ -336,7 +346,7 @@ public class PayForSubscriptionService {
 
 
     private Payment updatePayment(Payment payment) {
-        log.info("Request to update payment by : {} on profile : {}", payment.getEmail(), payment.getProfileId());
+        log.info("Request to update payment by : {} on profile : {}", payment.getEmail(), payment.getUserId());
 
         Payment updatedPayment = paymentRepository.save(payment);
 

@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.*;
+import java.time.*;
 
 @Data
 @Entity
@@ -26,6 +27,17 @@ public class User implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
+
+    private Integer plan;
+
+    @Enumerated(EnumType.STRING)
+    private AccountStatus accountStatus;
+
+    private Long account;
+
+    private LocalDate lastBillingDate;
+
+    private LocalDate nextBillingDate;
 
     public String getAuthorityName() {
         if (this.authority != null) {

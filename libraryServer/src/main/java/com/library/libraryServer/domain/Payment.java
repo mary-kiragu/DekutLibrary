@@ -22,7 +22,8 @@ public class Payment {
 
     private String transactionCode;
 
-    private Long profileId;
+    private Long userId;
+
 
     private String merchantRequestId;
 
@@ -40,7 +41,7 @@ public class Payment {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.transactionCode = transactionCode;
-        this.profileId = profileId;
+        this.userId = profileId;
         this.merchantRequestId = merchantRequestId;
         this.status = PaymentStatus.PENDING;
     }

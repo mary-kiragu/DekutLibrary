@@ -63,5 +63,7 @@ public class Book implements Serializable {
 
     private Integer fine=0;
 
+    private  String dueDate;
+
 
 }

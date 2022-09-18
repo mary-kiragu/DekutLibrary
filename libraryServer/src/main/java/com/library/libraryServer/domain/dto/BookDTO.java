@@ -31,4 +31,6 @@ public class BookDTO {
     private Integer categoryId;
 
     private Integer fine;
+
+    private  String dueDate;
 }
