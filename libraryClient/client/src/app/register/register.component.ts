@@ -55,7 +55,7 @@ export class RegisterComponent implements OnInit {
     this.userService.register(this.entry).subscribe(
       (res) => {
         console.log(' user registered', res);
-        this.router.navigate(['/categories']);
+        this.router.navigate(['/']);
       },
       (err) => {
         console.log('User not registered in');

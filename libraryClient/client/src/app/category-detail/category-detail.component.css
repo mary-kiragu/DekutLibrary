@@ -80,3 +80,7 @@ body {
 .edit {
     border: #fff;
 }
+
+.cats {
+    float: right;
+}

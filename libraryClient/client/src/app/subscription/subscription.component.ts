@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SubscriptionService } from '../subscription.service';
 import { PaymentPlan, PaymentDuration , duration2LabelMapping} from './paymentPlanModel';
 import { UserService } from '../user.service';
+import { AccountStatus } from '../login/user.model';
 
 interface Plan {
   id?:number;
@@ -62,10 +63,14 @@ export class SubscriptionComponent implements OnInit {
   paymentPlans: any = [];
   user:any;
 
+  isProcessing=false;
+
   constructor(
     private subscriptionService:SubscriptionService,
     private userService:UserService,
-    protected fb: FormBuilder,private route:ActivatedRoute) { }
+    protected fb: FormBuilder,private route:ActivatedRoute,
+    private router: Router
+    ) { }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -167,7 +172,18 @@ export class SubscriptionComponent implements OnInit {
       (res)=>{
 
         console.log("paymentrequest",res);
-        this.processPayment()
+
+        this.wait(25000);
+        console.log("wait")
+        this.user=this.getCurrentUser();
+
+        if(this.user.accountStatus==="PAID"){
+          this.router.navigate(['/categories']);
+        }
+
+
+
+
 
       },
       (err)=>{
@@ -176,6 +192,14 @@ export class SubscriptionComponent implements OnInit {
       }
     )
   }
+
+  wait(ms:number):any{
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+   }
+ }
 
 
 

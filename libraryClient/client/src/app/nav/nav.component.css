@@ -22,3 +22,11 @@
     text-decoration: black;
     color: white;
 }
+
+.button1 {
+    background-color: rgba(29, 69, 4, 0.924);
+    border: 0px;
+    color: aliceblue;
+    margin-top: 10px;
+    box-shadow: inset;
+}

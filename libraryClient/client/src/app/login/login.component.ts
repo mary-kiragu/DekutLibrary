@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   loggedInUser?: any;
 
   loginFailure = '';
+  isLoggedIn=false;
 
   constructor(
     private userService: UserService,
@@ -49,10 +50,11 @@ export class LoginComponent implements OnInit {
 
           localStorage.setItem("user",JSON.stringify(userProfile))
 
-          if (userProfile.authority === 'SUBSCRIBER') {
+          if (userProfile.authority === 'SUBSCRIBER' && userProfile.accountStatus==="UNPAID" ) {
             this.toPlan();
           }
         });
+        this.isLoggedIn=true;
 
         this.toLanding();
       },

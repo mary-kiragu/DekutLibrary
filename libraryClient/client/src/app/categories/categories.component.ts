@@ -10,6 +10,7 @@ interface Category {
   name: string;
   parentCategoryId: number;
   description: string;
+  categoryType:string;
 }
 
 @Component({
