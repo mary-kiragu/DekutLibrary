@@ -33,7 +33,7 @@ public class Payment {
     private Boolean isSubscriptionFeePaid;
 
 
-    private Integer amount;
+    private double amount;
 
     private LocalDateTime initiatedOn;
 

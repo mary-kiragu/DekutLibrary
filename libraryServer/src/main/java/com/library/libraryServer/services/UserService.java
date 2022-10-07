@@ -1,15 +1,22 @@
 package com.library.libraryServer.services;
 
+import com.library.libraryServer.config.*;
 import com.library.libraryServer.domain.*;
 import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.domain.enums.*;
 import com.library.libraryServer.exceptions.*;
+import com.library.libraryServer.mapper.*;
 import com.library.libraryServer.repository.*;
 import com.library.libraryServer.security.jwt.*;
+import com.library.libraryServer.util.*;
 import lombok.extern.slf4j.*;
+import org.springframework.scheduling.annotation.*;
 import org.springframework.security.crypto.password.*;
 import org.springframework.stereotype.*;
 
+import javax.management.*;
+import java.time.*;
+import java.time.temporal.*;
 import java.util.*;
 
 @Service
@@ -19,12 +26,21 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ProfileService profileService;
 
+    private final MailService mailService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ProfileService profileService) {
+    private final UserMapper userMapper;
+
+    private final MpesaConfiguration mpesaConfiguration;
+
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ProfileService profileService, MailService mailService, UserMapper userMapper, MpesaConfiguration mpesaConfiguration) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
 
         this.profileService = profileService;
+        this.mailService = mailService;
+        this.userMapper = userMapper;
+        this.mpesaConfiguration = mpesaConfiguration;
     }
 
     public Optional<User> findByEmail(String email) {
@@ -145,6 +161,40 @@ public class UserService {
 
 
     }
+
+    @Scheduled(fixedRate = 1000)
+    public void scheduleFixedRateTask() {
+        System.out.println(
+                "Fixed rate task - " + System.currentTimeMillis() / 1000);
+    }
+
+    @Scheduled(cron = "0 15 1 * * *")
+    public void sendPaymentReminder() {
+
+        log.info("Sending payment reminders");
+
+
+        LocalDate now = LocalDate.now();
+
+        short paymentReminder = mpesaConfiguration.getPaymentReminder();
+        User user =getCurrentLoggedInUser();
+
+            if (user.getNextBillingDate() != null) {
+                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(user.getNextBillingDate()), now));
+                if (daysBetween == paymentReminder) {
+                    UserDTO userDTO = userMapper.toDTO(user);
+                    // send payment reminder
+                    String body = TemplateUtil.generatePaymentReminder(paymentReminder, userDTO);
+                    NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(userDTO.getEmail(),
+                            "Payment Reminder", body, true, false);
+
+                    mailService.sendEmail(notifyEmailDTO);
+                }
+            } else {
+
+            }
+        }
+
 
 
 }

@@ -1,18 +1,19 @@
 package com.library.libraryServer.resource;
 
 import com.library.libraryServer.domain.*;
+import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.exceptions.*;
 import com.library.libraryServer.resource.vms.*;
 import com.library.libraryServer.security.jwt.*;
 import com.library.libraryServer.services.*;
 import com.library.libraryServer.services.util.*;
 import lombok.extern.slf4j.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.*;
 import javax.validation.*;
 import java.util.*;
 
@@ -24,10 +25,13 @@ public class AccountResource {
     private final LibraryAuthenticationManager libraryAuthenticationManager;
     private final UserService userService;
 
-    public AccountResource(TokenProvider tokenProvider, LibraryAuthenticationManager libraryAuthenticationManager,UserService userService) {
+    private final MailService mailService;
+
+    public AccountResource(TokenProvider tokenProvider, LibraryAuthenticationManager libraryAuthenticationManager, UserService userService, MailService mailService) {
         this.tokenProvider = tokenProvider;
         this.libraryAuthenticationManager =libraryAuthenticationManager;
         this.userService=userService;
+        this.mailService = mailService;
     }
 
     @PostMapping("/register")
@@ -47,6 +51,15 @@ public class AccountResource {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RegisterResponseVM(500, "Error creating user"));
         }
+    }
+
+
+    @PostMapping(path="/notify")
+    public  void notify(@RequestBody  NotifyEmailDTO notifyEmailDTO){
+       userService.sendPaymentReminder();
+
+//        return new ResponseEntity<>(notification,HttpStatus.OK);
+
     }
 
 

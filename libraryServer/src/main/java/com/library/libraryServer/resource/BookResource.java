@@ -95,8 +95,10 @@ public class BookResource {
         return bookDTOS;
     }
 
-    @GetMapping("/filter-by-user{borrowedBy}")
-    public List<BookDTO> filterByParentCategory(@PathVariable String borrowedBy, @RequestParam(required = false) Boolean adminView) {
+    @GetMapping("/filter-by-user/{borrowedBy}")
+    public List<BookDTO> filterByParentCategory(@PathVariable String borrowedBy) {
+
+        log.debug("about to get books borrowed by user {}",borrowedBy);
 
         List<BookDTO>bookDTOS = bookService.filterByUser(borrowedBy);
 

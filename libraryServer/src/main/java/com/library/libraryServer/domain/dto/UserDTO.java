@@ -27,7 +27,7 @@ public class UserDTO {
 
     private Long account;
 
-    private LocalDate lastBillingDate;
+    private String lastBillingDate;
 
-    private LocalDate nextBillingDate;
+    private String nextBillingDate;
 }

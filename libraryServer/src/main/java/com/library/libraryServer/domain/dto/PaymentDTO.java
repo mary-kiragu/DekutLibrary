@@ -15,6 +15,6 @@ public class PaymentDTO {
 
     private Long profileId;
 
-    private Integer amount;
+    private double amount;
 
 }

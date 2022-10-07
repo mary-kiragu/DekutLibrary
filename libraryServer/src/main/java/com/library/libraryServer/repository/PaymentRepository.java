@@ -12,6 +12,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     Optional<Payment> findOneByMerchantRequestId(String merchantRequestId);
 
-    Page<Payment> findAllByEmail(String email, Pageable pageable);
+
 
 }

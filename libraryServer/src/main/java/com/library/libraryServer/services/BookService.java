@@ -1,5 +1,6 @@
 package com.library.libraryServer.services;
 
+import com.library.libraryServer.config.*;
 import com.library.libraryServer.domain.*;
 import com.library.libraryServer.domain.dto.*;
 import com.library.libraryServer.domain.enums.*;
@@ -7,10 +8,13 @@ import com.library.libraryServer.exceptions.*;
 import com.library.libraryServer.mapper.*;
 import com.library.libraryServer.repository.*;
 import com.library.libraryServer.security.jwt.*;
+import com.library.libraryServer.util.*;
 import lombok.extern.slf4j.*;
+import org.springframework.scheduling.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.time.*;
+import java.time.temporal.*;
 import java.util.*;
 
 @Service
@@ -23,11 +27,17 @@ public class BookService {
 
     private final UserService userService;
 
-    public BookService(BookRepository bookRepository, BookMapper bookMapper, UserRepository userRepository, UserService userService) {
+    private final MpesaConfiguration mpesaConfiguration;
+
+    private final MailService mailService;
+
+    public BookService(BookRepository bookRepository, BookMapper bookMapper, UserRepository userRepository, UserService userService, MpesaConfiguration mpesaConfiguration, MailService mailService) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.mpesaConfiguration = mpesaConfiguration;
+        this.mailService = mailService;
     }
 
     public List<Book> getAllBooks() {
@@ -224,6 +234,36 @@ public class BookService {
 
         return books;
     }
+
+    @Scheduled(cron = "0 15 1 * * *")
+    public void sendPaymentReminder(Long id) {
+
+        log.info("Sending due date reminders");
+
+
+        LocalDate now = LocalDate.now();
+
+        short paymentReminder = mpesaConfiguration.getPaymentReminder();
+        Optional<Book> bookOptional=getOneBook(id);
+
+        if (bookOptional.isPresent()) {
+            Book book=bookOptional.get();
+
+            long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(book.getDueDate()), now));
+            if (daysBetween == paymentReminder) {
+                BookDTO bookDTO = bookMapper.toDTO(book);
+                // send duedate reminder
+                String body = TemplateUtil.generateReturnBookReminder(paymentReminder, bookDTO);
+                NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(book.getBorrowedBy(),
+                        "Payment Reminder", body, true, false);
+
+                mailService.sendEmail(notifyEmailDTO);
+            }
+        } else {
+
+        }
+    }
+
 }
 
 

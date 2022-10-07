@@ -35,9 +35,9 @@ public class User implements Serializable {
 
     private Long account;
 
-    private LocalDate lastBillingDate;
+    private String lastBillingDate;
 
-    private LocalDate nextBillingDate;
+    private String nextBillingDate;
 
     public String getAuthorityName() {
         if (this.authority != null) {

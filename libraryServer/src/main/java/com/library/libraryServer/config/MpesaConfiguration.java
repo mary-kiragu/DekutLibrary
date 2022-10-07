@@ -25,6 +25,10 @@ public class MpesaConfiguration {
 
     private  String stkUrl;
 
+    private Short paymentReminder;
+
+    private String notifyUrl;
+
     @Override
     public String toString() {
         return String.format("{consumerKey='%s', consumerSecret='%s', grantType='%s', oauthEndpoint='%s'}",

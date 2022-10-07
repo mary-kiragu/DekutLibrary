@@ -137,6 +137,21 @@ public class PayForSubscriptionService {
         User loggedInUser = userService.getCurrentLoggedInUser();
         user.setPlan(paymentRequestDTO.getPaymentPlan());
         userService.update(user);
+        // save payment
+        Payment payment = new Payment(
+                user.getEmail(),
+                paymentRequestDTO.getPhoneNumber() + "",
+                null,
+                paymentRequestDTO.getUserId(),
+                darajaACKDTO.getMerchantRequestId()
+        );
+        payment.setInitiatedOn(LocalDateTime.now());
+
+
+        log.info("About to save payment with merchant id : {}", darajaACKDTO.getMerchantRequestId());
+        savePayment(payment);
+
+
 
 
         return darajaRequestResponseDTO;
@@ -245,16 +260,22 @@ public class PayForSubscriptionService {
 
     public void processPayment(LipaNaDarajaCallBackDTO callBackDTO) {
 
+        log.info("payment dits {}", callBackDTO.getBody().getStkCallBack().getMerchantRequestId());
+
         // find payment by merchant id
         Payment payment = findOneByMerchantRequestId(callBackDTO.getBody().getStkCallBack().getMerchantRequestId());
+
+        log.info("payement{}",payment);
+
         // check if the payment involved paying damage fee
         User user = userService.getCurrentLoggedInUser();
+        
 
-        if (payment.getIsSubscriptionFeePaid()) {
-            log.info("User paid subscription fee, updating the user....");
-
-            userService.update(user);
-        }
+//        if (payment.getIsSubscriptionFeePaid()) {
+//            log.info("User paid subscription fee, updating the user....");
+//
+//            userService.update(user);
+//        }
 
         PaymentDTO paymentDTO = new PaymentDTO();
 
@@ -262,16 +283,23 @@ public class PayForSubscriptionService {
 
         for (CallBackItem callBackItem : callBackDTO.getBody().getStkCallBack().getCallBackMetaData().getItem()) {
             customFields.put(callBackItem.getName(), callBackItem.getValue());
+
         }
+        log.info("customfield {}",customFields);
         paymentDTO.setStatus("SUCCESS");
         paymentDTO.setStatusReason(callBackDTO.getBody().getStkCallBack().getResultDescription());
         paymentDTO.setPhoneNumber((Long) customFields.get("PhoneNumber"));
         paymentDTO.setTransactionCode((String) customFields.get("MpesaReceiptNumber"));
-        paymentDTO.setAmount((Integer) customFields.get("Amount"));
+        paymentDTO.setAmount((Double) customFields.get("Amount"));
+        paymentDTO.setProfileId(payment.getUserId());
+
+        log.info("customfield {}",customFields);
 
         User profile = userService.findById(payment.getUserId());
+        log.info("user id{}",profile);
 
-        paymentDTO.setProfileId(payment.getUserId());
+
+
 
         // check if the payment was successfull
         Integer resultCode = callBackDTO.getBody().getStkCallBack().getResultCode();
@@ -297,19 +325,19 @@ public class PayForSubscriptionService {
         }
 
         profile.setAccountStatus(AccountStatus.PAID);
-        profile.setLastBillingDate(LocalDate.now());
+        profile.setLastBillingDate(String.valueOf(LocalDate.now()));
         // get profile plan
         Integer planId = profile.getPlan();
 
         PaymentPlan paymentPlan = paymentPlanService.getOneEntity(planId);
-        profile.setLastBillingDate(LocalDate.now());
+        profile.setLastBillingDate(String.valueOf(LocalDate.now()));
         if (paymentPlan != null) {
             if (paymentPlan.getPaymentDuration().equals(PayDuration.MONTH)) {
-                profile.setNextBillingDate(LocalDate.now().plusMonths(1));
+                profile.setNextBillingDate(String.valueOf(LocalDate.now().plusMonths(1)));
             } else if (paymentPlan.getPaymentDuration().equals(PayDuration.YEAR)) {
-                profile.setNextBillingDate(LocalDate.now().plusYears(1));
+                profile.setNextBillingDate(String.valueOf(LocalDate.now().plusYears(1)));
             } else if (paymentPlan.getPaymentDuration().equals(PayDuration.HOLIDAY)) {
-                profile.setNextBillingDate(LocalDate.now().plusYears(1));
+                profile.setNextBillingDate(String.valueOf(LocalDate.now().plusYears(1)));
             }
         }
 
@@ -359,6 +387,7 @@ public class PayForSubscriptionService {
         Payment payment = null;
 
         Optional<Payment> optionalPayment = paymentRepository.findOneByMerchantRequestId(merchantRequestId);
+        log.info("optional payment {}",optionalPayment);
 
         if (optionalPayment.isPresent()) {
             payment = optionalPayment.get();
