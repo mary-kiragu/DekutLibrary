@@ -6,6 +6,7 @@ import okhttp3.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.*;
+import org.springframework.scheduling.annotation.*;
 import org.springframework.web.cors.*;
 import org.springframework.web.filter.*;
 import org.springframework.web.servlet.config.annotation.*;
@@ -13,6 +14,8 @@ import org.springframework.web.servlet.config.annotation.*;
 import java.util.*;
 
 @SpringBootApplication
+@EnableScheduling
+
 public class LibraryServerApplication {
 
 	public static void main(String[] args) {

@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.time.*;
+import java.time.format.*;
 import java.time.temporal.*;
 import java.util.*;
 
@@ -48,7 +49,7 @@ public class BookService {
 
     public Book addNewBook(Book book) {
         log.info("add a new book to database");
-        if(book.getId()==null){
+        if (book.getId() == null) {
             book.setStatus(Status.NEW);
             book.setCopies(1L);
 
@@ -58,25 +59,33 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    public List<Book> findBookByBorrowedBy(String borrowedBy){
+    public List<Book> findBookByBorrowedBy(String borrowedBy) {
         User user = userService.getCurrentLoggedInUser();
-        borrowedBy=user.getEmail();
+        borrowedBy = user.getEmail();
         List<Book> books = bookRepository.findByBorrowedBy(borrowedBy);
-        log.info("books borrowed by{}",borrowedBy);
+        log.info("books borrowed by{}", borrowedBy);
         return books;
 
     }
 
 
-
     public Optional<Book> getOneBook(Long id) {
         Optional<Book> bookOptional = bookRepository.findById(id);
 
-        if(bookOptional.isPresent()){
+        if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
-           if(book.getBorrowedBy() !=null) {
-               book.setFine(book.getFine());
-           }
+            if (book.getBorrowedBy() != null) {
+                LocalDate now = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDate bookDueDate = LocalDate.parse(book.getDueDate(), formatter);
+                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(book.getDueDate(), formatter), now));
+
+                if (now.compareTo(bookDueDate) > 0) {
+                    long compute = daysBetween * 10;
+                    book.setFine((int) compute);
+                }
+
+            }
 
         }
         return bookOptional;
@@ -93,14 +102,13 @@ public class BookService {
             book.setStatus(Status.BORROWED);
 
 
-
             if (book.getBorrowedBy() != null) {
                 throw new BorrowedBookException("Book not available for borrowing");
 
             }
             User user = userService.getCurrentLoggedInUser();
 
-            log.info("looged in user",user);
+            log.info("looged in user", user);
 
             if (user == null) {
 
@@ -108,12 +116,12 @@ public class BookService {
 
             book.setBorrowedOn(String.valueOf(LocalDateTime.now()));
             book.setReturnedOn(null);
-            log.info("current user email",SecurityUtils.getCurrentUserLogin());
+            log.info("current user email", SecurityUtils.getCurrentUserLogin());
             book.setBorrowedBy(SecurityUtils.getCurrentUserLogin().orElse(null));
 
 
             assert user != null;
-            if(user.getAuthority().equals(Authority.STUDENT)){
+            if (user.getAuthority().equals(Authority.STUDENT)) {
                 book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(14)));
 
             } else if (user.getAuthority().equals(Authority.STAFF)) {
@@ -121,18 +129,14 @@ public class BookService {
                 book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(21)));
 
 
-            }else if(user.getAuthority().equals(Authority.SUBSCRIBER)){
+            } else if (user.getAuthority().equals(Authority.SUBSCRIBER)) {
 
                 book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(30)));
 
 
             }
 
-            log.info("due date: {}",book.getDueDate());
-
-//           // compute fine.
-
-
+            log.info("due date: {}", book.getDueDate());
 
             book = bookRepository.save(book);
             return Optional.of(book);
@@ -152,6 +156,7 @@ public class BookService {
             if (book.getBorrowedBy() != null) {
                 book.setBorrowedBy(null);
                 book.setBorrowedOn(null);
+                book.setDueDate(null);
                 book.setReturnedOn(String.valueOf(LocalDateTime.now()));
 
             }
@@ -175,10 +180,10 @@ public class BookService {
 
     public Optional<Book> updateBook(Long id, String title, String author, String imageUrl) {
         Optional<Book> bookOptional = bookRepository.findById(id);
-        log.info("Book found with id {}",id);
+        log.info("Book found with id {}", id);
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
-            if (id !=null && id > 0 && !Objects.equals(bookOptional.get(), id)) {
+            if (id != null && id > 0 && !Objects.equals(bookOptional.get(), id)) {
                 book.setId(id);
 
             }
@@ -194,7 +199,7 @@ public class BookService {
                 book.setImageUrl(imageUrl);
 
             }
-            book=bookRepository.save(book);
+            book = bookRepository.save(book);
             log.info("Updated book with id {}:", book.getId());
             return Optional.of(book);
         }
@@ -211,7 +216,7 @@ public class BookService {
             bookDTOList.add(bookMapper.toDTO(book));
         }
 
-        log.info("books {}",bookDTOList);
+        log.info("books {}", bookDTOList);
 
         return bookDTOList;
     }
@@ -222,6 +227,15 @@ public class BookService {
         List<BookDTO> bookDTOList = new ArrayList<>();
 
         for (Book book : bookRepository.findByBorrowedBy(borrowedBy)) {
+            LocalDate now = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDate bookDueDate = LocalDate.parse(book.getDueDate(), formatter);
+            long daysBetween = Math.abs(ChronoUnit.DAYS.between(now, bookDueDate));
+
+            if (now.compareTo(bookDueDate) > 0) {
+                long compute = daysBetween * 10;
+                book.setFine((int) compute);
+            }
             bookDTOList.add(bookMapper.toDTO(book));
         }
 
@@ -235,8 +249,21 @@ public class BookService {
         return books;
     }
 
-    @Scheduled(cron = "0 15 1 * * *")
-    public void sendPaymentReminder(Long id) {
+//    @Scheduled(fixedRate = 1000)
+//    public void scheduleFixedRateTask() {
+//        log.info(
+//                "Fixed rate task - {} " , System.currentTimeMillis() / 1000);
+//    }
+
+
+
+
+//
+//@Scheduled(cron = "0 7 0 * * *")
+
+  @Scheduled(fixedDelay = 250000)
+   public void sendDuedateReminder() {
+        log.info("------------------------- ");
 
         log.info("Sending due date reminders");
 
@@ -244,25 +271,28 @@ public class BookService {
         LocalDate now = LocalDate.now();
 
         short paymentReminder = mpesaConfiguration.getPaymentReminder();
-        Optional<Book> bookOptional=getOneBook(id);
 
-        if (bookOptional.isPresent()) {
-            Book book=bookOptional.get();
+        List<Book> books = getAllBooks();
 
-            long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(book.getDueDate()), now));
-            if (daysBetween == paymentReminder) {
-                BookDTO bookDTO = bookMapper.toDTO(book);
-                // send duedate reminder
-                String body = TemplateUtil.generateReturnBookReminder(paymentReminder, bookDTO);
-                NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(book.getBorrowedBy(),
-                        "Payment Reminder", body, true, false);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    for (Book  book : books)
+    {
+        long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(book.getDueDate(),formatter), now));
+        log.info("Day difference : {}",daysBetween);
+        if (daysBetween == paymentReminder) {
+            BookDTO bookDTO = bookMapper.toDTO(book);
+            log.info("Day difference dto : {}",bookDTO);
+            // send duedate reminder
+            log.info("About to send ");
+            String body = TemplateUtil.generateReturnBookReminder(paymentReminder, bookDTO);
+            NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(book.getBorrowedBy(),
+                    "Book Due date Reminder", body, true, false);
 
-                mailService.sendEmail(notifyEmailDTO);
-            }
-        } else {
-
+            mailService.sendEmail(notifyEmailDTO);
         }
     }
+
+         }
 
 }
 

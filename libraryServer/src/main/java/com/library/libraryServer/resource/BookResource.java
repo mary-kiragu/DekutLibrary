@@ -18,9 +18,10 @@ import java.util.*;
 public class BookResource {
     private final BookService bookService;
 
-    @Autowired
+
     public BookResource(BookService bookService) {
         this.bookService = bookService;
+
     }
 
     @GetMapping
