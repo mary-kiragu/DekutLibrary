@@ -35,6 +35,7 @@ export class NavComponent implements OnInit {
       });
 
   }
+  
    logOut(): void{
     //delete token
     this.tokenService.clearToken();

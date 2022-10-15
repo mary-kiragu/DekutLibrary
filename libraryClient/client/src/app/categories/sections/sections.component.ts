@@ -18,18 +18,36 @@ import { UserService } from '../../user.service';
 export class SectionsComponent implements OnInit {
 
   bookId!: number;
+  book={
+    id:'',
+    isbn: '',
+    title: '',
+    author: '',
+    imageUrl: '',
+    bookImageUrl:'',
+    name:'',
+    type:'',
+    data:'',
+    size:'',
+    categoryId:'',
+    accessionNumber:''}
   bookForm = this.formBuilder.group({
     isbn: [],
     title: [],
     author: [],
     imageUrl: [],
+    bookImageUrl:[],
+    name:[],
+    type:[],
+    data:[],
+    size:[],
     categoryId:[],
     accessionNumber:[]
   });
   books: any = [];
   category: any;
   bookCategory:any;
-  book!: Book;
+ // book!: Book;
   loadingBooks = false;
   searchText: string = '';
   foundBooks:any;
@@ -88,7 +106,7 @@ export class SectionsComponent implements OnInit {
   }
   addNewBook(): any {
     const bookDetails = this.extractBookDetails();
-    console.log(bookDetails);
+    console.log("about to create book",bookDetails);
 
     this.bookService.createBook(bookDetails).subscribe(
       (res) => {
@@ -101,32 +119,73 @@ export class SectionsComponent implements OnInit {
     );
   }
 
+  url: any;
+  msg = "";
 
-  extractBookDetails(): Book {
+  selectFile(event: any) {
+    if (!event.target.files[0] || event.target.files[0].length == 0) {
+      this.msg = 'You must select an image';
+      return;
+    }
+
+    console.log("Selected, ", event.target.files[0])
+    var bookImageName = event.target.files[0].name;
+    var bookImageType = event.target.files[0].type;
+    var bookImageSize = event.target.files[0].size;
+
+
+
+    if (bookImageType.match(/image\/*/) == null) {
+      this.msg = "Only images are supported";
+      return;
+    }
+    var reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+
+    reader.onload = (_event) => {
+      this.msg = "";
+      this.url = reader.result;
+      const bookImageData = this.url.split('base64,')[1];
+      this.book.bookImageUrl = this.url;
+      this.book.name = bookImageName;
+      this.book.type = bookImageType;
+      this.book.data = bookImageData;
+      this.book.size = bookImageSize;
+      console.log("Selected image data, ", bookImageData)
+    }
+  }
+
+
+  extractBookDetails(): any {
     return {
       title: this.bookForm.get('title')!.value,
       isbn: this.bookForm.get('isbn')!.value,
       author: this.bookForm.get('author')!.value,
       imageUrl: this.bookForm.get('imageUrl')!.value,
+      bookImageUrl:this.book.bookImageUrl,
+      name:this.book.name,
+      type:this.book.type,
+      data:this.book.data,
+      size:this.book.size,
       categoryId: this.category.id,
       accessionNumber:this.bookForm.get('accessionNumber')!.value,
     };
 
   }
 
-  setBook(): void {
-    this.book = {
-      id: undefined,
-      title: '',
-      author: '',
-      imageUrl: '',
-    };
-  }
+  // setBook(): void {
+  //   this.book = {
+  //     id: '',
+  //     title: '',
+  //     author: '',
+  //     imageUrl: '',
+  //   };
+  // }
 
   resetBorrowBookForm(): void {
     this.bookForm.reset();
     this.bookId = undefined as any;
-    this.setBook();
+    //this.setBook();
   }
 
   updateBook(): void {

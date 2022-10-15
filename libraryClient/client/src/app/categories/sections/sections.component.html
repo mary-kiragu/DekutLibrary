@@ -25,9 +25,11 @@
     </div>
 
     <div class="row">
+
         <div class=" col-md-2 py-1 px-1" *ngFor="let book of booksToRender" [routerLink]="['/book-records',book.id]">
+
             <div class="books mb-3 justify-content-center">
-                <img class="img-thumbnail" src="{{book.imageUrl}}" alt="../../../assets/images/write.jpg" />
+                <img class="img-thumbnail" src="{{book.imageUrl}}" alt="{{book.bookImageUrl}}" />
 
                 <div class="row " id="book-id">
                     <label class=" " for="title "><strong>Title: </strong> {{book.title}}</label>
@@ -90,6 +92,9 @@
                         <label for="imageUrl">ImageUrl</label>
                         <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
 
+                    </div>
+                    <div>
+                        <input accept="image/*" type="file" name="imageUrl" (change)="selectFile($event)">
                     </div>
                     <div class=" form-group">
                         <label for="isbn">ISBN</label>

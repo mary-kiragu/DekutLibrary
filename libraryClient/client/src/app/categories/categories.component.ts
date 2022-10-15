@@ -49,6 +49,11 @@ export class CategoriesComponent implements OnInit {
 
   }
 
+  notifyforPayment():void{
+
+  }
+
+
 
   getAll():void{
     this.categoriesService.getAll().subscribe(

@@ -17,6 +17,10 @@ export class CategoriesService {
     return this.httpClient.post<any>(this.apiServerUrl + "/api/categories", data);
 
   }
+  notify(data:any): Observable<any> {
+    return this.httpClient.post<any>(this.apiServerUrl + "/api/notify", data);
+
+  }
   update(data: any): Observable<any> {
     return this.httpClient.put(this.apiServerUrl + "/api/categories", data);
   }
