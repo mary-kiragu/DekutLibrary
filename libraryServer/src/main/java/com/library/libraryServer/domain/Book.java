@@ -57,6 +57,16 @@ public class Book implements Serializable {
 
     private String imageUrl;
 
+    private String bookImageUrl;
+
+    private String name;
+
+    private String type;
+
+    private String size;
+    @Lob
+    private byte[] data;
+
     private Long Copies;
 
     private Integer categoryId;

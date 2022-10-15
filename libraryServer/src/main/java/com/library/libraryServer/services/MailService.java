@@ -34,7 +34,7 @@ public class MailService {
         }
 
         Map<String, String> headerMap = new HashMap<>();
-        headerMap.put("apikey", mpesaConfiguration.getNotifyUrl());
+        headerMap.put("apikey", mpesaConfiguration.getNotifyApikey());
 
         try {
             HttpUtil.post(url, body, headerMap, MediaType.get("application/json; charset=utf-8"));

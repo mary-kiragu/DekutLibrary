@@ -59,6 +59,22 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    public Book downloadProfilePicture(Long id) {
+        return bookRepository.findById(id).get();
+    }
+
+//    public Book addNewBook(Book book) {
+//        log.info("add a new book to database");
+//        if (book.getId() == null) {
+//            book.setStatus(Status.NEW);
+//            book.setCopies(1L);
+//
+//        }
+//
+//
+//        return bookRepository.save(book);
+//    }
+
     public List<Book> findBookByBorrowedBy(String borrowedBy) {
         User user = userService.getCurrentLoggedInUser();
         borrowedBy = user.getEmail();
@@ -249,20 +265,10 @@ public class BookService {
         return books;
     }
 
-//    @Scheduled(fixedRate = 1000)
-//    public void scheduleFixedRateTask() {
-//        log.info(
-//                "Fixed rate task - {} " , System.currentTimeMillis() / 1000);
-//    }
 
+    @Scheduled(cron = "0 7 0 * * *")
 
-
-
-//
-//@Scheduled(cron = "0 7 0 * * *")
-
-  @Scheduled(fixedDelay = 250000)
-   public void sendDuedateReminder() {
+    public void sendDuedateReminder() {
         log.info("------------------------- ");
 
         log.info("Sending due date reminders");
@@ -275,24 +281,27 @@ public class BookService {
         List<Book> books = getAllBooks();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    for (Book  book : books)
-    {
-        long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(book.getDueDate(),formatter), now));
-        log.info("Day difference : {}",daysBetween);
-        if (daysBetween == paymentReminder) {
-            BookDTO bookDTO = bookMapper.toDTO(book);
-            log.info("Day difference dto : {}",bookDTO);
-            // send duedate reminder
-            log.info("About to send ");
-            String body = TemplateUtil.generateReturnBookReminder(paymentReminder, bookDTO);
-            NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(book.getBorrowedBy(),
-                    "Book Due date Reminder", body, true, false);
+        for (Book book : books) {
+            if (book.getBorrowedOn() != null) {
+                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(book.getDueDate(), formatter), now));
+                log.info("Day difference : {}", daysBetween);
+                if (daysBetween == paymentReminder) {
+                    BookDTO bookDTO = bookMapper.toDTO(book);
+                    log.info("Day difference dto : {}", bookDTO);
+                    // send duedate reminder
+                    log.info("About to send ");
+                    String body = TemplateUtil.generateReturnBookReminder(paymentReminder, bookDTO);
+                    NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(book.getBorrowedBy(),
+                            "Book Due date Reminder", body, true, false);
 
-            mailService.sendEmail(notifyEmailDTO);
+                    log.info("about to send email:{}", notifyEmailDTO);
+
+                    mailService.sendEmail(notifyEmailDTO);
+                }
+            }
         }
-    }
 
-         }
+    }
 
 }
 

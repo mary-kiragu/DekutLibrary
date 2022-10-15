@@ -9,6 +9,7 @@ import lombok.extern.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.*;
 
 import java.util.*;
 
@@ -33,9 +34,25 @@ public class BookResource {
     @PostMapping
     ResponseEntity<Book> addBook(@RequestBody Book book) {
         log.info("request to add new book");
+        book.setBookImageUrl(ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/api/books/downloadProfilePicture/")
+                .path(String.valueOf(book.getId()))
+                .toUriString());
         Book newBook = bookService.addNewBook(book);
+
         return new ResponseEntity<>(newBook, HttpStatus.OK);
     }
+    @GetMapping("/downloadProfilePicture/{id}")
+    public ResponseEntity<byte[]> downloadProfilePicture(@PathVariable Long id) {
+        Book book = bookService.downloadProfilePicture((id));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + book.getName() + "\"")
+                .body(book.getData());
+    }
+
+
 
     @GetMapping(path = "{id}")
     ResponseEntity<Book> getOneBook(@PathVariable("id") Long id) {
@@ -90,6 +107,15 @@ public class BookResource {
         log.info("Request to filter by category");
 
         List<BookDTO> bookDTOS = bookService.filterByCategoryId(categoryId);
+        for (BookDTO bookDto : bookDTOS){
+            bookDto.setBookImageUrl(ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/api/books/downloadProfilePicture/")
+                    .path(String.valueOf(bookDto.getId()))
+                    .toUriString());
+            System.out.println("Got file"+ bookDto);
+        }
+
         log.info("saved to filter by parent {}",bookDTOS);
 
 

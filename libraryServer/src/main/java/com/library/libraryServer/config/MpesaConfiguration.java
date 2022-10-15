@@ -29,6 +29,8 @@ public class MpesaConfiguration {
 
     private String notifyUrl;
 
+    private String notifyApikey;
+
     @Override
     public String toString() {
         return String.format("{consumerKey='%s', consumerSecret='%s', grantType='%s', oauthEndpoint='%s'}",

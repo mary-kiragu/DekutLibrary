@@ -43,6 +43,27 @@
                          tableName="tbl_book" columnDataType="int(255)"/>
 
     </changeSet>
+    <changeSet id="131020220630" author="root">
+        <modifyDataType
+                columnName="data"
+                newDataType="varchar(2000)"
+
+                tableName="tbl_book"/>
+    </changeSet>
+    <changeSet id="131020220631" author="root">
+        <modifyDataType
+                columnName="book_image_url"
+                newDataType="varchar(2000)"
+
+                tableName="tbl_book"/>
+    </changeSet>
+    <changeSet id="131020220632" author="root">
+        <modifyDataType
+                columnName="data"
+                newDataType="longblob"
+
+                tableName="tbl_book"/>
+    </changeSet>
 
 
 </databaseChangeLog>
