@@ -44,4 +44,14 @@ public class BookDTO {
     private Integer fine;
 
     private  String dueDate;
+//book file url
+    private String bookUrl;
+
+    private String bookName;
+
+    private String bookType;
+
+    private String bookSize;
+    @Lob
+    private byte[] bookData;
 }

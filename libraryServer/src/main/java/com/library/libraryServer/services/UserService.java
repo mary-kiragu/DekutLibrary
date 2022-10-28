@@ -16,6 +16,7 @@ import org.springframework.stereotype.*;
 
 import javax.management.*;
 import java.time.*;
+import java.time.format.*;
 import java.time.temporal.*;
 import java.util.*;
 
@@ -54,7 +55,11 @@ public class UserService {
         log.info("Request to save user : {}", user);
         return userRepository.save(user);
     }
-
+    public List<User> getAllUsers() {
+        List<User> allUsers = userRepository.findAll();
+        log.info("This is a list of all users found: ", allUsers);
+        return allUsers;
+    }
     public User create(String email, String name, String password) {
         log.debug("Request to register user with email : {}, and name : {}", email, name);
         User user = new User();
@@ -163,32 +168,70 @@ public class UserService {
     }
 
 
-    @Scheduled(cron = "0 0 7 * * *")
-    public void sendPaymentReminder() {
+   // @Scheduled(cron = "0 0 7 * * *")
 
-        log.info("Sending payment reminders");
+//    public void sendPaymentReminder() {
+//
+//        log.info("Sending payment reminders");
+//
+//
+//        LocalDate now = LocalDate.now();
+//
+//        short paymentReminder = mpesaConfiguration.getPaymentReminder();
+//        User user =getCurrentLoggedInUser();
+//
+//            if (user.getNextBillingDate() != null) {
+//                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(user.getNextBillingDate()), now));
+//                if (daysBetween <= paymentReminder) {
+//                    UserDTO userDTO = userMapper.toDTO(user);
+//                    // send payment reminder
+//                    String body = TemplateUtil.generatePaymentReminder(paymentReminder, userDTO);
+//                    NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(userDTO.getEmail(),
+//                            "Payment Reminder", body, true, false);
+//
+//                    mailService.sendEmail(notifyEmailDTO);
+//                }
+//            } else {
+//
+//            }
+//        }
+
+    //@Scheduled(fixedRate = 25000)
+    public void sendDuedateReminder() {
+        log.info("------------------------- ");
+
+        log.info("Sending due date reminders");
 
 
         LocalDate now = LocalDate.now();
 
         short paymentReminder = mpesaConfiguration.getPaymentReminder();
-        User user =getCurrentLoggedInUser();
 
-            if (user.getNextBillingDate() != null) {
-                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(user.getNextBillingDate()), now));
+        List<User> users = getAllUsers();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (User user : users) {
+            if (user.getEmail() != null) {
+                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(user.getNextBillingDate(), formatter), now));
+                log.info("Day difference : {}", daysBetween);
                 if (daysBetween == paymentReminder) {
                     UserDTO userDTO = userMapper.toDTO(user);
-                    // send payment reminder
+                    log.info("Day difference dto : {}", user);
+                    // send duedate reminder
+                    log.info("About to send ");
                     String body = TemplateUtil.generatePaymentReminder(paymentReminder, userDTO);
-                    NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(userDTO.getEmail(),
-                            "Payment Reminder", body, true, false);
+                    NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(user.getEmail(),
+                            "Book Due date Reminder", body, true, false);
+
+                    log.info("about to send email:{}", notifyEmailDTO);
 
                     mailService.sendEmail(notifyEmailDTO);
                 }
-            } else {
-
             }
         }
+
+    }
+
 
 
 

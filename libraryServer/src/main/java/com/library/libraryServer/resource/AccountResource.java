@@ -54,13 +54,13 @@ public class AccountResource {
     }
 
 
-    @PostMapping(path="/notify")
-    public  void notify(@RequestBody  NotifyEmailDTO notifyEmailDTO){
-       userService.sendPaymentReminder();
-
-//        return new ResponseEntity<>(notification,HttpStatus.OK);
-
-    }
+//    @PostMapping(path="/notify")
+//    public  void notify(@RequestBody  NotifyEmailDTO notifyEmailDTO){
+//       userService.sendPaymentReminder();
+//
+////        return new ResponseEntity<>(notification,HttpStatus.OK);
+//
+//    }
 
 
     @PostMapping("/authenticate")

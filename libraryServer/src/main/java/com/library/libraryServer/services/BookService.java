@@ -62,18 +62,12 @@ public class BookService {
     public Book downloadProfilePicture(Long id) {
         return bookRepository.findById(id).get();
     }
+    public Book downloadBook(Long id) {
+        return bookRepository.findById(id).get();
+    }
 
-//    public Book addNewBook(Book book) {
-//        log.info("add a new book to database");
-//        if (book.getId() == null) {
-//            book.setStatus(Status.NEW);
-//            book.setCopies(1L);
-//
-//        }
-//
-//
-//        return bookRepository.save(book);
-//    }
+
+
 
     public List<Book> findBookByBorrowedBy(String borrowedBy) {
         User user = userService.getCurrentLoggedInUser();
@@ -267,6 +261,7 @@ public class BookService {
 
 
     @Scheduled(cron = "0 7 0 * * *")
+   // @Scheduled(fixedRate = 25000)
 
     public void sendDuedateReminder() {
         log.info("------------------------- ");

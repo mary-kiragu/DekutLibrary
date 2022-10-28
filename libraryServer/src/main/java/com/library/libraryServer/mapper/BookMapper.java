@@ -28,6 +28,12 @@ public class BookMapper {
         bookDTO.setFine(book.getFine());
         bookDTO.setAccessionNumber(book.getAccessionNumber());
         bookDTO.setDueDate(book.getDueDate());
+        bookDTO.setBookUrl(book.getBookUrl());
+        bookDTO.setBookData(book.getBookData());
+        bookDTO.setBookName(book.getBookName());
+        bookDTO.setBookType(book.getBookType());
+        bookDTO.setBookSize(book.getBookSize());
+
 
 
         return bookDTO;

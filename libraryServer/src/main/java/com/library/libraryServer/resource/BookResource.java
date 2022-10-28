@@ -39,6 +39,11 @@ public class BookResource {
                 .path("/api/books/downloadProfilePicture/")
                 .path(String.valueOf(book.getId()))
                 .toUriString());
+        book.setBookUrl(ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/api/books/downloadBook/")
+                .path(String.valueOf(book.getId()))
+                .toUriString());
         Book newBook = bookService.addNewBook(book);
 
         return new ResponseEntity<>(newBook, HttpStatus.OK);
@@ -51,15 +56,37 @@ public class BookResource {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + book.getName() + "\"")
                 .body(book.getData());
     }
+    @GetMapping("/downloadBook/{id}")
+    public ResponseEntity<byte[]> downloadBook(@PathVariable Long id) {
+        Book book = bookService.downloadBook((id));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + book.getBookName() + "\"")
+                .body(book.getBookData());
+    }
+
 
 
 
     @GetMapping(path = "{id}")
     ResponseEntity<Book> getOneBook(@PathVariable("id") Long id) {
+
         Optional<Book> bookOptional = bookService.getOneBook(id);
+
+
         Book book = null;
         if (bookOptional.isPresent()) {
             book = bookOptional.get();
+            book.setBookImageUrl(ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/api/books/downloadProfilePicture/")
+                    .path(String.valueOf(book.getId()))
+                    .toUriString());
+            book.setBookUrl(ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/api/books/downloadBook/")
+                    .path(String.valueOf(book.getId()))
+                    .toUriString());
         }
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
@@ -111,6 +138,11 @@ public class BookResource {
             bookDto.setBookImageUrl(ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/api/books/downloadProfilePicture/")
+                    .path(String.valueOf(bookDto.getId()))
+                    .toUriString());
+            bookDto.setBookUrl(ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/api/books/downloadBook/")
                     .path(String.valueOf(bookDto.getId()))
                     .toUriString());
             System.out.println("Got file"+ bookDto);
