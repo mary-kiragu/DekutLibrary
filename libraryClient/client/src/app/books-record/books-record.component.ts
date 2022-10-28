@@ -10,14 +10,44 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./books-record.component.css'],
 })
 export class BooksRecordComponent implements OnInit {
-  book: Book = {} as Book;
+  book={
+    id:'',
+    isbn: '',
+    title: '',
+    author: '',
+    imageUrl: '',
+    bookImageUrl:'',
+    name:'',
+    type:'',
+    data:'',
+    size:'',
+    categoryId:'',
+    accessionNumber:'',
+    bookUrl:'',
+    bookName:'',
+    bookType:'',
+    bookData:'',
+    bookSize:'',
+  }
+  // book: Book = {} as Book;
   bookId!: number;
   bookForm = this.formBuilder.group({
+    isbn: [],
     title: [],
-    isbn:[],
     author: [],
     imageUrl: [],
-    accessionNumber:[]
+    bookImageUrl:[],
+    name:[],
+    type:[],
+    data:[],
+    size:[],
+    categoryId:[],
+    accessionNumber:[],
+    bookUrl:[],
+    bookName:[],
+    bookType:[],
+    bookData:[],
+    bookSize:[],
   });
   books: any = [];
 
@@ -51,7 +81,7 @@ export class BooksRecordComponent implements OnInit {
     this.bookService.findbyId(id).subscribe(
       (res) => {
         console.log(res);
-        this.book = res;
+        // this.book = res;
       },
       (err) => {
         console.log('book not found');
@@ -60,13 +90,23 @@ export class BooksRecordComponent implements OnInit {
   }
 
 
-  extractBookDetails(): Book {
+  extractBookDetails(): any {
     return {
       author: this.bookForm.get('author')!.value,
       isbn:this.bookForm.get('isbn')!.value,
       title: this.bookForm.get('title')!.value,
       imageUrl: this.bookForm.get('imageUrl')!.value,
       accessionNumber:this.bookForm.get('accessionNumber')!.value,
+       bookImageUrl:this.book.bookImageUrl,
+      name:this.book.name,
+      type:this.book.type,
+      data:this.book.data,
+      size:this.book.size,
+      bookUrl:this.book.bookUrl,
+      bookName:this.book.bookName,
+      bookType:this.book.bookType,
+      bookData:this.book.bookData,
+      bookSize:this.book.bookSize,
     };
   }
 
@@ -122,19 +162,19 @@ export class BooksRecordComponent implements OnInit {
     );
   }
 
-  setBook(): void {
-    this.book = {
-      id: undefined,
-      title: '',
-      author: '',
-      imageUrl: '',
-    };
-  }
+  // setBook(): void {
+  //   this.book = {
+  //     id: 'undefined',
+  //     title: '',
+  //     author: '',
+  //     imageUrl: '',
+  //   };
+  // }
 
   resetBorrowBookForm(): void {
     this.bookForm.reset();
     this.bookId = undefined as any;
-    this.setBook();
+    //this.setBook();
   }
 
   updateBook(bookId:number): void {

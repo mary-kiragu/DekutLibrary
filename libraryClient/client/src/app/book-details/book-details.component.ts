@@ -9,7 +9,29 @@ import { BookService } from '../book.service';
   styleUrls: ['./book-details.component.css']
 })
 export class BookDetailsComponent implements OnInit {
-book!:Book;
+  book={
+    id:'',
+    isbn: '',
+    title: '',
+    author: '',
+    imageUrl: '',
+    bookImageUrl:'',
+    status:'',
+    name:'',
+    type:'',
+    data:'',
+    size:'',
+    categoryId:'',
+    accessionNumber:'',
+    bookUrl:'',
+    bookName:'',
+    bookType:'',
+    bookData:'',
+    bookSize:'',
+  }
+  srcPDF ! :string;
+
+//book!:any;
 borrowedBook:any;
 id!:number;
   constructor(
@@ -31,7 +53,27 @@ id!:number;
     this.bookService.findbyId(id).subscribe(
       (res)=>{
         console.log(res);
-        this.book=res;
+        this.book = res;
+        console.log("finding book ", this.book);
+        if (res.bookType == 'application/pdf') {
+          var arrrayBuffer = base64ToArrayBuffer(res.bookData); //data is the base64 encoded string
+          function base64ToArrayBuffer(base64: string) {
+            var binaryString = window.atob(base64);
+            var binaryLen = binaryString.length;
+            var bytes = new Uint8Array(binaryLen);
+            for (var i = 0; i < binaryLen; i++) {
+              var ascii = binaryString.charCodeAt(i);
+              bytes[i] = ascii;
+            }
+            return bytes;
+          }
+          var blob = new Blob([arrrayBuffer], { type: "application/pdf" });
+          this.srcPDF = window.URL.createObjectURL(blob);
+          console.log("Testing pdf *****", this.srcPDF)
+
+          // window.open(this.src,'height=650,width=840');
+
+        }
 
       },
       (err)=>{

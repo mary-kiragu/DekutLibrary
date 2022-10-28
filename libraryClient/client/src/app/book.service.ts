@@ -28,12 +28,12 @@ export class BookService {
     return this.httpClient.get<Book>(this.apiServerUrl+"/api/books");
   }
 
-  findbyId(id:number):Observable<Book>{
-    return this.httpClient.get<Book>(this.apiServerUrl+"/api/books/"+id);
+  findbyId(id:number):Observable<any>{
+    return this.httpClient.get<any>(this.apiServerUrl+"/api/books/"+id);
   }
 
-   borrowBook(book:Book):Observable<Book>{
-     return this.httpClient.put<Book>(this.apiServerUrl+"/api/books/borrow/"+book.id,book);
+   borrowBook(book:any):Observable<any>{
+     return this.httpClient.put<any>(this.apiServerUrl+"/api/books/borrow/"+book.id,book);
    }
 
 

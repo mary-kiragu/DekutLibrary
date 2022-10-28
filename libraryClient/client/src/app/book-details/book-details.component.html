@@ -1,7 +1,12 @@
 <div class="container-fluid" *ngIf="book">
     <div class="row">
+        <div>
+            <img *ngIf="book.imageUrl===null" class="img-thumbnail" src="{{book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
 
-        <div class="image card col-md-3">
+            <img *ngIf="book.imageUrl!==null" class="img-thumbnail" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" />
+        </div>
+
+        <div hidden class="image card col-md-3">
             <img class="img-thumbnail" src="{{book.imageUrl}}" onError="this.onerror=null; this.src='assets/images/billionare.jpeg' " />
 
         </div>
@@ -27,6 +32,7 @@
                 <p class="col-md-2 ">{{book.status}}</p>
 
             </div>
+            <embed *ngIf="book.bookType == 'application/pdf'" [src]="srcPDF | safeUrl" type="application/pdf" class="file">
 
             <div>
                 <button *ngIf="book.status!=='BORROWED' " type="button " class="btn button-3 " (click)="borrowBook() ">

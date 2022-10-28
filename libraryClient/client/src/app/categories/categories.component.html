@@ -27,7 +27,10 @@
 
 
 
-        <div class=" col-md-2 categories" *ngFor="let category of categoriesToRender">
+        <div></div>
+
+        <div class="col-md-2 categories" *ngFor="let category of categoryFilter('category')">
+
             <div *ngIf="category.categoryType=='CATEGORY'">
 
 
@@ -86,11 +89,14 @@
                     </div>
 
                     <div class="form-group row mt-2 ">
-                        <div class="col-md-12 ">
+                        <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
+
+
+                        <!-- <div class="col-md-12 ">
                             <label class="form-control-label " for="description ">Description</label>
 
-                            <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea>
-                        </div>
+                            <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea> -->
+                        <!-- </div> -->
                     </div>
                 </form>
 
@@ -145,9 +151,11 @@
                         <input class="form-control" type="text" name="name" formControlName="name">
                     </div>
                     <div class="form-group">
-                        <label class="form-control-label " for="description ">Description</label>
+                        <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
 
-                        <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea>
+                        <!-- <label class="form-control-label " for="description ">Description</label>
+
+                        <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea> -->
                     </div>
 
 

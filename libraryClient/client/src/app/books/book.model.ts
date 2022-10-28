@@ -24,6 +24,7 @@ export class Book{
   type?:string;
   data?:string;
   size?:string;
+bookUrl: any;
   constructor(
     id?:number,
     title?:string,

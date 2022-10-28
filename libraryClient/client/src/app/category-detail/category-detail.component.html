@@ -47,6 +47,7 @@
                             <p class="vid-title">
                                 <strong>{{category.name.length > 85 ? (category.name | slice:0:85) + '...' : category.name}}</strong>
                             </p>
+
                             <p class="vid-title">
                                 {{category.name.length > 85 ? (category.name | slice:0:85) + '...' : category.description}}
                             </p>
@@ -82,11 +83,13 @@
                             <input type="text" class="form-control" id="fieldName" name="fieldName" placeholder="Section name" formControlName="name" />
                         </div>
                         <div class="form-group row mt-2 ">
-                            <div class="col-md-12 ">
+                            <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
+
+                            <!-- <div class="col-md-12 ">
                                 <label class="form-control-label " for="fieldDescription ">Description</label>
 
                                 <textarea class="form-control " id="fieldDescription " name="fieldDescription " placeholder="write a brief description of books in this section " formControlName="description"></textarea>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -143,11 +146,13 @@
                         <label for="name">name</label>
                         <input class="form-control" type="text" name="name" formControlName="name">
                     </div>
-                    <div class="form-group">
+                    <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
+
+                    <!-- <div class="form-group">
                         <label class="form-control-label " for="description ">Description</label>
 
                         <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea>
-                    </div>
+                    </div> -->
 
 
                 </form>

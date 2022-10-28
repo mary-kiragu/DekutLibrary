@@ -200,7 +200,13 @@ save(): void {
     this.saveCategory();
   }
 }
-
+categoryFilter(type: "category" | "section"): Category[] {
+  if(type=='category'){
+    return this.categoriesToRender.filter(cat=>cat.categoryType == "CATEGORY")
+  }else{
+    return this.categoriesToRender.filter(cat=>cat.categoryType != "CATEGORY")
+  }
+}
 
 
 

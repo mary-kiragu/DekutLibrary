@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { AngularEditorComponent, AngularEditorModule } from '@kolkov/angular-editor';
 // import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 
@@ -22,6 +23,7 @@ import { SectionsComponent } from './categories/sections/sections.component';
 import { AuthorityDirective } from './authority.directive';
 import { FilterPipe } from './filter.pipe';
 import { ProfileComponent } from './login/profile/profile.component';
+import { SafeUrlPipe } from './safe-url.pipe';
 
 
 
@@ -42,6 +44,7 @@ import { ProfileComponent } from './login/profile/profile.component';
     AuthorityDirective,
     FilterPipe,
     ProfileComponent,
+    SafeUrlPipe,
 
   ],
   imports: [
@@ -51,6 +54,7 @@ import { ProfileComponent } from './login/profile/profile.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    AngularEditorModule
 
   ],
   providers: [

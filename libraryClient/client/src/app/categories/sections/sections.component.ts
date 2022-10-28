@@ -30,7 +30,13 @@ export class SectionsComponent implements OnInit {
     data:'',
     size:'',
     categoryId:'',
-    accessionNumber:''}
+    accessionNumber:'',
+    bookUrl:'',
+    bookName:'',
+    bookType:'',
+    bookData:'',
+    bookSize:'',
+  }
   bookForm = this.formBuilder.group({
     isbn: [],
     title: [],
@@ -42,7 +48,12 @@ export class SectionsComponent implements OnInit {
     data:[],
     size:[],
     categoryId:[],
-    accessionNumber:[]
+    accessionNumber:[],
+    bookUrl:[],
+    bookName:[],
+    bookType:[],
+    bookData:[],
+    bookSize:[],
   });
   books: any = [];
   category: any;
@@ -56,6 +67,7 @@ export class SectionsComponent implements OnInit {
   booksFromDB: Book[] = [];
   isFiltered = false;
   user!:any;
+  uploadFile=true;
   constructor(
     private bookService: BookService,
     private categoriesService:CategoriesService,
@@ -155,6 +167,43 @@ export class SectionsComponent implements OnInit {
     }
   }
 
+  bookUrl: any;
+  bookMsg = "";
+
+  selectBook(event: any) {
+    if (!event.target.files[0] || event.target.files[0].length == 0) {
+      this.bookMsg = 'You must select a pdf';
+      return;
+    }
+
+    console.log("Selected, ", event.target.files[0])
+    var bookName = event.target.files[0].name;
+    var bookType = event.target.files[0].type;
+    var bookSize = event.target.files[0].size;
+
+
+
+    // if (bookType.match(/image\/*/) == null) {
+    //   this.msg = "Only images are supported";
+    //   return;
+    // }
+    var reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+
+    reader.onload = (_event) => {
+      this.bookMsg = "";
+      this.bookUrl = reader.result;
+      const bookData = this.bookUrl.split('base64,')[1];
+      this.book.bookUrl = this.bookUrl;
+      this.book.bookName = bookName;
+      this.book.bookType = bookType;
+      this.book.bookData = bookData;
+      this.book.bookSize = bookSize;
+      console.log("Selected pdf data, ", bookData)
+
+  }
+}
+
 
   extractBookDetails(): any {
     return {
@@ -169,7 +218,22 @@ export class SectionsComponent implements OnInit {
       size:this.book.size,
       categoryId: this.category.id,
       accessionNumber:this.bookForm.get('accessionNumber')!.value,
+      bookUrl:this.book.bookUrl,
+      bookName:this.book.bookName,
+      bookType:this.book.bookType,
+      bookData:this.book.bookData,
+      bookSize:this.book.bookSize,
+
     };
+
+  }
+
+  showInputUrl():any{
+    this.uploadFile=false
+
+  }
+  showUploadFile():any{
+    this.uploadFile=true
 
   }
 

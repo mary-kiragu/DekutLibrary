@@ -36,7 +36,10 @@
                     <td>{{book.borrowedOn}}</td>
                     <td>{{book.returnedOn}}</td>
                     <td>{{book.issuedBy}}</td>
-                    <td><img src="{{book.imageUrl}}" height="50px" width="50px" /></td>
+                    <td>
+                        <img *ngIf="book.imageUrl==null" src="{{book.bookImageUrl}}" height="50px" width="50px" />
+                        <img *ngIf="book.imageUrl!==null" src="{{book.imageUrl}}" height="50px" width="50px" />
+                    </td>
                     <td [routerLink]="['/book-records',book.id]"><i class="fa fa-eye" style="font-size:36px"></i></td>
                     <td> <button type="button" class="btn btn-outline-success edit" (click)="editBook(book)" data-bs-toggle="modal" data-bs-target="#bookModal">
                       <i class="fas fa-edit"></i>

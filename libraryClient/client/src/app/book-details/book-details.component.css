@@ -4,7 +4,8 @@ img {
 }
 
 .img-thumbnail {
-    background-color: #d7e6df;
+    height: 100 px;
+    width: 100 px;
 }
 
 .image {
@@ -68,4 +69,9 @@ img {
 .button-3:active {
     background-color: rgba(29, 69, 4, 0.924);
     box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
+
+.file {
+    height: 600px;
+    width: auto;
 }

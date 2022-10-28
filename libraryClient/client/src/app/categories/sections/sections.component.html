@@ -26,10 +26,12 @@
 
     <div class="row">
 
-        <div class=" col-md-2 py-1 px-1" *ngFor="let book of booksToRender" [routerLink]="['/book-records',book.id]">
+        <div class=" col-md-2 py-1 px-1" *ngFor="let book of booksToRender">
 
             <div class="books mb-3 justify-content-center">
-                <img class="img-thumbnail" src="{{book.imageUrl}}" alt="{{book.bookImageUrl}}" />
+                <img *ngIf="book.imageUrl===null" class="img-thumbnail" src="{{book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
+
+                <img *ngIf="book.imageUrl!==null" class="img-thumbnail" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" />
 
                 <div class="row " id="book-id">
                     <label class=" " for="title "><strong>Title: </strong> {{book.title}}</label>
@@ -48,6 +50,9 @@
 
                 </div>
                 <div>
+                    <button [routerLink]="['/book-records',book.id]">View</button>
+
+                    <a href="{{book.bookUrl}}">Download <i class="fas fa-download"> </i></a>
                     <button *ngIf="book.status!=='BORROWED'" type="button" class="btn button-3">
               Borrow Book
             </button>
@@ -79,6 +84,24 @@
 
             <div class="modal-body">
                 <form name="bookForm" [formGroup]="bookForm" role="form" (ngSubmit)="save()">
+                    <div class=" form-group" *ngIf="!uploadFile">
+                        <label for="imageUrl">ImageUrl</label>
+                        <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
+
+                    </div>
+                    <div>
+
+                        <div *ngIf="uploadFile" class=" form-group">
+                            <label for="imageUrl">Browse image</label>
+
+                            <input accept="image/*" class="form-control" type="file" name="imageUrl" (change)="selectFile($event)">
+                            <a style="cursor: pointer; color: blue;"><small (click)="showInputUrl()"> or input image url</small></a>
+                        </div>
+                        <div *ngIf="!uploadFile">
+                            <a style="cursor: pointer;color: blue;"><small (click)="showUploadFile()"> upload image</small></a>
+
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label for="title">title</label>
@@ -88,14 +111,9 @@
                         <label for="author">Author</label>
                         <input class="form-control" type="text" name="author" formControlName="author">
                     </div>
-                    <div class=" form-group">
-                        <label for="imageUrl">ImageUrl</label>
-                        <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
 
-                    </div>
-                    <div>
-                        <input accept="image/*" type="file" name="imageUrl" (change)="selectFile($event)">
-                    </div>
+
+
                     <div class=" form-group">
                         <label for="isbn">ISBN</label>
                         <input class="form-control" type="text" name="isbn" formControlName="isbn">
@@ -105,6 +123,11 @@
                         <label for="accessionNumber">Accession number</label>
                         <input class="form-control" type="text" name="accessionNumber" formControlName="accessionNumber">
 
+                    </div>
+                    <div *ngIf="uploadFile" class=" form-group">
+                        <label for="imageUrl">Browse book</label>
+
+                        <input accept=".pdf*" class="form-control" type="file" name="bookUrl" (change)="selectBook($event)">
                     </div>
 
 
