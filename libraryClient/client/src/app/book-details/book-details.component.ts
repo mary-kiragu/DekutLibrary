@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Book } from '../books/book.model';
 import { BookService } from '../book.service';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-book-details',
@@ -29,6 +30,25 @@ export class BookDetailsComponent implements OnInit {
     bookData:'',
     bookSize:'',
   }
+  bookId!: number;
+  bookForm = this.formBuilder.group({
+    isbn: [],
+    title: [],
+    author: [],
+    imageUrl: [],
+    bookImageUrl:[],
+    name:[],
+    type:[],
+    data:[],
+    size:[],
+    categoryId:[],
+    accessionNumber:[],
+    bookUrl:[],
+    bookName:[],
+    bookType:[],
+    bookData:[],
+    bookSize:[],
+  });
   srcPDF ! :string;
 
 //book!:any;
@@ -36,6 +56,7 @@ borrowedBook:any;
 id!:number;
   constructor(
     private bookService:BookService,
+    private formBuilder: FormBuilder,
     private router:Router,
     private route:ActivatedRoute
   ) { }
@@ -103,6 +124,65 @@ id!:number;
 
       }
     )
+  }
+
+  extractBookDetails(): any {
+    return {
+      author: this.bookForm.get('author')!.value,
+      isbn:this.bookForm.get('isbn')!.value,
+      title: this.bookForm.get('title')!.value,
+      imageUrl: this.bookForm.get('imageUrl')!.value,
+      accessionNumber:this.bookForm.get('accessionNumber')!.value,
+       bookImageUrl:this.book.bookImageUrl,
+      name:this.book.name,
+      type:this.book.type,
+      data:this.book.data,
+      size:this.book.size,
+      bookUrl:this.book.bookUrl,
+      bookName:this.book.bookName,
+      bookType:this.book.bookType,
+      bookData:this.book.bookData,
+      bookSize:this.book.bookSize,
+    };
+  }
+
+
+  updateBook(bookId:number): void {
+    const bookDetails = this.extractBookDetails();
+    bookDetails.id=bookId;
+    console.log('book details', bookDetails);
+    this.bookService.updateBook(bookDetails).subscribe(
+      (res) => {
+        console.log('updated book', res);
+
+      },
+      (err) => {
+        console.log('book not updated book', err);
+      }
+    );
+  }
+  editBook(book: any): void {
+    this.bookId = +book.id;
+    this.bookForm = this.formBuilder.group({
+      id: [book.id],
+      title: [book.title],
+      isbn: [book.isbn],
+      accessionNumber: [book.accessionNumber],
+      author: [book.author],
+      imageUrl: [book.imageUrl],
+    });
+  }
+
+  deleteBook(id: any): any {
+    this.bookService.deleteBook(id).subscribe(
+      (res) => {
+        console.log('deleted book', res);
+
+      },
+      (error) => {
+        console.log('book not deleted');
+      }
+    );
   }
 
 }

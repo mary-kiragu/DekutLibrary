@@ -1,11 +1,11 @@
 img {
     border-radius: 8 px;
-    object-fit: fill;
 }
 
 .img-thumbnail {
-    height: 100 px;
-    width: 100 px;
+    height: 300px;
+    width: 200px;
+    border-radius: 10px;
 }
 
 .image {
@@ -14,10 +14,22 @@ img {
     text-align: center;
 }
 
-.bookDetail {
+.image img {
+    height: 500px;
+    width: 200px;
+    object-fit: fill;
     justify-content: center;
     margin: 20px;
-    margin-top: 100px;
+    margin-top: 50px;
+    border-radius: 10px;
+}
+
+.bookDetail {
+    justify-content: center;
+    height: 600px;
+    margin: 20px;
+    box-shadow: 0 4px 8px 0 rgba(15, 227, 235, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
 }
 
 .button-3 {
@@ -72,6 +84,6 @@ img {
 }
 
 .file {
-    height: 600px;
-    width: auto;
+    width: 850px;
+    height: 800px;
 }

@@ -31,6 +31,7 @@ public class BookService {
     private final MpesaConfiguration mpesaConfiguration;
 
     private final MailService mailService;
+    
 
     public BookService(BookRepository bookRepository, BookMapper bookMapper, UserRepository userRepository, UserService userService, MpesaConfiguration mpesaConfiguration, MailService mailService) {
         this.bookRepository = bookRepository;
@@ -80,15 +81,17 @@ public class BookService {
 
 
     public Optional<Book> getOneBook(Long id) {
+        log.info("about to grt book with id: {}",id);
         Optional<Book> bookOptional = bookRepository.findById(id);
+        log.info("book found {}",bookOptional);
 
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
-            if (book.getBorrowedBy() != null) {
+            if (book.getBorrowedBy() != null && book.getDueDate()!=null) {
                 LocalDate now = LocalDate.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                LocalDate bookDueDate = LocalDate.parse(book.getDueDate(), formatter);
-                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(book.getDueDate(), formatter), now));
+                LocalDate bookDueDate = book.getDueDate();
+                long daysBetween = Math.abs(ChronoUnit.DAYS.between(book.getDueDate(), now));
 
                 if (now.compareTo(bookDueDate) > 0) {
                     long compute = daysBetween * 10;
@@ -132,16 +135,16 @@ public class BookService {
 
             assert user != null;
             if (user.getAuthority().equals(Authority.STUDENT)) {
-                book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(14)));
+                book.setDueDate(LocalDate.now().plusDays(14));
 
             } else if (user.getAuthority().equals(Authority.STAFF)) {
 
-                book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(21)));
+                book.setDueDate(LocalDate.now().plusDays(21));
 
 
             } else if (user.getAuthority().equals(Authority.SUBSCRIBER)) {
 
-                book.setDueDate(String.valueOf(LocalDateTime.now().plusDays(30)));
+                book.setDueDate(LocalDate.now().plusDays(30));
 
 
             }
@@ -167,6 +170,7 @@ public class BookService {
                 book.setBorrowedBy(null);
                 book.setBorrowedOn(null);
                 book.setDueDate(null);
+                book.setFine(0);
                 book.setReturnedOn(String.valueOf(LocalDateTime.now()));
 
             }
@@ -239,10 +243,11 @@ public class BookService {
         for (Book book : bookRepository.findByBorrowedBy(borrowedBy)) {
             LocalDate now = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDate bookDueDate = LocalDate.parse(book.getDueDate(), formatter);
-            long daysBetween = Math.abs(ChronoUnit.DAYS.between(now, bookDueDate));
+           // LocalDate bookDueDate = LocalDate.parse(book.getDueDate(), formatter);
 
-            if (now.compareTo(bookDueDate) > 0) {
+            long daysBetween = Math.abs(ChronoUnit.DAYS.between(now, book.getDueDate()));
+
+            if (now.compareTo(book.getDueDate()) > 0) {
                 long compute = daysBetween * 10;
                 book.setFine((int) compute);
             }
@@ -263,7 +268,7 @@ public class BookService {
     @Scheduled(cron = "0 7 0 * * *")
    // @Scheduled(fixedRate = 25000)
 
-    public void sendDuedateReminder() {
+    public void sendDueDateReminder() {
         log.info("------------------------- ");
 
         log.info("Sending due date reminders");
@@ -278,7 +283,7 @@ public class BookService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (Book book : books) {
             if (book.getBorrowedOn() != null) {
-                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(book.getDueDate(), formatter), now));
+                long daysBetween = Math.abs(ChronoUnit.DAYS.between(book.getDueDate(), now));
                 log.info("Day difference : {}", daysBetween);
                 if (daysBetween == paymentReminder) {
                     BookDTO bookDTO = bookMapper.toDTO(book);

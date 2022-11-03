@@ -1,5 +1,10 @@
 package com.library.libraryServer.domain;
 
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.*;
+import com.fasterxml.jackson.datatype.jsr310.*;
+import com.fasterxml.jackson.datatype.jsr310.deser.*;
+import com.fasterxml.jackson.datatype.jsr310.ser.*;
 import com.library.libraryServer.domain.enums.*;
 import lombok.*;
 
@@ -12,7 +17,10 @@ import java.time.*;
 @Table(name = "tbl_user")
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class User implements Serializable {
+    //ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,10 +42,13 @@ public class User implements Serializable {
     private AccountStatus accountStatus;
 
     private Long account;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate lastBillingDate;
 
-    private String lastBillingDate;
-
-    private String nextBillingDate;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate nextBillingDate;
 
     public String getAuthorityName() {
         if (this.authority != null) {

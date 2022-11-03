@@ -43,7 +43,7 @@ public class BookDTO {
 
     private Integer fine;
 
-    private  String dueDate;
+    private  LocalDate dueDate;
 //book file url
     private String bookUrl;
 

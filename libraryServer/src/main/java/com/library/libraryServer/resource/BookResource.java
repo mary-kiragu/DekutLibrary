@@ -28,6 +28,21 @@ public class BookResource {
     @GetMapping
     ResponseEntity<List<Book>> getAll() {
         List<Book> allBooks = bookService.getAllBooks();
+        for (Book book : allBooks){
+            book.setBookImageUrl(ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/api/books/downloadProfilePicture/")
+                    .path(String.valueOf(book.getId()))
+                    .toUriString());
+            book.setBookUrl(ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/api/books/downloadBook/")
+                    .path(String.valueOf(book.getId()))
+                    .toUriString());
+            System.out.println("Got file"+ book);
+        }
+
+
         return new ResponseEntity<>(allBooks, HttpStatus.OK);
     }
 

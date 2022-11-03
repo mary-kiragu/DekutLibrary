@@ -1,45 +1,60 @@
 <div class="container-fluid" *ngIf="book">
     <div class="row">
-        <div>
-            <img *ngIf="book.imageUrl===null" class="img-thumbnail" src="{{book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
+        <div class="col-md-5 bookDetail">
+            <div class="row">
 
-            <img *ngIf="book.imageUrl!==null" class="img-thumbnail" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" />
+                <div class="col-md-4 mt-5 mx-3">
+                    <img *ngIf="book.imageUrl===null" class="img-thumbnail" src="{{book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
+
+                    <img *ngIf="book.imageUrl!==null" class="img-thumbnail" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" />
+
+                    <div hidden class="image card col-md-3">
+                        <img class="img-thumbnail" src="{{book.imageUrl}}" onError="this.onerror=null; this.src='assets/images/billionare.jpeg' " />
+
+                    </div>
+                </div>
+
+                <div class=" col-md-6 mt-5">
+
+                    <div class="row ">
+                        <label class="col-md-4 " for="id "><strong>Title:</strong> </label>
+                        <p class="col-md-5 ">{{book.title}}</p>
+                    </div>
+                    <div class="row ">
+                        <label class="col-md-4 "><strong>Author:</strong></label>
+                        <p class="col-md-5 ">{{book.author}}</p>
+                    </div>
+                    <div class="row " id="book-id">
+                        <label class="col-md-4"><strong>ISBN:</strong> </label>
+                        <p class="col-md-5 ">{{book.isbn}}</p>
+
+                    </div>
+
+                    <div class="row " id="book-id">
+                        <label class="col-md-4"><strong>Status:</strong></label>
+                        <p class="col-md-5 ">{{book.status}}</p>
+
+                    </div>
+                    <button type="button" class="btn btn-outline-success edit" (click)="editBook(book)" data-bs-toggle="modal" data-bs-target="#bookModal">
+                      <i class="fas fa-edit"></i>
+                      </button>
+                    <button class="btn btn-outline-success edit" type="submit" (click)="deleteBook(book.id)" data-bs-toggle="modal" data-bs-target="#deleteModal"> <i class="fa fa-trash-o" style="font-size:36px"></i></button>
+
+                    <div>
+                        <button *ngIf="book.status!=='BORROWED' " type="button " class="btn button-3 " (click)="borrowBook() ">
+              Borrow Book
+            </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div hidden class="image card col-md-3">
-            <img class="img-thumbnail" src="{{book.imageUrl}}" onError="this.onerror=null; this.src='assets/images/billionare.jpeg' " />
 
-        </div>
 
-        <div class=" bookDetail col-md-6">
 
-            <div class="row ">
-                <label class="col-md-2 " for="id "><strong>Title:</strong> </label>
-                <p class="col-md-4 ">{{book.title}}</p>
-            </div>
-            <div class="row ">
-                <label class="col-md-2 "><strong>Author:</strong></label>
-                <p class="col-md-2 ">{{book.author}}</p>
-            </div>
-            <div class="row " id="book-id">
-                <label class="col-md-2"><strong>ISBN:</strong> </label>
-                <p class="col-md-2 ">{{book.isbn}}</p>
+        <div class="col-md-6">
 
-            </div>
-
-            <div class="row " id="book-id">
-                <label class="col-md-2"><strong>Status:</strong></label>
-                <p class="col-md-2 ">{{book.status}}</p>
-
-            </div>
             <embed *ngIf="book.bookType == 'application/pdf'" [src]="srcPDF | safeUrl" type="application/pdf" class="file">
-
-            <div>
-                <button *ngIf="book.status!=='BORROWED' " type="button " class="btn button-3 " (click)="borrowBook() ">
-    Borrow Book
-  </button>
-            </div>
-
         </div>
     </div>
 </div>
@@ -71,6 +86,7 @@
                         <label for="status ">Status</label>
                         <input class="form-control " type="text " name="status " [(ngModel)]="book.status ">
                     </div>
+                    <div></div>
 
 
                 </form>
@@ -83,3 +99,73 @@
         </div>
     </div>
 </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                    Edit Book</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="bookForm" [formGroup]="bookForm" role="form" (ngSubmit)="updateBook(bookId)">
+
+                    <div class="form-group">
+                        <label for="title">title</label>
+                        <input class="form-control" type="text" name="title" formControlName="title">
+                    </div>
+                    <div class=" form-group">
+                        <label for="author">Author</label>
+                        <input class="form-control" type="text" name="author" formControlName="author">
+                    </div>
+                    <div class=" form-group">
+                        <label for="imageUrl">ImageUrl</label>
+                        <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
+
+                    </div>
+                    <div class=" form-group">
+                        <label for="isbn">ISBN</label>
+                        <input class="form-control" type="text" name="isbn" formControlName="isbn">
+                    </div>
+                    <div class=" form-group">
+                        <label for="accessionNumber">Accession number</label>
+                        <input class="form-control" type="text" name="accessionNumber" formControlName="accessionNumber">
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="updateBook(bookId)">submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation to delete book</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to deletete{{book.title}}?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Delete</button>
+            </div>
+        </div>

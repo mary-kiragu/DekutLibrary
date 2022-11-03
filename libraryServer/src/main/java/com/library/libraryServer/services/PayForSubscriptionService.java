@@ -24,6 +24,8 @@ import java.util.*;
 public class PayForSubscriptionService {
     private final PaymentPlanService paymentPlanService;
 
+    private final BookService bookService;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final MpesaConfiguration mpesaConfiguration;
@@ -43,8 +45,9 @@ public class PayForSubscriptionService {
     private String accessToken;
 
 
-    public PayForSubscriptionService(PaymentPlanService paymentPlanService, MpesaConfiguration mpesaConfiguration, PaymentRepository paymentRepository, ProfileService profileService, AuditLogService auditLogService, UserService userService, UserRepository userRepository) {
+    public PayForSubscriptionService(PaymentPlanService paymentPlanService, BookService bookService, MpesaConfiguration mpesaConfiguration, PaymentRepository paymentRepository, ProfileService profileService, AuditLogService auditLogService, UserService userService, UserRepository userRepository) {
         this.paymentPlanService = paymentPlanService;
+        this.bookService = bookService;
         this.mpesaConfiguration = mpesaConfiguration;
         this.paymentRepository = paymentRepository;
         this.profileService = profileService;
@@ -80,8 +83,10 @@ public class PayForSubscriptionService {
         darajaRequestDTO.setPhoneNumber(paymentRequestDTO.getPhoneNumber());
 
         darajaRequestDTO.setPartyA(paymentRequestDTO.getPhoneNumber());
+
         //creating a password
         String passKey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+
 
         String toBeEncoded = darajaRequestDTO.getBusinessShortCode() + passKey + darajaRequestDTO.getTimeStamp();
 
@@ -97,11 +102,16 @@ public class PayForSubscriptionService {
         String body = null;
         try {
             body = objectMapper.writeValueAsString(darajaRequestDTO);
+            log.info("body :{}",body);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("Authorization", "Bearer " + getAccessToken());
+        log.info("headermap :{}",headerMap);
+        log.info("url :{}",url);
+
+
 
         String response = null;
         try {
@@ -325,19 +335,19 @@ public class PayForSubscriptionService {
         }
 
         profile.setAccountStatus(AccountStatus.PAID);
-        profile.setLastBillingDate(String.valueOf(LocalDate.now()));
+        profile.setLastBillingDate((LocalDate.now()));
         // get profile plan
         Integer planId = profile.getPlan();
 
         PaymentPlan paymentPlan = paymentPlanService.getOneEntity(planId);
-        profile.setLastBillingDate(String.valueOf(LocalDate.now()));
+        profile.setLastBillingDate(LocalDate.now());
         if (paymentPlan != null) {
             if (paymentPlan.getPaymentDuration().equals(PayDuration.MONTH)) {
-                profile.setNextBillingDate(String.valueOf(LocalDate.now().plusMonths(1)));
+                profile.setNextBillingDate(LocalDate.now().plusMonths(1));
             } else if (paymentPlan.getPaymentDuration().equals(PayDuration.YEAR)) {
-                profile.setNextBillingDate(String.valueOf(LocalDate.now().plusYears(1)));
+                profile.setNextBillingDate(LocalDate.now().plusYears(1));
             } else if (paymentPlan.getPaymentDuration().equals(PayDuration.HOLIDAY)) {
-                profile.setNextBillingDate(String.valueOf(LocalDate.now().plusYears(1)));
+                profile.setNextBillingDate(LocalDate.now().plusYears(1));
             }
         }
 
@@ -359,6 +369,62 @@ public class PayForSubscriptionService {
         );
 
        auditLogService.save(auditLog);
+
+
+    }
+    public void processFinePayment(LipaNaDarajaCallBackDTO callBackDTO) {
+        log.info("payment dits {}", callBackDTO.getBody().getStkCallBack().getMerchantRequestId());
+
+        // find payment by merchant id
+        Payment payment = findOneByMerchantRequestId(callBackDTO.getBody().getStkCallBack().getMerchantRequestId());
+
+        log.info("payement{}",payment);
+        // check if the payment involved paying damage fee
+        User user = userService.getCurrentLoggedInUser();
+
+        PaymentDTO paymentDTO = new PaymentDTO();
+
+        Map<String, Object> customFields = new HashMap<>();
+
+        for (CallBackItem callBackItem : callBackDTO.getBody().getStkCallBack().getCallBackMetaData().getItem()) {
+            customFields.put(callBackItem.getName(), callBackItem.getValue());
+
+        }
+        log.info("customfield {}",customFields);
+        paymentDTO.setStatus("SUCCESS");
+        paymentDTO.setStatusReason(callBackDTO.getBody().getStkCallBack().getResultDescription());
+        paymentDTO.setPhoneNumber((Long) customFields.get("PhoneNumber"));
+        paymentDTO.setTransactionCode((String) customFields.get("MpesaReceiptNumber"));
+        paymentDTO.setAmount((Double) customFields.get("Amount"));
+        paymentDTO.setProfileId(payment.getUserId());
+
+        log.info("customfield {}",customFields);
+        User profile = userService.findById(payment.getUserId());
+        log.info("user id{}",profile);
+        // check if the payment was successfull
+        Integer resultCode = callBackDTO.getBody().getStkCallBack().getResultCode();
+
+        // this means that the transaction failed
+        if (resultCode != 0) {
+
+            // write audit logs here
+            AuditLog auditLog = new AuditLog(
+                    AuditAction.PAYMENT,
+                    TransactionStatus.FAILURE,
+                    callBackDTO.getBody().getStkCallBack().getResultDescription(),
+                    payment.getEmail(),
+                    payment.getPhoneNumber(),
+                    payment.getUserId()
+            );
+
+
+            //auditLogService.save(auditLog);
+
+            paymentDTO.setStatus("ERROR");
+            paymentDTO.setStatusReason(callBackDTO.getBody().getStkCallBack().getResultDescription());
+        }
+
+
 
 
     }
@@ -408,6 +474,108 @@ public class PayForSubscriptionService {
         }
 
         return payment;
+    }
+
+    public DarajaRequestResponseDTO initiateFinePayment(FinePaymentRequestDTO finePaymentRequestDTO) {
+
+        DarajaRequestResponseDTO darajaRequestResponseDTO = new DarajaRequestResponseDTO();
+
+
+        Optional<Book> bookOptional = bookService.getOneBook(finePaymentRequestDTO.getBook());
+        if (bookOptional.isPresent()) {
+            Book book=bookOptional.get();
+            User user=userService.findById(finePaymentRequestDTO.getUserId());
+
+            if(user==null){
+                //throw exception
+            }
+            DarajaRequestDTO darajaRequestDTO = new DarajaRequestDTO();
+
+            Integer paymentAmount = book.getFine();
+
+            darajaRequestDTO.setAmount(paymentAmount);
+
+            darajaRequestDTO.setTimeStamp(makeTime());
+
+            darajaRequestDTO.setPhoneNumber(finePaymentRequestDTO.getPhoneNumber());
+
+            darajaRequestDTO.setPartyA(finePaymentRequestDTO.getPhoneNumber());
+            //creating a password
+            String passKey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+
+            String toBeEncoded = darajaRequestDTO.getBusinessShortCode() + passKey + darajaRequestDTO.getTimeStamp();
+
+            byte[] bytes = toBeEncoded.getBytes(StandardCharsets.UTF_8);
+            bytes = Base64.getEncoder().encode(bytes);
+
+            String encodedString = new String(bytes);
+            darajaRequestDTO.setPassword(encodedString);
+
+            String url = mpesaConfiguration.getStkUrl();
+            //convert darajaRequestDto into a string to transport it over the network
+
+            String body = null;
+            try {
+                body = objectMapper.writeValueAsString(darajaRequestDTO);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, String> headerMap = new HashMap<>();
+            headerMap.put("Authorization", "Bearer " + getAccessToken());
+
+            String response = null;
+            try {
+                response = HttpUtil.post(url, body, headerMap, MediaType.get("application/json; charset=utf-8"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            DarajaResponseDTO darajaACKDTO = null;
+            DarajaError darajaError = null;
+            try {
+                darajaACKDTO = objectMapper.readValue(response, new TypeReference<DarajaResponseDTO>() {
+                });
+            } catch (JsonProcessingException e) {
+                try {
+                    darajaError = objectMapper.readValue(response, new TypeReference<DarajaError>() {
+                    });
+                } catch (JsonProcessingException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            log.info("Acknowledgement from daraja : {}", darajaACKDTO);
+
+            if (darajaError != null) {
+                darajaRequestResponseDTO.setError(darajaError);
+            }
+
+            if (darajaACKDTO != null) {
+                darajaRequestResponseDTO.setResponse(darajaACKDTO);
+            }
+            log.info("About to set payment plan for user");
+            User loggedInUser = userService.getCurrentLoggedInUser();
+            user.setPlan(Math.toIntExact(finePaymentRequestDTO.getBook()));
+            userService.update(user);
+            // save payment
+            Payment payment = new Payment(
+                    user.getEmail(),
+                    finePaymentRequestDTO.getPhoneNumber() + "",
+                    null,
+                    finePaymentRequestDTO.getUserId(),
+                    darajaACKDTO.getMerchantRequestId()
+            );
+            payment.setInitiatedOn(LocalDateTime.now());
+
+
+            log.info("About to save payment with merchant id : {}", darajaACKDTO.getMerchantRequestId());
+            savePayment(payment);
+
+
+
+        }
+        return darajaRequestResponseDTO;
+
+
     }
 
 

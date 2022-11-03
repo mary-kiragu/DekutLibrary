@@ -1,5 +1,8 @@
 package com.library.libraryServer.domain;
 
+import com.fasterxml.jackson.databind.annotation.*;
+import com.fasterxml.jackson.datatype.jsr310.deser.*;
+import com.fasterxml.jackson.datatype.jsr310.ser.*;
 import com.library.libraryServer.domain.enums.*;
 import lombok.*;
 
@@ -12,6 +15,7 @@ import java.time.*;
 @Table(name = "tbl_book")
 
 public class Book implements Serializable {
+
     public Book() {
 
     }
@@ -73,7 +77,9 @@ public class Book implements Serializable {
 
     private Integer fine=0;
 
-    private  String dueDate;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private  LocalDate dueDate;
 
     private String bookUrl;
 

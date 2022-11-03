@@ -26,6 +26,14 @@ public class PaymentResource {
 
     }
 
+    @PostMapping(path="/fines")
+    public ResponseEntity<DarajaRequestResponseDTO> initiateFinePayment(@RequestBody FinePaymentRequestDTO finePaymentRequestDTO){
+
+        DarajaRequestResponseDTO darajaRequestResponseDTO= paymentService.initiateFinePayment(finePaymentRequestDTO);
+
+        return ResponseEntity.ok().body(darajaRequestResponseDTO);
+
+    }
     @PostMapping("/callback")
     public void paymentCallBack(@RequestBody LipaNaDarajaCallBackDTO lipaNaDarajaCallBackDTO) {
         log.info("Lipa na daraja call back : {}", lipaNaDarajaCallBackDTO);

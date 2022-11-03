@@ -1,5 +1,7 @@
 package com.library.libraryServer.services;
 
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.datatype.jsr310.*;
 import com.library.libraryServer.config.*;
 import com.library.libraryServer.domain.*;
 import com.library.libraryServer.domain.dto.*;
@@ -22,6 +24,7 @@ import java.util.*;
 
 @Service
 @Slf4j
+
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -32,6 +35,9 @@ public class UserService {
     private final UserMapper userMapper;
 
     private final MpesaConfiguration mpesaConfiguration;
+    //ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+
 
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ProfileService profileService, MailService mailService, UserMapper userMapper, MpesaConfiguration mpesaConfiguration) {
@@ -57,7 +63,7 @@ public class UserService {
     }
     public List<User> getAllUsers() {
         List<User> allUsers = userRepository.findAll();
-        log.info("This is a list of all users found: ", allUsers);
+        log.info("This is a list of all users found:{} ", allUsers);
         return allUsers;
     }
     public User create(String email, String name, String password) {
@@ -110,7 +116,9 @@ public class UserService {
 
     public User getCurrentLoggedInUser() {
         log.info("Request to get currently logged in user");
-        Optional<String> optionalEmail = SecurityUtils.getCurrentUseEmail();
+        Optional<String> optionalEmail = SecurityUtils.getCurrentUserLogin2();
+        log.info("Request to get currently logged in user {}",optionalEmail);
+
 
         User user = null;
 
@@ -168,35 +176,8 @@ public class UserService {
     }
 
 
-   // @Scheduled(cron = "0 0 7 * * *")
+    @Scheduled(cron = "0 0 7 * * *")
 
-//    public void sendPaymentReminder() {
-//
-//        log.info("Sending payment reminders");
-//
-//
-//        LocalDate now = LocalDate.now();
-//
-//        short paymentReminder = mpesaConfiguration.getPaymentReminder();
-//        User user =getCurrentLoggedInUser();
-//
-//            if (user.getNextBillingDate() != null) {
-//                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(user.getNextBillingDate()), now));
-//                if (daysBetween <= paymentReminder) {
-//                    UserDTO userDTO = userMapper.toDTO(user);
-//                    // send payment reminder
-//                    String body = TemplateUtil.generatePaymentReminder(paymentReminder, userDTO);
-//                    NotifyEmailDTO notifyEmailDTO = new NotifyEmailDTO(userDTO.getEmail(),
-//                            "Payment Reminder", body, true, false);
-//
-//                    mailService.sendEmail(notifyEmailDTO);
-//                }
-//            } else {
-//
-//            }
-//        }
-
-    //@Scheduled(fixedRate = 25000)
     public void sendDuedateReminder() {
         log.info("------------------------- ");
 
@@ -211,8 +192,10 @@ public class UserService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (User user : users) {
-            if (user.getEmail() != null) {
-                long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(user.getNextBillingDate(), formatter), now));
+            if (user.getEmail() != null && user.getLastBillingDate()!=null) {
+
+               // long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(user.getNextBillingDate(), formatter), now));
+                long daysBetween = Math.abs(ChronoUnit.DAYS.between(user.getNextBillingDate(), now));
                 log.info("Day difference : {}", daysBetween);
                 if (daysBetween == paymentReminder) {
                     UserDTO userDTO = userMapper.toDTO(user);
@@ -228,11 +211,39 @@ public class UserService {
                     mailService.sendEmail(notifyEmailDTO);
                 }
             }
+            else{
+                log.info("No email or lastBillingDate");
+                continue;
+            }
         }
+
+
+
+
+
+    }
+    @Scheduled(cron = "0 0 7 * * *")
+    public void CheckSubscription(){
+        LocalDate now = LocalDate.now();
+        List<User> users = getAllUsers();
+        for (User user : users) {
+            if (user.getEmail() != null && user.getLastBillingDate()!=null) {
+                if(now.isAfter(user.getNextBillingDate()) && user.getAccountStatus()==AccountStatus.PAID){
+                    user.setAccountStatus(AccountStatus.UNPAID);
+                }
+
+
+            }
+            else{
+                log.info("No email or lastBillingDate");
+                continue;
+            }
 
     }
 
 
 
+
+}
 
 }
