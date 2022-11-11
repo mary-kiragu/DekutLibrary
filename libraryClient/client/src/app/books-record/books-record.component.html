@@ -26,7 +26,6 @@
 
             <tbody>
                 <tr *ngFor="let book of books">
-                    <td>{{book.id}}</td>
                     <td>{{book.title}}</td>
                     <td>{{book.author}}</td>
                     <td>{{book.status}}</td>
@@ -45,10 +44,9 @@
                       <i class="fas fa-edit"></i>
                       </button></td>
                     <td><button class="btn btn-outline-success edit" type="submit" (click)="deleteBook(book.id)"><i class="fa fa-trash-o" style="font-size:36px"></i></button></td>
-                    <td *ngIf="book.status==='BORROWED'"><button type="submit" (click)="returnBook(book)" class="btn btn-outline-success">ReturnBook</button></td>
-
-
-
+                    <td *ngIf="book.status==='BORROWED' && book.fine==0"><button type="submit" (click)="returnBook(book)" class="btn btn-outline-success">ReturnBook</button></td>
+                    <td *ngIf="book.fine!=0"> <button type="submit " class=" mt-2 button-3" data-bs-toggle="modal" data-bs-target="#subscriptionModal" (click)="setBookId(book.id)">Pay</button>
+                    </td>
 
                 </tr>
 
@@ -111,10 +109,7 @@
         </div>
     </div>
 </div>
-<!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button> -->
+
 
 <!-- delete Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -133,6 +128,39 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Delete</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to create or update  payment plan  -->
+<div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Payment Details</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+            </div>
+            <form name="paymentRequestForm" [formGroup]="paymentRequestForm" (ngSubmit)="initiateFPayment()" role="form">
+
+
+                <div class="modal-body">
+                    <div class=" form-group">
+                        <label for="phoneNumber"> PhoneNumber</label>
+                        <!-- <input class="form-control" type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="paymentRequest.phoneNumber"> -->
+                        <input class="form-control" type="text" name="phoneNumber" formControlName="phoneNumber" placeholder="Enter phone number starting with 254">
+                    </div>
+
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

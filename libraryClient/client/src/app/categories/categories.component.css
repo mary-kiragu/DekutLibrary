@@ -3,7 +3,14 @@ div.img-thumbnail {
     max-width: 100 px;
 }
 
+.img-thumbnail {
+    max-height: 100 px;
+    max-width: 100 px;
+}
+
 img {
+    max-height: 100 px;
+    max-width: 100 px;
     border-radius: 8 px;
 }
 

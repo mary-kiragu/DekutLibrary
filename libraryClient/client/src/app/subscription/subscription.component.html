@@ -14,7 +14,7 @@
                     <h4 class=""> Ksh :<strong>{{paymentPlan.paymentAmount}}</strong>
                     </h4>
                     <h6 class=""> <strong>{{paymentPlan.paymentDuration}}</strong> </h6>
-                    <p>{{paymentPlan.description}}</p>
+                    <p [innerHTML]="paymentPlan.description"></p>
 
                     <div>
 
@@ -22,7 +22,7 @@
                         <div class="mt-3" *ngIf="user.authority ==='ADMIN'" (click)="setPaymentPlanId(paymentPlan.id)">
                             <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
 
-                            <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#planModal"><i class="fas fa-edit" style="font-size:24px"></i></button>
+                            <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#updatePlanModal" (click)="setSelectedPlan(paymentPlan)"><i class="fas fa-edit" style="font-size:24px"></i></button>
 
                         </div>
 
@@ -76,7 +76,7 @@
     </div>
 
 
-    <!-- Modal -->
+    <!--Create Modal -->
     <div class="modal fade" id="planModal" tabindex="-1" role="dialog" aria-labelledby="planModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -112,15 +112,8 @@
 
                         </div>
                         <div class="form-group">
-                            <!-- <ul class="list-group">
-                                <label for="description">Description</label>
-                                <li class="list-group-item"> <textarea class="form-control" name="description" formControlName="description" rows="3"></textarea>
-                                </li>
-                                <li> <textarea class="form-control" name="description" formControlName="description" rows="3"></textarea>
-                                </li>
 
-                            </ul> -->
-                            <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
+                            <angular-editor class="form-control" name="description" formControlName="description" placeholder="Description"></angular-editor>
 
                         </div>
 
@@ -133,6 +126,58 @@
             </div>
         </div>
     </div>
+
+    <!-- update Modal -->
+    <div class="modal fade" id="updatePlanModal" tabindex="-1" role="dialog" aria-labelledby="planModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Edit Payment plan</h5>
+
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form name="paymentPlanForm" [formGroup]="paymentPlanForm" role="form" (ngSubmit)="updatePlan()">
+
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input class="form-control" type="text" name="name" formControlName="name">
+                        </div>
+                        <div class=" form-group">
+                            <label for="paymentAmount">Amount</label>
+                            <input class="form-control" type="text" name="paymentAmount" formControlName="paymentAmount">
+                        </div>
+                        <div class=" form-group">
+                            <label for="paymentDuration">Duration</label>
+                            <!-- <input class="form-control" type="text" name="paymentDuration" formControlName="paymentDuration"> -->
+                            <select class=" form-control form-select form-select-sm" name="paymentDuration" formControlName="paymentDuration" aria-label=".form-select-sm example">
+                            <option *ngFor="let pay of paymentDurations" [value]="pay">
+                              {{duration2LabelMapping[pay]}}
+                          </option>
+
+                          </select>
+
+                        </div>
+                        <div class="form-group">
+
+                            <angular-editor class="form-control" name="description" formControlName="description" placeholder="Description"></angular-editor>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" (click)="updatePlan()">submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- delete Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

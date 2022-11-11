@@ -30,7 +30,7 @@ export class CategoriesService {
   getOne(id: number): Observable<any> {
     return this.httpClient.get(this.apiServerUrl + "/api/categories/" + id);
   }
-  filterByParent(parentId: number,adminView?:boolean): Observable<any> {
+  filterByParent(parentId: number): Observable<any> {
 
     return this.httpClient.get(this.apiServerUrl + "/api/categories/filter-by-parent/" + parentId);
   }

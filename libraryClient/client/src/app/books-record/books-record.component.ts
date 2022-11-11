@@ -3,6 +3,9 @@ import { Book } from '../books/book.model';
 import { BookService } from '../book.service';
 import { FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { UserService } from '../user.service';
+import { SubscriptionComponent } from '../subscription/subscription.component';
+import { SubscriptionService } from '../subscription.service';
 
 @Component({
   selector: 'app-books-record',
@@ -15,6 +18,7 @@ export class BooksRecordComponent implements OnInit {
     isbn: '',
     title: '',
     author: '',
+    fine:'',
     imageUrl: '',
     bookImageUrl:'',
     name:'',
@@ -36,6 +40,7 @@ export class BooksRecordComponent implements OnInit {
     title: [],
     author: [],
     imageUrl: [],
+    fine:[],
     bookImageUrl:[],
     name:[],
     type:[],
@@ -50,10 +55,19 @@ export class BooksRecordComponent implements OnInit {
     bookSize:[],
   });
   books: any = [];
+  user:any;
+  paymentRequest:any;
+  paymentRequestForm=this.formBuilder.group({
+    phoneNumber:[''],
+    userId:[''],
+    bookId:['']
+  })
 
   constructor(
     private bookService: BookService,
     private formBuilder: FormBuilder,
+    private userService:UserService,
+    private subscriptionService:SubscriptionService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -64,7 +78,19 @@ export class BooksRecordComponent implements OnInit {
     if (id) {
       this.getOne(id);
     }
+    this.getCurrentUser();
   }
+
+  getCurrentUser(): void {
+    this.userService.getProfile().subscribe(
+      userProfile => {
+         this.user = userProfile;
+        console.log("user profs",this.user);
+
+      });
+
+  }
+
 
   editBook(book: any): void {
     this.bookId = +book.id;
@@ -200,4 +226,52 @@ export class BooksRecordComponent implements OnInit {
       this.addNewBook();
     }
   }
+
+  extractPaymentRequestDetails(): any {
+    return{
+      phoneNumber:this.paymentRequestForm.get('phoneNumber')!.value,
+      bookId:this.book.id,
+      userId:this.user.id
+
+    }
+
+  }
+  initiateFPayment():any{
+    this.paymentRequest=this.extractPaymentRequestDetails();
+    console.log("about to initiate payment",this.paymentRequest)
+    this.subscriptionService.initiateFinePayment(this.paymentRequest).subscribe(
+      (res)=>{
+
+        console.log("paymentrequest",res);
+
+        this.wait(25000);
+        console.log("wait")
+        this.user=this.getCurrentUser();
+
+        if(this.user.accountStatus==="PAID"){
+          this.router.navigate(['/categories']);
+        }
+
+      },
+      (err)=>{
+        console.log("error",err);
+
+      }
+    )
+  }
+  wait(ms:number):any{
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+   }
+ }
+
+ setBookId(bookId: any){
+  this.book.id = bookId;
+  console.log(this.book.id)
+}
+
+
+
 }

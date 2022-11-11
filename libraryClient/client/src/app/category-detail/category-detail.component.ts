@@ -9,6 +9,14 @@ interface Category {
   name: string;
   parentCategoryId: number;
   description: string;
+  categoryType: string;
+  imageUrl: string;
+  categoryImageUrl: string;
+  categoryName: string;
+  type: string;
+  data: any;
+  size: string;
+
 }
 
 @Component({
@@ -20,12 +28,21 @@ export class CategoryDetailComponent implements OnInit {
 
   categoryForm = this.fb.group({
     id: [],
-    name: [],
-    description: [],
+    name: [''],
+    description:[''],
     parentCategoryId: [],
+    categoryType: [],
+    imageUrl:[''],
+    categoryImageUrl:[''],
+    categoryName:[''],
+    type:[''],
+    data:[],
+    size:[''],
+
 
   });
   category: any;
+  uploadFile=true;
 
 
   subCategories!: any;
@@ -55,11 +72,14 @@ export class CategoryDetailComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.getCategory(id);
+
     }
     // this.route.params.subscribe((params) => {
     // this.getCategory(params['id']);
     // });
+    this.getSubCategories(id);
     this.getCurrentUser();
+
   }
   getCurrentUser(): void {
     this.userService.getProfile().subscribe(
@@ -76,6 +96,7 @@ export class CategoryDetailComponent implements OnInit {
     this.categoriesService.getOne(id).subscribe(
       (res) => {
         this.category = res;
+        console.log("this category",this.category)
         this.loadingCats = false;
 
         this.category.parents?.forEach((parentCategory: any) => {
@@ -84,8 +105,9 @@ export class CategoryDetailComponent implements OnInit {
         console.log('category : ', this.category);
 
         // // this.filterVideosByCategory(this.category.id);
+        const subcats=this.getSubCategories(id);
 
-         console.log("subcats",this.getSubCategories(this.category.id));
+         console.log("subcats",subcats);
       },
       (err) => {
         console.log(err);
@@ -94,28 +116,71 @@ export class CategoryDetailComponent implements OnInit {
   }
   getSubCategories(id: number) {
     this.loadingSubCats = true;
-
     this.categoriesService.filterByParent(id).subscribe(
       (result) => {
         this.subCategories = result;
+        console.log("subcategories",this.subCategories);
         this.sortableSubCats = result;
         this.loadingSubCats = false;
       },
       (error) => {
+        console.log("error getting subcats",error)
         this.loadingSubCats = false;
       }
     );
   }
   protected createcategoryFromForm(): any {
+
     return {
-      id: this.categoryForm.get('id')!.value,
-      name: this.categoryForm.get('name')!.value,
-      description: this.categoryForm.get('description')!.value,
+      id: this.categoryForm.get(['id'])!.value,
+      name: this.categoryForm.get(['name'])!.value,
+      description: this.categoryForm.get(['description'])!.value,
       parentCategoryId:this.category.id,
+      //imageUrl: this.categoryForm.get(['imageUrl'])!.value || '',
       categoryType: 'SECTION',
+      categoryImageUrl: this.category.categoryImageUrl,
+      categoryName: this.category.categoryName,
+      type: this.category.type,
+      data: this.category.data,
+      size: this.category.size,
     };
   }
 
+  url: any;
+msg = "";
+
+selectFile(event: any) {
+  if (!event.target.files[0] || event.target.files[0].length == 0) {
+    this.msg = 'You must select an image';
+    return;
+  }
+
+  console.log("Selected, ", event.target.files[0])
+  var categoryImageName = event.target.files[0].name;
+  var categoryImageType = event.target.files[0].type;
+  var categoryImageSize = event.target.files[0].size;
+
+
+
+  if (categoryImageType.match(/image\/*/) == null) {
+    this.msg = "Only images are supported";
+    return;
+  }
+  var reader = new FileReader();
+  reader.readAsDataURL(event.target.files[0]);
+
+  reader.onload = (_event) => {
+    this.msg = "";
+    this.url = reader.result;
+    const categoryImageData = this.url.split('base64,')[1];
+    this.category.categoryImageUrl = this.url;
+    this.category.categoryName = categoryImageName;
+    this.category.type = categoryImageType;
+    this.category.data = categoryImageData;
+    this.category.size = categoryImageSize;
+    console.log("Selected image data, ", categoryImageData)
+  }
+}
   saveSection(): void {
     console.log('saving section');
     let category = this.createcategoryFromForm();
@@ -196,6 +261,15 @@ deleteCategory(): any {
       description: [category.description],
       parentCategoryId: [category.parentCategoryId],
     });
+  }
+
+  showInputUrl():any{
+    this.uploadFile=false
+
+  }
+  showUploadFile():any{
+    this.uploadFile=true
+
   }
 
 

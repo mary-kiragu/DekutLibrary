@@ -32,9 +32,10 @@ export class SubscriptionComponent implements OnInit {
 
   planId!:number;
   paymentRequest:any;
+
   //paymentPlan!:PaymentPlan;
 
-  selectedPlan: Plan | null = null
+  selectedPlan:any;
 
   paymentRequestForm=this.fb.group({
     paymentPlan:[''],
@@ -103,6 +104,7 @@ export class SubscriptionComponent implements OnInit {
   addPlan(): any {
     const planDetails = this.extractPaymentFormDetails();
     console.log(planDetails);
+    return
 
     this.subscriptionService.save(planDetails).subscribe(
       (res) => {
@@ -164,6 +166,11 @@ export class SubscriptionComponent implements OnInit {
     console.log(this.paymentPlan.id)
   }
 
+  setSelectedPlan(paymentPlan:PaymentPlan){
+    this.selectedPlan=paymentPlan;
+    this.paymentPlanForm=this.fb.group(paymentPlan)
+  }
+
 
   initiatePayment():any{
     this.paymentRequest=this.extractPaymentRequestDetails();
@@ -180,10 +187,6 @@ export class SubscriptionComponent implements OnInit {
         if(this.user.accountStatus==="PAID"){
           this.router.navigate(['/categories']);
         }
-
-
-
-
 
       },
       (err)=>{

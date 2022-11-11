@@ -35,10 +35,13 @@
                         <p class="col-md-5 ">{{book.status}}</p>
 
                     </div>
-                    <button type="button" class="btn btn-outline-success edit" (click)="editBook(book)" data-bs-toggle="modal" data-bs-target="#bookModal">
-                      <i class="fas fa-edit"></i>
-                      </button>
-                    <button class="btn btn-outline-success edit" type="submit" (click)="deleteBook(book.id)" data-bs-toggle="modal" data-bs-target="#deleteModal"> <i class="fa fa-trash-o" style="font-size:36px"></i></button>
+                    <div>
+                        <button type="button" class="btn btn-outline-success edit" (click)="editBook(book)" data-bs-toggle="modal" data-bs-target="#bookModal">
+                        <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-success edit" type="submit" (click)="deleteBook(book.id)" data-bs-toggle="modal" data-bs-target="#deleteModal"> <i class="fa fa-trash-o" style="font-size:36px"></i></button>
+
+                    </div>
 
                     <div>
                         <button *ngIf="book.status!=='BORROWED' " type="button " class="btn button-3 " (click)="borrowBook() ">
@@ -53,6 +56,8 @@
 
 
         <div class="col-md-6">
+            <a href="{{book.bookUrl}}">Download <i class="fas fa-download"> </i></a>
+
 
             <embed *ngIf="book.bookType == 'application/pdf'" [src]="srcPDF | safeUrl" type="application/pdf" class="file">
         </div>

@@ -34,6 +34,11 @@ export class SubscriptionService {
 
 
   }
+  initiateFinePayment(data:any): Observable<any>{
+    return this.httpClient.post<any>(this.apiServerUrl + "/api/payment/fines",data);
+
+
+  }
 
   processPayment(data:any): Observable<any>{
     return this.httpClient.post<any>(this.apiServerUrl + "/api/payment/callback",data);

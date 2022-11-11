@@ -40,7 +40,9 @@
                 <div class="col-4 col-md-2 px-0 mb-2 subcategories" *ngFor="let category of subCategories">
                     <div class="card category-item" *ngIf="!loadingCats && !loadingSubCats">
                         <div class="thumbnail" (click)="toCategoryDetail(category.id)">
-                            <img src="../../assets/images/pexels-wallace-chuck-3728085.jpg" alt="book thumbnail">
+                            <img *ngIf="category.categoryImageUrl" class="img-thumbnail" src="{{category.categoryImageUrl}} " alt="" [routerLink]="['/categories/',category.id]" />
+                            <!-- <img *ngIf="category.imageUrl" class="img-thumbnail" src="{{category.imagerl}} " alt="{{category.image}} " [routerLink]="['/categories/',category.id]" /> -->
+                            <!-- <img *ngIf="!category.categoryImageUrl" src="../../assets/images/pexels-wallace-chuck-3728085.jpg" alt="book thumbnail"> -->
                         </div>
 
                         <div class="flex-div">
@@ -48,15 +50,16 @@
                                 <strong>{{category.name.length > 85 ? (category.name | slice:0:85) + '...' : category.name}}</strong>
                             </p>
 
-                            <p class="vid-title">
-                                {{category.name.length > 85 ? (category.name | slice:0:85) + '...' : category.description}}
+                            <p class="vid-title" [innerHTML]="category.description">
+
+                                <!-- {{category.description.length > 85 ? (category.description | slice:0:85) + '...' : category.description}} -->
                             </p>
                             <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)" *ngIf="user.authority ==='ADMIN'"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
 
                             <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)" *ngIf="user.authority ==='ADMIN'"><i class="fas fa-edit" style="font-size:24px"></i></button>
                         </div>
                     </div>
-                </div>
+                </div>45
             </div>
 
 
@@ -82,14 +85,24 @@
 
                             <input type="text" class="form-control" id="fieldName" name="fieldName" placeholder="Section name" formControlName="name" />
                         </div>
+                        <div *ngIf="uploadFile" class=" form-group">
+                            <label for="imageUrl">Browse image</label>
+
+                            <input accept="image/*" class="form-control" type="file" name="categoryImageUrl" (change)="selectFile($event)">
+                            <a style="cursor: pointer; color: blue;"><small (click)="showInputUrl()"> or input image url</small></a>
+                        </div>
+                        <div *ngIf="!uploadFile">
+                            <div class=" form-group">
+                                <label for="imageUrl">ImageUrl</label>
+                                <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
+
+                            </div>
+                            <a style="cursor: pointer;color: blue;"><small (click)="showUploadFile()"> upload image</small></a>
+
+                        </div>
                         <div class="form-group row mt-2 ">
                             <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
 
-                            <!-- <div class="col-md-12 ">
-                                <label class="form-control-label " for="fieldDescription ">Description</label>
-
-                                <textarea class="form-control " id="fieldDescription " name="fieldDescription " placeholder="write a brief description of books in this section " formControlName="description"></textarea>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -128,39 +141,49 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
-                    Edit Category</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+<form name="categoryForm" [formGroup]="categoryForm" role="form" (ngSubmit)="updateCategory()">
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Edit Category</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
-            </div>
+                </div>
 
-            <div class="modal-body">
-                <form name="categoryForm" [formGroup]="categoryForm" role="form" (ngSubmit)="updateCategory()">
+                <div class="modal-body">
 
                     <div class="form-group">
                         <label for="name">name</label>
                         <input class="form-control" type="text" name="name" formControlName="name">
                     </div>
-                    <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
+                    <div class=" form-group">
+                        <label for="imageUrl">Browse image</label>
 
-                    <!-- <div class="form-group">
-                        <label class="form-control-label " for="description ">Description</label>
+                        <input accept="image/*" class="form-control" type="file" name="categoryImageUrl" (change)="selectFile($event)">
+                        <a style="cursor: pointer; color: blue;"><small (click)="showInputUrl()"> or input image url</small></a>
+                    </div>
+                    <div *ngIf="!uploadFile">
+                        <div class=" form-group">
+                            <label for="imageUrl ">ImageUrl</label>
+                            <input class="form-control " type="text " name="categoryImageUrl " formControlName="imageUrl ">
 
-                        <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea>
-                    </div> -->
+                        </div>
+                        <a style="cursor: pointer;color: blue; "><small (click)="showUploadFile() "> upload image</small></a>
+
+                    </div>
+                    <angular-editor class="form-control " name="description " formControlName="description " placeholder="Description "></angular-editor>
 
 
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" (click)="updateCategory()">submit</button>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button " class="btn btn-secondary " data-bs-dismiss="modal ">Close</button>
+                    <button type="button " class="btn btn-primary " (click)="updateCategory() ">submit</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>

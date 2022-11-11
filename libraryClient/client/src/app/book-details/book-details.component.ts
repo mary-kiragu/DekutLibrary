@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Book } from '../books/book.model';
 import { BookService } from '../book.service';
 import { FormBuilder } from '@angular/forms';
+import { UserService } from '../user.service';
+import { User } from '../login/user.model';
 
 @Component({
   selector: 'app-book-details',
@@ -50,12 +52,14 @@ export class BookDetailsComponent implements OnInit {
     bookSize:[],
   });
   srcPDF ! :string;
+  user!: User;
 
 //book!:any;
 borrowedBook:any;
 id!:number;
   constructor(
     private bookService:BookService,
+    private userService:UserService,
     private formBuilder: FormBuilder,
     private router:Router,
     private route:ActivatedRoute
@@ -69,6 +73,16 @@ id!:number;
 
     }
   }
+  getCurrentUser(): void {
+    this.userService.getProfile().subscribe(
+      userProfile => {
+         this.user = userProfile;
+        console.log("user profs",this.user);
+
+      });
+
+  }
+
 
   getOne(id:number):void{
     this.bookService.findbyId(id).subscribe(
