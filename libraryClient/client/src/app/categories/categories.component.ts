@@ -252,7 +252,7 @@ export class CategoriesComponent implements OnInit {
 
   filter(): void {
     let filteredCaregories = this.categoriesFromDB.filter((category) =>
-      category.name.includes(this.searchText)
+      category.name.toLowerCase().includes(this.searchText.toLowerCase())
     );
     console.log(filteredCaregories);
     this.categoriesToRender = filteredCaregories;
