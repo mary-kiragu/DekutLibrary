@@ -55,12 +55,6 @@
     max-width: 100 px;
 }
 
-img {
-    border-radius: 8 px;
-    height: 100%;
-    width: 100%;
-}
-
 .subcategories {
     box-shadow: 0 4px 8px 0 rgba(15, 227, 235, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 10px;
