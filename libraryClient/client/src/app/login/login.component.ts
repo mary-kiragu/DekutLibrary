@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
         console.log(err);
 
         this.loginFailure =
-          'Login failed! wrong username or password try again';
+          'Login Failed.\nPlease check your Email and Password';
         setTimeout(() => {
           this.loginFailure = '';
         }, 3000);
