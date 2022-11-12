@@ -1,42 +1,34 @@
-<div class=" row justify-content-center">
+<div class="relative flex items-center justify-center w-full bg-white h-[100vh]">
+    <form role="form" class="base-form">
+        <div class="base-form-header">
+            <h2 class="text-4xl font-bold text-white">Login</h2>
+        </div>
 
-    <div class="col-md-6 ">
-        <form role="form" class="login">
-            <h2 class="mt-6">Login</h2>
-            <div class="row justify-content-center mt-5">
-                <div class=" form-group col-md-8 ">
+        <div class="p-4">
+            <div class="w-full mb-4">
+                <label for="email" class="text-lg block mb-2"> Email</label>
+                <input class="base-input" type="text" name="email" [(ngModel)]="entry.email" />
+            </div>
+            <div class="w-full mb-4">
+                <label for="password" class="text-lg block mb-2">Password</label>
+                <input class="base-input" type="password" name="password" [(ngModel)]="entry.password" />
+            </div>
 
-                    <label for="email"> Email</label>
-                    <input class="form-control" type="text" name="email" [(ngModel)]="entry.email">
-                </div>
-                <div class=" form-group col-md-8 ">
-                    <label for="password ">password</label>
-                    <input class="form-control " type="password" name="password" [(ngModel)]="entry.password">
-                </div>
-
-                <div>
-                    <button type="submit " class=" mt-2 button-3" (click)="login()">Login</button>
-
-                </div>
-                <div>
-                    <div *ngIf="loginFailure" class="alert alert-dismissible alert-warning fade show" role="alert">
-                        {{loginFailure}}
-
-                    </div>
-
+            <div class="flex items-center justify-center w-full">
+                <button type="submit " class="base-btn" (click)="login()">
+          Login
+        </button>
+            </div>
+            <div class="mb-4">
+                <div *ngIf="loginFailure" class="rounded-xl bg-amber-500 py-4 px-4 text-center text-lg font-semibold text-white mt-4" role=" alert ">
+                    {{ loginFailure }}
                 </div>
             </div>
-            <a [routerLink]="['/register']">Do you dont have an accout?Register</a>
-
-
-
-
-        </form>
+            <a [routerLink]="['/register']" class="base-link">SignUp Instead</a
+      >
     </div>
-    <div class="col-md-6">
-        <img class=" image" src="assets/images/logiin.jpg" alt="./assets/images/billionare.jpeg" />
-
-    </div>
-
-
+  </form>
+  <div class="absolute w-full h-full">
+    <img class="object-cover w-full h-[100vh]" style="height:100vh ;" src="../../assets/images/logiin.jpg">
+  </div>
 </div>

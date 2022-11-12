@@ -1,204 +1,276 @@
 <div class="">
-    <div class="row">
-        <div class="col-md-9 mb-3 mt-3">
-            <div class="input-group" style="margin-left: 20px ">
-                <div class="form-outline">
-                    <input type="text" class="form-control form-control-sm" name="searchText" [(ngModel)]="searchText" (keyup)="filter()" placeholder="Search category" aria-label="Categoryname" aria-describedby="button-addon2">
-                </div>
-                <button *ngIf="!isFiltered" class="btn button-3" [ngClass]="{'activate-button':searchText}" (click)="filter()"><span>
-                  <i  class="fas fa-search"></i>
-                </span></button>
-                <button *ngIf="isFiltered" class="btn button-3" [ngClass]="{'activate-button':searchText}" (click)="unfilter()"><span>
-                  <i  class="fas fa-close"></i>
-                </span></button>
-                <!-- <button type="button" class="btn button-3">
-          <i class="fas fa-search"></i>
-        </button> -->
-            </div>
+    <div class="flex justify-between items-center p-4">
+        <div class="w-[100px]"></div>
+        <div class="relative">
+            <input type="text" class="base-input w-[300px] pl-8 placeholder:text-[#85B292] placeholder:font-light" name="searchText" [(ngModel)]="searchText" (keyup)="filter()" placeholder="Search category" aria-label="Categoryname" aria-describedby="button-addon2"
+            />
+
+            <button class="absolute left-3 top-[10px]" [ngClass]="{ 'activate-button': searchText }" (click)="filter()">
+        <i class="fas fa-search text-[#85B292]"></i>
+      </button>
+            <button *ngIf="isFiltered" class="absolute right-4 top-[10px]" [ngClass]="{ 'activate-button': searchText }" (click)="unfilter()">
+        <i class="fas fa-close"></i>
+      </button>
+            <!-- <button type="button" class="btn button-3">
+        <i class="fas fa-search"></i>
+      </button> -->
         </div>
-        <div class="col-md-2 mt-3 " style="margin-right: 5px " *ngIf="user.authority ==='ADMIN'">
-
-
-            <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#createTopicModal" class="btn-category-add float-end button-3"><i
-      class="fa fa-plus"></i> Add Category</button></div>
+        <div *ngIf="user.authority === 'ADMIN'">
+            <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#createTopicModal" class="base-btn px-4 py-[12px] text-sm">
+        <i class="fa fa-plus"></i> Add Category
+      </button>
+        </div>
     </div>
 
-    <div class="row mb-3">
-
-
-
-        <div></div>
-
-        <div class="col-md-2 categories" *ngFor="let category of categoryFilter('category')">
-
-            <div *ngIf="category.categoryType=='CATEGORY'">
-
-
-
-                <img class="img-thumbnail" src="{{category.imageUrl || category.categoryImageUrl}}" alt="" [routerLink]="['/categories/',category.id]" />
-
-                <!-- <img class="img-thumbnail" src="../../assets/images/pexels-janko-ferlic-590493.jpg" alt="./assets/images/billionare.jpeg" [routerLink]="['/categories/',category.id]" /> -->
-
-                <div class="row ">
-                    <label class=" " for="name"><strong>Name:</strong> {{category.name}}</label>
-
-                </div>
-                <!-- <div class="row ">
-                    <label class="" for="name"><strong>Parent:</strong> {{category.parentCategoryId}}</label>
-
-                </div> -->
-                <div class="row ">
-                    <label class="" for="name"><strong>Description:</strong> <p [innerHTML]="category.description"></p></label>
-
-                </div>
-
-
-
-                <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)" *ngIf="user.authority ==='ADMIN'"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
-
-                <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)" *ngIf="user.authority ==='ADMIN'"><i class="fas fa-edit" style="font-size:24px"></i></button>
-
-
-
+    <div class="grid grid-cols-4 items-center justify-items-center">
+        <div class="group relative lg:w-[300px] p-4 rounded-3xl bg-white shadow-lg shadow-black-500/50" *ngFor="let category of categoryFilter('category')">
+            <div class="mb-4 overflow-hidden rounded-2xl">
+                <img class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{ category.imageUrl || category.categoryImageUrl }}" alt="" [routerLink]="['/categories/', category.id]" />
             </div>
+            <p class="font-semibold text-xl">{{ category.name }}</p>
+            <div class="absolute overflow-hidden bottom-[10px] right-[10px] bg-white shadow-lg shadow-black-500/50 rounded-full scale-0 group-hover:scale-100">
+                <button class="px-3 py-2 hover:bg-red-100" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)" *ngIf="user.authority === 'ADMIN'">
+          <i class="fa fa-trash text-red-500" style="font-size: 24px"></i>
+        </button>
+                <button class="px-3 py-2 hover:bg-amber-100" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)" *ngIf="user.authority === 'ADMIN'">
+          <i class="fas fa-edit text-orange-500" style="font-size: 24px"></i>
+        </button>
+            </div>
+            <!-- <div class="absolute bg-white shadow-lg shadow-black-500/50 p-2 rounded-xl top-[0px] right-[-10px] opacity-0 pointer-none group-hover:bottom-[-30px] group-hover:opacity-1">
+                <p [innerHTML]="category.description"></p>
+            </div> -->
         </div>
     </div>
 </div>
 
-
-
-
-
-
-
 <!-- Create Topic Modal -->
 <div class="modal fade" id="createTopicModal" tabindex="-1 " aria-labelledby="createTopicModal" aria-hidden="true ">
-    <div class="modal-dialog ">
-        <div class="modal-content ">
-            <div class="modal-header ">
-                <h5 class="modal-title " id="createTopicModal "> Create Category</h5>
-                <button type="button " class="btn-close " (click)="reset() " data-bs-dismiss="modal" aria-label="Close "></button>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTopicModal ">Create Category</h5>
+                <button type="button " class="btn-close" (click)="reset()" data-bs-dismiss="modal" aria-label="Close "></button>
             </div>
-            <div class="modal-body ">
+            <div class="modal-body">
                 <form name="categoryForm" [formGroup]="categoryForm" (ngSubmit)="save()">
-
-                    <div class="form-group row ">
-                        <div class="col-md-12 ">
-                            <label class="form-control-label " for="name ">Name</label>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label class="form-control-label" for="name ">Name</label>
 
                             <input type="text " class="form-control" name="name" formControlName="name" />
                         </div>
                     </div>
-                    <div class="form-group row ">
-                        <div class=" form-group" *ngIf="!uploadFile">
+                    <div class="form-group row">
+                        <div class="form-group" *ngIf="!uploadFile">
                             <label for="imageUrl">ImageUrl</label>
-                            <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
+                            <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl" />
+                            <a style="cursor: pointer; color: blue"><small (click)="showUploadFile()">
+                  or upload image url</small
+                ></a
+              >
+            </div>
+            <div *ngIf="uploadFile" class="form-group">
+              <label for="imageUrl">Browse image</label>
 
-                        </div>
-                        <div class=" form-group">
-                            <label for="imageUrl">Browse image</label>
-
-                            <input accept="image/*" class="form-control" type="file" name="categoryImageUrl" (change)="selectFile($event)">
-                            <!-- <a style="cursor: pointer; color: blue;"><small (click)="showInputUrl()"> or input image url</small></a> -->
-                        </div>
-                        <!-- <div class="col-md-12 ">
+              <input
+                accept="image/*"
+                class="form-control"
+                type="file"
+                name="categoryImageUrl"
+                (change)="selectFile($event)"
+              />
+              <a style="cursor: pointer; color: blue"
+                ><small (click)="showInputUrl()"> or input image url</small></a
+              >
+            </div>
+            <!-- <div class="col-md-12 ">
                             <label class="form-control-label " for="categoryImageUrl ">Image url</label>
 
                             <input type="text " class="form-control" name="categoryImageUrl" formControlName="categoryImageUrl" />
                         </div> -->
-                    </div>
+          </div>
 
-                    <div class="form-group row mt-2 ">
-                        <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
+          <div class="form-group row mt-2">
+            <angular-editor
+              class="form-control"
+              formControlName="description"
+              placeholder="Description"
+            ></angular-editor>
 
+            <!-- <div class="col-md-12 ">
+                          <label class="form-control-label " for="description ">Description</label>
 
-                        <!-- <div class="col-md-12 ">
-                            <label class="form-control-label " for="description ">Description</label>
-
-                            <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea> -->
-                        <!-- </div> -->
-                    </div>
-                </form>
-
-            </div>
-            <div class="modal-footer ">
-                <button id="closeCreateCategoryModal" type="button " class="btn btn-cancel " data-bs-dismiss="modal" (click)="reset() ">CANCEL</button>
-                <button type="submit " class="btn btn-submit" (click)="saveCategory()" data-bs-dismiss="modal">SUBMIT</button>
-            </div>
-        </div>
+                          <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea> -->
+            <!-- </div> -->
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          id="closeCreateCategoryModal"
+          type="button "
+          class="btn btn-cancel"
+          data-bs-dismiss="modal"
+          (click)="reset()"
+        >
+          CANCEL
+        </button>
+        <button
+          type="submit "
+          class="btn btn-submit"
+          (click)="saveCategory()"
+          data-bs-dismiss="modal"
+        >
+          SUBMIT
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Confirmation to delete book</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete</p>
-                <p>{{selectedCategory?.name}}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="removeSelectedCategory()">Close</button>
-                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="deleteCategory()">Delete</button>
-            </div>
-        </div>
+<div
+  class="modal fade"
+  id="deleteModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="deleteModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Confirmation to delete book
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete</p>
+        <p>{{ selectedCategory?.name }}</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="removeSelectedCategory()"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="deleteCategory()"
+        >
+          Delete
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Edit Modal -->
-<form name="categoryForm" [formGroup]="categoryForm" role="form" (ngSubmit)="updateCategory()">
-
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">
-                        Edit Category</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <label for="name">name</label>
-                        <input class="form-control" type="text" name="name" formControlName="name">
-                    </div>
-                    <div *ngIf="uploadFile" class=" form-group">
-                        <label for="imageUrl">Browse image</label>
-
-                        <input accept="image/*" class="form-control" type="file" name="categoryImageUrl" formControlName="categoryImageUrl" (change)="selectUpdateFile($event)">
-                        <a style="cursor: pointer; color: blue;"><small (click)="showInputUrl()"> or input image url</small></a>
-                    </div>
-                    <div *ngIf="!uploadFile">
-                        <div class=" form-group">
-                            <label for="imageUrl">ImageUrl</label>
-                            <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
-
-                        </div>
-                        <a style="cursor: pointer;color: blue;"><small (click)="showUploadFile()"> upload image</small></a>
-
-                    </div>
-                    <div class="form-group">
-                        <angular-editor class="form-control" formControlName="description" placeholder="Description"></angular-editor>
-
-                    </div>
-
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" (click)="updateCategory()">submit</button>
-                </div>
-            </div>
+<form
+  name="categoryForm"
+  [formGroup]="categoryForm"
+  role="form"
+  (ngSubmit)="updateCategory()"
+>
+  <div
+    class="modal fade"
+    id="editModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="editModalTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Edit Category</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="name">name</label>
+            <input
+              class="form-control"
+              type="text"
+              name="name"
+              formControlName="name"
+            />
+          </div>
+          <div *ngIf="uploadFile" class="form-group">
+            <label for="imageUrl">Browse image</label>
+
+            <input
+              accept="image/*"
+              class="form-control"
+              type="file"
+              name="categoryImageUrl"
+              formControlName="categoryImageUrl"
+              (change)="selectUpdateFile($event)"
+            />
+            <a style="cursor: pointer; color: blue"
+              ><small (click)="showInputUrl()"> or input image url</small></a
+            >
+          </div>
+          <div *ngIf="!uploadFile">
+            <div class="form-group">
+              <label for="imageUrl">ImageUrl</label>
+              <input
+                class="form-control"
+                type="text"
+                name="imageUrl"
+                formControlName="imageUrl"
+              />
+            </div>
+            <a style="cursor: pointer; color: blue"
+              ><small (click)="showUploadFile()"> upload image</small></a
+            >
+          </div>
+          <div class="form-group">
+            <angular-editor
+              class="form-control"
+              formControlName="description"
+              placeholder="Description"
+            ></angular-editor>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="updateCategory()"
+          >
+            submit
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </form>
