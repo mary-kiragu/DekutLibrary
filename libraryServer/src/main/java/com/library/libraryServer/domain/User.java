@@ -42,6 +42,10 @@ public class User implements Serializable {
     private AccountStatus accountStatus;
 
     private Long account;
+
+    private String resetKey;
+
+    private LocalDate resetDate;
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate lastBillingDate;
@@ -49,6 +53,7 @@ public class User implements Serializable {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate nextBillingDate;
+
 
     public String getAuthorityName() {
         if (this.authority != null) {

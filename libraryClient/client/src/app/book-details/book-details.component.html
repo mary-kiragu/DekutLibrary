@@ -44,9 +44,14 @@
                     </div>
 
                     <div>
-                        <button *ngIf="book.status!=='BORROWED' " type="button " class="btn button-3 " (click)="borrowBook() ">
+                        <button *ngIf="book.status!=='BORROWED' && !book.bookType " type="button " class="btn button-3 " (click)="borrowBook() ">
               Borrow Book
             </button>
+
+                        <button disabled *ngIf="book.status=='BORROWED'" type="button" class="btn btn-outline-secondary btn-view">
+        Book Borrowed
+      </button>
+
                     </div>
                 </div>
             </div>

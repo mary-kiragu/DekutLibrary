@@ -25,5 +25,17 @@ public class Category {
         @Column(length = 2000)
         private CategoryEnum categoryType;
 
+        private String imageUrl;
+
+        private String categoryImageUrl;
+
+        private String categoryName;
+
+        private String type;
+
+        private String size;
+        @Lob
+        private byte[] data;
+
     }
 

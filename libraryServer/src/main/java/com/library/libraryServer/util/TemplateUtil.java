@@ -5,7 +5,7 @@ import com.library.libraryServer.domain.dto.*;
 
 public class TemplateUtil {
 
-    public static String passwordResetEmail(String name, String resetKey, String baseUrl, String appName, String email) {
+    public static String passwordResetEmail(String name, String resetKey, String appName, String email) {
 
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
@@ -20,13 +20,12 @@ public class TemplateUtil {
                 "\n" +
                 "    <p>You created an account on " + appName + ". Please click the link below to complete your account creation.</p>\n" +
                 "\n" +
-                "    <p>" + baseUrl + "reset?key=" + resetKey + "&email=" + email + "</p>\n" +
-                "\n" +
+
                 "</body>\n" +
                 "</html>";
     }
 
-    public static String generatePasswordReset(String name, String resetKey, String baseUrl, String email) {
+    public static String generatePasswordReset(String name, String resetKey,String email) {
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -40,7 +39,7 @@ public class TemplateUtil {
                 "\n" +
                 "    <p>Please click the link below to reset your password</p>\n" +
                 "\n" +
-                "    <p>" + baseUrl + "reset?key=" + resetKey + "&email=" + email + "</p>\n" +
+//                "    <p>" + baseUrl + "reset?key=" + resetKey + "&email=" + email + "</p>\n" +
                 "</body>\n" +
                 "</html>";
     }

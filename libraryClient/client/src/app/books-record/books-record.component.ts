@@ -54,7 +54,7 @@ export class BooksRecordComponent implements OnInit {
     bookData:[],
     bookSize:[],
   });
-  books: any = [];
+  books: Book[] = [];
   user:any;
   paymentRequest:any;
   paymentRequestForm=this.formBuilder.group({
@@ -62,6 +62,14 @@ export class BooksRecordComponent implements OnInit {
     userId:[''],
     bookId:['']
   })
+
+  issuedBook:any;
+  booksToRender: Book[]=[] ;
+
+  totalBorrowed = 0;
+  totalIssued = 0;
+  totalAvailable = 0;
+
 
   constructor(
     private bookService: BookService,
@@ -137,13 +145,18 @@ export class BooksRecordComponent implements OnInit {
   }
 
   getAllBooks(): void {
-    this.bookService.getAllBooks().subscribe((res) => {
+    this.bookService.getAllBooks().subscribe((res: any) => {
       console.log('Array of books available', res);
-
       this.books = res;
+      this.booksToRender=res as Book[];
+      this.getSubtotalsByStatus(res)
     });
   }
-
+  getSubtotalsByStatus(allBooks: Book[]):any{
+    this.totalBorrowed = allBooks.filter(book=>book.status==="BORROWED").length
+    this.totalAvailable = allBooks.filter(book=>book.status==="AVAILABLE").length
+   this.totalIssued= allBooks.filter(book=>book.status==="ISSUED").length
+  }
   addNewBook(): any {
     const bookDetails = this.extractBookDetails();
     console.log(bookDetails);
@@ -160,7 +173,7 @@ export class BooksRecordComponent implements OnInit {
   }
 
   returnBook(book: Book): any {
-    if (book.status === 'BORROWED') {
+    if (book.status === 'ISSUED') {
       console.log('book to be returned', book);
       this.bookService.returnBook(book).subscribe(
         (res) => {
@@ -235,6 +248,34 @@ export class BooksRecordComponent implements OnInit {
 
     }
 
+  }
+
+  filter(status: 'AVAILABLE'| 'ISSUED'|'BORROWED'):void{
+    this.booksToRender = this.books.filter((book: Book)=>book.status===status)
+  }
+
+
+
+  issueBook(book:Book):any{
+    if (book.status === 'BORROWED') {
+      console.log('book to be issued', book)
+      ;}
+    this.bookService.issueBook(book).subscribe(
+      (res)=>{
+        this.issuedBook=res;
+        console.log("issued book",this.issuedBook);
+        this.getAllBooks();
+        // const id=Number(this.route.snapshot.paramMap.get("id"));
+        // if(id){
+        //   this.getOne(id);
+
+        // }
+
+      },
+      (err)=>{
+
+      }
+    )
   }
   initiateFPayment():any{
     this.paymentRequest=this.extractPaymentRequestDetails();

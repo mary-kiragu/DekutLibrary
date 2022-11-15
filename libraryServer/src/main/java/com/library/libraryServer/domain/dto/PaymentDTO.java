@@ -15,6 +15,8 @@ public class PaymentDTO {
 
     private Long profileId;
 
+    private Long bookId;
+
     private double amount;
 
 }

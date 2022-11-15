@@ -24,6 +24,8 @@ public class Payment {
 
     private Long userId;
 
+    private Long bookId;
+
 
     private String merchantRequestId;
 

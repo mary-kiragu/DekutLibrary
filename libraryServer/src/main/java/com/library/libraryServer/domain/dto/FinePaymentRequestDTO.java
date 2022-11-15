@@ -4,7 +4,7 @@ import lombok.*;
 
 @Data
 public class FinePaymentRequestDTO {
-    private Long book;
+    private Long bookId;
 
     private Long phoneNumber;
 

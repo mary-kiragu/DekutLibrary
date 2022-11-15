@@ -21,7 +21,7 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class PayForSubscriptionService {
+public class PaymentService {
     private final PaymentPlanService paymentPlanService;
 
     private final BookService bookService;
@@ -45,7 +45,7 @@ public class PayForSubscriptionService {
     private String accessToken;
 
 
-    public PayForSubscriptionService(PaymentPlanService paymentPlanService, BookService bookService, MpesaConfiguration mpesaConfiguration, PaymentRepository paymentRepository, ProfileService profileService, AuditLogService auditLogService, UserService userService, UserRepository userRepository) {
+    public PaymentService(PaymentPlanService paymentPlanService, BookService bookService, MpesaConfiguration mpesaConfiguration, PaymentRepository paymentRepository, ProfileService profileService, AuditLogService auditLogService, UserService userService, UserRepository userRepository) {
         this.paymentPlanService = paymentPlanService;
         this.bookService = bookService;
         this.mpesaConfiguration = mpesaConfiguration;
@@ -379,7 +379,7 @@ public class PayForSubscriptionService {
         Payment payment = findOneByMerchantRequestId(callBackDTO.getBody().getStkCallBack().getMerchantRequestId());
 
         log.info("payement{}",payment);
-        // check if the payment involved paying damage fee
+        // check if the payment involved paying fines fee
         User user = userService.getCurrentLoggedInUser();
 
         PaymentDTO paymentDTO = new PaymentDTO();
@@ -397,10 +397,13 @@ public class PayForSubscriptionService {
         paymentDTO.setTransactionCode((String) customFields.get("MpesaReceiptNumber"));
         paymentDTO.setAmount((Double) customFields.get("Amount"));
         paymentDTO.setProfileId(payment.getUserId());
+        paymentDTO.setBookId(payment.getBookId());
 
         log.info("customfield {}",customFields);
         User profile = userService.findById(payment.getUserId());
-        log.info("user id{}",profile);
+        Optional<Book> bookOptional=bookService.getOneBook(payment.getBookId());
+        log.info("user id{}",bookOptional);
+
         // check if the payment was successfull
         Integer resultCode = callBackDTO.getBody().getStkCallBack().getResultCode();
 
@@ -423,6 +426,19 @@ public class PayForSubscriptionService {
             paymentDTO.setStatus("ERROR");
             paymentDTO.setStatusReason(callBackDTO.getBody().getStkCallBack().getResultDescription());
         }
+        if(bookOptional.isPresent()){
+            Book book=bookOptional.get();
+            bookService.returnBook(book.getId());
+
+
+        }
+
+
+        payment.setTransactionCode(paymentDTO.getTransactionCode());
+        payment.setStatus(PaymentStatus.COMPLETE);
+        payment.setAmount(paymentDTO.getAmount());
+        updatePayment(payment);
+
 
 
 
@@ -481,7 +497,7 @@ public class PayForSubscriptionService {
         DarajaRequestResponseDTO darajaRequestResponseDTO = new DarajaRequestResponseDTO();
 
 
-        Optional<Book> bookOptional = bookService.getOneBook(finePaymentRequestDTO.getBook());
+        Optional<Book> bookOptional = bookService.getOneBook(finePaymentRequestDTO.getBookId());
         if (bookOptional.isPresent()) {
             Book book=bookOptional.get();
             User user=userService.findById(finePaymentRequestDTO.getUserId());
@@ -554,7 +570,7 @@ public class PayForSubscriptionService {
             }
             log.info("About to set payment plan for user");
             User loggedInUser = userService.getCurrentLoggedInUser();
-            user.setPlan(Math.toIntExact(finePaymentRequestDTO.getBook()));
+            user.setPlan(Math.toIntExact(finePaymentRequestDTO.getBookId()));
             userService.update(user);
             // save payment
             Payment payment = new Payment(

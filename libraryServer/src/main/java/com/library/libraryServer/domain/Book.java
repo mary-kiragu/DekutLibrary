@@ -13,7 +13,6 @@ import java.time.*;
 @Data
 @Entity
 @Table(name = "tbl_book")
-
 public class Book implements Serializable {
 
     public Book() {
@@ -26,9 +25,9 @@ public class Book implements Serializable {
         this.author = author;
         this.status = status;
         this.borrowedBy = borrowedBy;
-        this.borrowedOn = String.valueOf(borrowedOn);
+        this.borrowedOn =borrowedOn;
         this.issuedBy = issuedBy;
-        this.returnedOn = String.valueOf(returnedOn);
+        this.returnedOn = returnedOn;
     }
 
     public Book(String title, String author, Status status, String borrowedBy, LocalDateTime borrowedOn, String issuedBy, LocalDateTime returnedOn) {
@@ -54,10 +53,17 @@ public class Book implements Serializable {
     private Status status;
     private String borrowedBy;
 
-    private String borrowedOn;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime borrowedOn;
     private String issuedBy;
 
-    private String returnedOn;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime issuedOn;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime returnedOn;
 
     private String imageUrl;
 
@@ -76,10 +82,9 @@ public class Book implements Serializable {
     private Integer categoryId;
 
     private Integer fine=0;
-
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    private  LocalDate dueDate;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private  LocalDateTime dueDate;
 
     private String bookUrl;
 

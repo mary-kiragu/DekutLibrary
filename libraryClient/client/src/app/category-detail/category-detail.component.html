@@ -39,7 +39,7 @@
                 <div class="group relative lg:w-[300px] p-4 rounded-3xl bg-white shadow-lg shadow-black-500/50" *ngFor="let category of subCategories">
                     <div class="" *ngIf="!loadingCats && !loadingSubCats">
                         <div class="mb-4 overflow-hidden rounded-2xl" (click)="toCategoryDetail(category.id)">
-                            <img *ngIf="category.categoryImageUrl" class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{category.categoryImageUrl}} " alt="" [routerLink]="['/categories/',category.id]" />
+                            <img *ngIf="category.categoryImageUrl" class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{category.imageUrl || category.categoryImageUrl}} " alt="" [routerLink]="['/categories/',category.id]" />
                             <!-- <img *ngIf="category.imageUrl" class="img-thumbnail" src="{{category.imagerl}} " alt="{{category.image}} " [routerLink]="['/categories/',category.id]" /> -->
                             <!-- <img *ngIf="!category.categoryImageUrl" src="../../assets/images/pexels-wallace-chuck-3728085.jpg" alt="book thumbnail"> -->
                         </div>
@@ -48,6 +48,10 @@
                             <p class="vid-title">
                                 <strong>{{category.name.length > 85 ? (category.name | slice:0:85) + '...' : category.name}}</strong>
                             </p>
+                            <div><button (click)="toggleDesc()">see Description <i class="fa-solid fa-arrow-right"></i></button></div>
+                            <div *ngIf="showDescription" class=" bg-white shadow-lg shadow-black-500/50 p-2 rounded-xl top-[0px] right-[-10px] pointer-none group-hover:bottom-[-30px] group-hover:opacity-1">
+                                <p [innerHTML]="category.description"></p>
+                            </div>
 
                             <!-- <p class="vid-title" [innerHTML]="category.description"> -->
 

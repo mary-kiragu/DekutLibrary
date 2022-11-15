@@ -28,8 +28,8 @@
         <div class="group relative lg:w-[300px] p-4 rounded-3xl bg-white shadow-lg shadow-black-500/50" *ngFor="let book of booksToRender">
 
             <div class="mb-4 overflow-hidden rounded-2xl">
-                <img *ngIf="book.imageUrl===null" class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
-                <img *ngIf="book.imageUrl!==null" class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" />
+                <img class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{book.imageUrl ||book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
+                <!-- <img *ngIf="book.imageUrl!==null" class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" /> -->
             </div>
             <p class="font-bold text-xl">{{ book.title}}</p>
             <p class="font-semibold text-md mb-2 opacity-[0.8]">{{ book.author }}</p>
@@ -38,6 +38,8 @@
                 <p class="py-1 px-3  rounded-full bg-green-300 mr-2 text-sm">Status</p>
                 <p class="">{{book.status}}</p>
             </div>
+
+
 
             <!-- <div>
                 <button [routerLink]="['/book-records',book.id]" class="btn btn-outline-success view"><i class="fa fa-eye" style="font-size:24px"></i></button>

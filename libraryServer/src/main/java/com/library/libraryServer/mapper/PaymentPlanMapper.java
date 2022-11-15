@@ -26,13 +26,14 @@ public class PaymentPlanMapper {
         paymentPlanDTO.setName(paymentPlan.getName());
         paymentPlanDTO.setPaymentAmount(paymentPlan.getPaymentAmount());
         paymentPlanDTO.setPaymentDuration(paymentPlan.getPaymentDuration());
+        paymentPlanDTO.setDescription(paymentPlan.getDescription());
 
-        try {
-            paymentPlanDTO.setDescription(objectMapper.readValue(paymentPlan.getDescription(), new TypeReference<List<String>>() {
-            }));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            paymentPlanDTO.setDescription(objectMapper.readValue(paymentPlan.getDescription(), new TypeReference<List<String>>() {
+//            }));
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
 
         return paymentPlanDTO;
     }
@@ -47,12 +48,13 @@ public class PaymentPlanMapper {
         paymentPlan.setName(paymentPlanDTO.getName());
         paymentPlan.setPaymentAmount(paymentPlanDTO.getPaymentAmount());
         paymentPlan.setPaymentDuration(paymentPlanDTO.getPaymentDuration());
+        paymentPlan.setDescription(paymentPlanDTO.getDescription());
 
-        try {
-            paymentPlan.setDescription(objectMapper.writeValueAsString(paymentPlanDTO.getDescription()));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            paymentPlan.setDescription(objectMapper.writeValueAsString(paymentPlanDTO.getDescription()));
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
 
         return paymentPlan;
     }

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path="/api/payment")
 @Slf4j
 public class PaymentResource {
-    private final PayForSubscriptionService paymentService;
+    private final PaymentService paymentService;
 
-    public PaymentResource(PayForSubscriptionService paymentService) {
+    public PaymentResource(PaymentService paymentService) {
         this.paymentService = paymentService;
     }
 

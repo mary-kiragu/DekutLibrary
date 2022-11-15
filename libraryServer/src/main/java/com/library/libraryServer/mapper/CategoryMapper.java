@@ -22,6 +22,12 @@ public class CategoryMapper {
         categoryDTO.setCategoryType(category.getCategoryType());
         categoryDTO.setDescription(category.getDescription());
         categoryDTO.setParentCategoryId(category.getParentCategoryId());
+        categoryDTO.setCategoryImageUrl(category.getCategoryImageUrl());
+        categoryDTO.setImageUrl(category.getImageUrl());
+        categoryDTO.setCategoryName(category.getCategoryName());
+        categoryDTO.setType(category.getType());
+        categoryDTO.setData(category.getData());
+        categoryDTO.setSize(category.getSize());
 
 
 
@@ -41,6 +47,12 @@ public class CategoryMapper {
         category.setCategoryType(categoryDTO.getCategoryType());
         category.setDescription(categoryDTO.getDescription());
         category.setParentCategoryId(categoryDTO.getParentCategoryId());
+        category.setCategoryImageUrl(categoryDTO.getCategoryImageUrl());
+        category.setImageUrl(categoryDTO.getImageUrl());
+        category.setCategoryName(category.getCategoryName());
+        category.setType(categoryDTO.getType());
+        category.setData(categoryDTO.getData());
+        category.setSize(categoryDTO.getSize());
 
 
         return category;

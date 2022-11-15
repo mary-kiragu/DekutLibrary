@@ -122,7 +122,6 @@ id!:number;
   }
 
   borrowBook():any{
-
     this.bookService.borrowBook(this.book).subscribe(
       (res)=>{
         this.borrowedBook=res;

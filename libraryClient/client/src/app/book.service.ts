@@ -36,6 +36,9 @@ export class BookService {
      return this.httpClient.put<any>(this.apiServerUrl+"/api/books/borrow/"+book.id,book);
    }
 
+   issueBook(book:Book):Observable<Book>{
+    return this.httpClient.put<any>(this.apiServerUrl+"/api/books/issue/"+book.id,book);
+  }
 
    returnBook(book:Book):Observable<Book>{
     return this.httpClient.put<Book>(this.apiServerUrl+"/api/books/return/"+book.id,book);

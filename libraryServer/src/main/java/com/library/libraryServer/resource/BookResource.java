@@ -6,7 +6,6 @@ import com.library.libraryServer.exceptions.*;
 import com.library.libraryServer.resource.vms.*;
 import com.library.libraryServer.services.*;
 import lombok.extern.slf4j.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.*;
@@ -39,7 +38,7 @@ public class BookResource {
                     .path("/api/books/downloadBook/")
                     .path(String.valueOf(book.getId()))
                     .toUriString());
-            System.out.println("Got file"+ book);
+//            System.out.println("Got file"+ book);
         }
 
 
@@ -107,20 +106,28 @@ public class BookResource {
     }
 
     // function to borrow
-    @PutMapping(path="/borrow/{id}")
-    ResponseEntity borrowBook(@PathVariable("id") Long id) {
-        Optional<Book> borrowedBook = null;
+    @PutMapping(path="/issue/{id}")
+    ResponseEntity issueBook(@RequestBody Book book) {
+        Optional<Book> issuedBook = null;
         try {
-            borrowedBook = bookService.borrowBook(id);
+            issuedBook = bookService.issueBook(book.getId());
         } catch (BorrowedBookException e) {
             RegisterUserVM.Errorvm errorvm=new RegisterUserVM.Errorvm(e.getMessage(),400);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorvm);
 
         }
+        return new ResponseEntity(issuedBook, HttpStatus.OK);
+
+    }
+    @PutMapping(path="/borrow/{id}")
+    ResponseEntity borrowBook(@PathVariable("id") Long id) {
+        Optional<Book> borrowedBook = null;
+
+            borrowedBook = bookService.borrowBook(id);
+
         return new ResponseEntity(borrowedBook, HttpStatus.OK);
 
     }
-
     @PutMapping(path ="/return/{id}")
     ResponseEntity returnBook(@RequestBody Book book){
         Optional<Book> returnedBook=null;

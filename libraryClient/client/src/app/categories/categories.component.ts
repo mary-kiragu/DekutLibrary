@@ -60,6 +60,7 @@ export class CategoriesComponent implements OnInit {
   });
 
   user!: User;
+  showDescription=false;
 
   constructor(
     private categoriesService: CategoriesService,
@@ -92,6 +93,10 @@ export class CategoriesComponent implements OnInit {
 
   reset(): void {
     this.categoryForm.reset();
+  }
+
+  toggleDesc():void{
+    this.showDescription=!this.showDescription;
   }
 
   cancel(): void {

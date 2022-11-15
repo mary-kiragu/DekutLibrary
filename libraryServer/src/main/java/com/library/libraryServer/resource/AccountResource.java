@@ -7,6 +7,7 @@ import com.library.libraryServer.resource.vms.*;
 import com.library.libraryServer.security.jwt.*;
 import com.library.libraryServer.services.*;
 import com.library.libraryServer.services.util.*;
+import com.library.libraryServer.util.*;
 import lombok.extern.slf4j.*;
 import org.springframework.http.*;
 import org.springframework.security.authentication.*;
@@ -54,14 +55,6 @@ public class AccountResource {
     }
 
 
-//    @PostMapping(path="/notify")
-//    public  void notify(@RequestBody  NotifyEmailDTO notifyEmailDTO){
-//       userService.sendPaymentReminder();
-//
-////        return new ResponseEntity<>(notification,HttpStatus.OK);
-//
-//    }
-
 
     @PostMapping("/authenticate")
     public ResponseEntity<JWTResponseVM> authorize(@Valid @RequestBody LoginVM loginVM) {
@@ -85,6 +78,24 @@ public class AccountResource {
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JWTResponseVM(404, "User not found"));
 
+        }
+    }
+
+    @PostMapping(path = "/account/reset-password/init")
+    public ResponseEntity<CustomResponseVM> requestPasswordReset(@RequestBody String mail) {
+        Optional<User> user = userService.requestPasswordReset(mail);
+        if (user.isPresent()) {
+            User fetchedUser = user.get();
+
+            String emailSubject = "Reset Password";
+            String body = TemplateUtil.generatePasswordReset(fetchedUser.getName(), fetchedUser.getResetKey(),mail);
+            NotifyEmailDTO emailDTO = new NotifyEmailDTO(fetchedUser.getEmail(), emailSubject, body, true,
+                    false);
+            mailService.sendEmail(emailDTO);
+
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new CustomResponseVM(202, "Check your email for instructions on how to reset password"));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomResponseVM(400, "User with specified email does not exist"));
         }
     }
 }

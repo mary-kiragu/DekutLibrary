@@ -8,6 +8,7 @@ import com.library.libraryServer.repository.*;
 import com.library.libraryServer.resource.*;
 import lombok.extern.slf4j.*;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 import java.util.*;
 
@@ -26,11 +27,7 @@ public class CategoryService {
         this.bookResource = bookResource;
     }
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-//        log.info("About to save category : {}", categoryDTO);
-
-//        // prevent passing null values to mapper
-//        if (categoryDTO.getLevels() == null) {
-//            categoryDTO.setLevels(new ArrayList<>());        }
+      log.info("About to save category : {}", categoryDTO);
 
         if (categoryDTO.getCategoryType() == CategoryEnum.SECTION){
             categoryDTO.setCategoryType(CategoryEnum.SECTION);
@@ -62,16 +59,29 @@ public class CategoryService {
         return categoryMapper.toDTO(category);
     }
 
+    public Category downloadCategoryPicture(Integer id) {
+        return categoryRepository.findById(id).get();
+    }
+
     public CategoryDTO updateCategory(CategoryDTO categoryDTO) {
         log.info("About to update category  : {}", categoryDTO);
+//        Optional<Category> categoryOptional=categoryRepository.findById(id);
+//    if (categoryOptional.isPresent()){
+//        Category category=categoryOptional.get();
 
-        // map categoryDTO to category in readiness for save
-        Category category = categoryMapper.toEntity(categoryDTO);
 
-        category = categoryRepository.save(category);
 
-        return categoryMapper.toDTO(category);
+      //  }
+    // map categoryDTO to category in readiness for save
+    Category category = categoryMapper.toEntity(categoryDTO);
+
+     category = categoryRepository.save(category);
+
+    return categoryMapper.toDTO(category);
     }
+
+
+
 
     public List<CategoryDTO> getAll() {
         log.info("About to get all categories");

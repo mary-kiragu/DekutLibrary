@@ -3,6 +3,7 @@ package com.library.libraryServer.domain.dto;
 import com.library.libraryServer.domain.enums.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.util.*;
 @Data
 public class CategoryDTO {
@@ -16,7 +17,17 @@ public class CategoryDTO {
 
     private String description;
 
-    private String imageURL;
+    private String imageUrl;
+
+    private String categoryImageUrl;
+
+    private String categoryName;
+
+    private String type;
+
+    private String size;
+
+    private byte[] data;
 
 
 

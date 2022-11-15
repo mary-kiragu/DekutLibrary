@@ -246,4 +246,19 @@ public class UserService {
 
 }
 
+    public Optional<User> requestPasswordReset(String mail) {
+        log.debug("Request to reset password for user : {}", mail);
+        Optional<User> userOptional = userRepository.findByEmail(mail);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            String resetKey = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 15);
+            user.setResetKey(resetKey);
+            user.setResetDate(LocalDate.now());
+
+            userRepository.save(user);
+        }
+        return userOptional;
+    }
+
+
 }

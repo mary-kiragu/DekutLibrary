@@ -64,6 +64,20 @@
 
                 tableName="tbl_book"/>
     </changeSet>
+    <changeSet id="1411202271620" author="root">
+        <modifyDataType
+                columnName="borrowed_on"
+                newDataType="datetime"
+
+                tableName="tbl_book"/>
+    </changeSet>
+    <changeSet id="1411202271623" author="root">
+        <modifyDataType
+                columnName="returned_on"
+                newDataType="datetime"
+
+                tableName="tbl_book"/>
+    </changeSet>
 
 
 </databaseChangeLog>

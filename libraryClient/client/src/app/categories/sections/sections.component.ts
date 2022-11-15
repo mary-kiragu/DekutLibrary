@@ -68,6 +68,7 @@ export class SectionsComponent implements OnInit {
   isFiltered = false;
   user!:any;
   uploadFile=true;
+
   constructor(
     private bookService: BookService,
     private categoriesService:CategoriesService,
@@ -116,6 +117,7 @@ export class SectionsComponent implements OnInit {
       }
     );
   }
+
   addNewBook(): any {
     const bookDetails = this.extractBookDetails();
     console.log("about to create book",bookDetails);

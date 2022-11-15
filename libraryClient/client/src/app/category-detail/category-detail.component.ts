@@ -43,6 +43,7 @@ export class CategoryDetailComponent implements OnInit {
   });
   category: any;
   uploadFile=true;
+  showDescription=false;
 
 
   subCategories!: any;
@@ -214,6 +215,10 @@ selectFile(event: any) {
   toLanding() {
     this.router.navigate(['/learn']);
   }
+  toggleDesc():void{
+    this.showDescription=!this.showDescription;
+  }
+
 
   reset(): void {
     this.categoryForm.reset();

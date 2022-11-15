@@ -17,7 +17,7 @@
         </div>
         <div *ngIf="user.authority === 'ADMIN'">
             <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#createTopicModal" class="base-btn px-4 py-[12px] text-sm">
-        <i class="fa fa-plus"></i> Add Category
+        <i class="fa fa-plus-circle"></i> Add Category
       </button>
         </div>
     </div>
@@ -36,9 +36,11 @@
           <i class="fas fa-edit text-orange-500" style="font-size: 24px"></i>
         </button>
             </div>
-            <!-- <div class="absolute bg-white shadow-lg shadow-black-500/50 p-2 rounded-xl top-[0px] right-[-10px] opacity-0 pointer-none group-hover:bottom-[-30px] group-hover:opacity-1">
+            <div><button (click)="toggleDesc()">see Description <i class="fa-solid fa-arrow-right"></i></button></div>
+
+            <div *ngIf="showDescription" class=" bg-white shadow-lg shadow-black-500/50 p-2 rounded-xl top-[0px] right-[-10px] pointer-none group-hover:bottom-[-30px] group-hover:opacity-1">
                 <p [innerHTML]="category.description"></p>
-            </div> -->
+            </div>
         </div>
     </div>
 </div>

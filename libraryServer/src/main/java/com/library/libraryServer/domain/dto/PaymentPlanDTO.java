@@ -15,5 +15,5 @@ public class PaymentPlanDTO {
 
     private PayDuration paymentDuration;
 
-    private List<String> description;
+    private String description;
 }

@@ -1,5 +1,8 @@
 package com.library.libraryServer.domain.dto;
 
+import com.fasterxml.jackson.databind.annotation.*;
+import com.fasterxml.jackson.datatype.jsr310.deser.*;
+import com.fasterxml.jackson.datatype.jsr310.ser.*;
 import com.library.libraryServer.domain.enums.*;
 import lombok.*;
 
@@ -20,12 +23,17 @@ public class BookDTO {
     private Status status;
 
     private String borrowedBy;
-
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime borrowedOn;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime issuedOn;
 
     private String issuedBy;
-
-    private String returnedOn;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime returnedOn;
 
     private String imageUrl;
     private String bookImageUrl;
@@ -43,7 +51,9 @@ public class BookDTO {
 
     private Integer fine;
 
-    private  LocalDate dueDate;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private  LocalDateTime dueDate;
 //book file url
     private String bookUrl;
 

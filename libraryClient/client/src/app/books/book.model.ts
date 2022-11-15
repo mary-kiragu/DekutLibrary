@@ -1,7 +1,7 @@
 export enum Status{
-  NEW="NEW",
+  ISSUED="ISSUED",
   BORROWED="BORROWED",
-  RETURNED="RETURNED"
+  AVAILABLE="AVAILABLE"
 
 }
 
@@ -24,6 +24,7 @@ export class Book{
   type?:string;
   data?:string;
   size?:string;
+  fine?:number;
 bookUrl: any;
   constructor(
     id?:number,
@@ -37,6 +38,7 @@ bookUrl: any;
     imageUrl?:string,
     categoryId?:number,
     isbn?:string,
+    fine?:number,
   accessionNumber?:string,
   dueDate?:string,
   bookImageUrl?:string,
@@ -57,6 +59,7 @@ bookUrl: any;
       this.categoryId=categoryId;
       this.accessionNumber=accessionNumber;
       this.isbn=isbn;
+      this.fine=fine;
       this.dueDate=dueDate;
       this.bookImageUrl=bookImageUrl;
       this.name=name;
