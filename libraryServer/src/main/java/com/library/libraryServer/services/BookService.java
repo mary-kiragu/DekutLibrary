@@ -150,7 +150,14 @@ public class BookService {
         return bookOptional;
     }
 
-   @Scheduled(fixedRate = 5000)
+    public List<HistoryDTO> getHistoryByUser(Long userId) {
+        log.info("About to get all books borrowed by user : {}", userId);
+        List<HistoryDTO> borrowHistoryList = borrowHistoryRepository.findByUserId(userId);
+
+        return borrowHistoryList;
+    }
+
+   @Scheduled(cron = "0 7 0 * * *")
    @Transactional
     public void releaseBook() {
         log.info("------------------------- ");
@@ -163,10 +170,9 @@ public class BookService {
                 log.info("Day difference : {}", daysBetween);
                 if (daysBetween >=2 && book.getStatus()!=Status.ISSUED){
                     book.setStatus(Status.AVAILABLE);
+                    book.setBorrowedBy(null);
+                    book.setBorrowedOn(null);
                 }
-
-
-
 
             }
         }
@@ -182,11 +188,13 @@ public class BookService {
             book.setStatus(Status.ISSUED);
 
 
-            if (book.getBorrowedBy()== null) {
+            if (book.getBorrowedBy() == null) {
                 throw new BorrowedBookException("Book not available for borrowing");
 
             }
-            User user = userService.getCurrentLoggedInUser();
+            //User user = userService.getCurrentLoggedInUser();
+
+            User user = userService.findByEmail(book.getBorrowedBy()).orElseThrow();
 
             log.info("looged in user", user);
 
@@ -197,8 +205,7 @@ public class BookService {
             book.setIssuedOn(LocalDateTime.now());
             book.setReturnedOn(null);
             log.info("current user email", SecurityUtils.getCurrentUserLogin());
-            book.setBorrowedBy(SecurityUtils.getCurrentUserLogin().orElse(null));
-
+            book.setIssuedBy(SecurityUtils.getCurrentUserLogin().orElse(null));
 
             assert user != null;
             if (user.getAuthority().equals(Authority.STUDENT)) {
@@ -219,9 +226,14 @@ public class BookService {
             log.info("due date: {}", book.getDueDate());
 
             book = bookRepository.save(book);
+            user = userService.save(user);
             BorrowHistory borrowHistory = new BorrowHistory();
             borrowHistory.setBook(book);
-            borrowHistory = borrowHistoryRepository.save(borrowHistory);
+            borrowHistory.setUser(user);
+            borrowHistory.setAction(Actions.BORROW);
+            borrowHistory.setCreatedOn(LocalDateTime.now());
+            log.info("borrow hist {}", borrowHistory);
+            borrowHistoryRepository.save(borrowHistory);
 
             return Optional.of(book);
         }
@@ -233,13 +245,22 @@ public class BookService {
     public Optional<Book> returnBook(Long id) {
         Optional<Book> bookOptional = bookRepository.findById(id);
 
+
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
             book.setStatus(Status.AVAILABLE);
+            User user = userService.findByEmail(book.getBorrowedBy()).orElseThrow();
+
+            log.info("looged in user", user);
+
+            if (user == null) {
+
+            }
 
             if (book.getBorrowedBy() != null) {
                 book.setBorrowedBy(null);
                 book.setBorrowedOn(null);
+                book.setIssuedBy(null);
                 book.setDueDate(null);
                 book.setFine(0);
                 book.setIssuedOn(null);
@@ -248,11 +269,21 @@ public class BookService {
             }
 
             book = bookRepository.save(book);
+            //user=userService.update(user);
+            BorrowHistory borrowHistory = new BorrowHistory();
+            borrowHistory.setBook(book);
+            borrowHistory.setUser(user);
+            borrowHistory.setAction(Actions.RETURN);
+            borrowHistory.setCreatedOn(LocalDateTime.now());
+            log.info("borrow hist {}", borrowHistory);
+            borrowHistoryRepository.save(borrowHistory);
             return Optional.of(book);
         }
 
         return bookOptional;
+
     }
+
 
     public Book deleteBook(Long id) {
         boolean exist = bookRepository.existsById(id);

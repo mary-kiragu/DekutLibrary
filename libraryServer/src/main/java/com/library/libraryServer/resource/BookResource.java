@@ -45,6 +45,12 @@ public class BookResource {
         return new ResponseEntity<>(allBooks, HttpStatus.OK);
     }
 
+    @GetMapping("/history/{user}")
+    ResponseEntity<List<HistoryDTO>> borrowHistoryByUser(@PathVariable User user) {
+        List<HistoryDTO>  historyList = bookService.getHistoryByUser(user.getId());
+        return new ResponseEntity<>(historyList, HttpStatus.OK);
+    }
+
     @PostMapping
     ResponseEntity<Book> addBook(@RequestBody Book book) {
         log.info("request to add new book");

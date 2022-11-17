@@ -1,8 +1,13 @@
 package com.library.libraryServer.domain;
 
+import com.fasterxml.jackson.databind.annotation.*;
+import com.fasterxml.jackson.datatype.jsr310.deser.*;
+import com.fasterxml.jackson.datatype.jsr310.ser.*;
+import com.library.libraryServer.domain.enums.*;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.*;
 
 @Data
 @Entity
@@ -17,6 +22,16 @@ public class BorrowHistory {
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book  book;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User  user;
+
+    @Enumerated(EnumType.STRING)
+    private Actions action;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createdOn;
 
 
 

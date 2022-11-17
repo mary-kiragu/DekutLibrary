@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.*;
 
 import java.util.*;
 
-public interface BorrowHistoryRepository  extends JpaRepository<BorrowHistory,Long> {
-    List<HistoryDTO> findByUserId(Long userId);
+public interface DiscussionRepository extends JpaRepository<Discussion,Long> {
+    List<DiscussionDTO> findByBook(Long book);
 }
