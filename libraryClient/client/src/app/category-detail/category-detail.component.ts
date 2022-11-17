@@ -45,7 +45,9 @@ export class CategoryDetailComponent implements OnInit {
   uploadFile=true;
   showDescription=false;
 
-
+  searchText: string = '';
+  categoriesToRender: Category[] = []
+  isFiltered = false;
   subCategories!: any;
   loadingSubCats = false;
   loadingCats = false;
@@ -275,6 +277,23 @@ deleteCategory(): any {
   showUploadFile():any{
     this.uploadFile=true
 
+  }
+
+  filter(): void {
+    let filteredCaregories = this.subCategories.filter((subcategory : Category) =>
+      subcategory.name.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+    console.log(filteredCaregories);
+    this.categoriesToRender = filteredCaregories;
+    this.isFiltered = true;
+    if (this.searchText == '') {
+      this.isFiltered = false;
+    }
+  }
+
+  unfilter(): void {
+    this.categoriesToRender = this.subCategories;
+    this.isFiltered = false;
   }
 
 

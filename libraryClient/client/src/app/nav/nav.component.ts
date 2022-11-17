@@ -25,6 +25,7 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
     this.getCurrentUser();
 
+
   }
   getCurrentUser(): void {
     this.userService.getProfile().subscribe(
@@ -32,10 +33,15 @@ export class NavComponent implements OnInit {
          this.user = userProfile;
         console.log("user profs",this.user);
 
+
       });
 
   }
-  
+  reload(){
+
+      window.location.reload();
+  }
+
    logOut(): void{
     //delete token
     this.tokenService.clearToken();

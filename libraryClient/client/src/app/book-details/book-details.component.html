@@ -4,14 +4,9 @@
             <div class="row">
 
                 <div class="col-md-4 mt-5 mx-3">
-                    <img *ngIf="book.imageUrl===null" class="img-thumbnail" src="{{book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
+                    <img class="img-thumbnail" src="{{book.imageUrl || book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
 
-                    <img *ngIf="book.imageUrl!==null" class="img-thumbnail" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" />
 
-                    <div hidden class="image card col-md-3">
-                        <img class="img-thumbnail" src="{{book.imageUrl}}" onError="this.onerror=null; this.src='assets/images/billionare.jpeg' " />
-
-                    </div>
                 </div>
 
                 <div class=" col-md-6 mt-5">
@@ -35,24 +30,45 @@
                         <p class="col-md-5 ">{{book.status}}</p>
 
                     </div>
-                    <div>
-                        <button type="button" class="btn btn-outline-success edit" (click)="editBook(book)" data-bs-toggle="modal" data-bs-target="#bookModal">
-                        <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-outline-success edit" type="submit" (click)="deleteBook(book.id)" data-bs-toggle="modal" data-bs-target="#deleteModal"> <i class="fa fa-trash-o" style="font-size:36px"></i></button>
 
-                    </div>
 
                     <div>
                         <button *ngIf="book.status!=='BORROWED' && !book.bookType " type="button " class="btn button-3 " (click)="borrowBook() ">
               Borrow Book
             </button>
 
-                        <button disabled *ngIf="book.status=='BORROWED'" type="button" class="btn btn-outline-secondary btn-view">
+                        <button disabled *ngIf="book.status=='BORROWED' && !book.bookType" type="button" class="btn btn-outline-secondary btn-view">
         Book Borrowed
       </button>
-
                     </div>
+
+                    <div class="card px-2" *ngIf="comment" style="overflow-y: scroll; height:400px;">
+                        <input type="text" class="text" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentModal" placeholder="write your comment as">
+                        <h3>Comments</h3>
+
+                        <div class="card mx-3 mb-2 mt-2" *ngFor="let comment of comments">
+                            <div class="row">
+                                <p class="colmd-6"><small>by {{comment.createdBy}}</small></p>
+                                <p class="colmd-3"><small>sent{{comment.createdOn}} ago</small></p>
+
+                            </div>
+                            <p>{{comment.content}}</p>
+
+                            <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentModal">Reply</button>
+
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+                <div>
+                    <button type=" button " class="btn btn-outline-success edit " (click)="editBook(book) " data-bs-toggle="modal " data-bs-target="#bookModal ">
+                  <i class="fas fa-edit "></i>
+                  </button>
+                    <button class="btn btn-outline-success edit " type="submit " (click)="deleteBook(book.id) " data-bs-toggle="modal " data-bs-target="#deleteModal "> <i class="fa fa-trash-o " style="font-size:36px "></i></button>
+
                 </div>
             </div>
         </div>
@@ -60,51 +76,38 @@
 
 
 
-        <div class="col-md-6">
-            <a href="{{book.bookUrl}}">Download <i class="fas fa-download"> </i></a>
+        <div class="col-md-6 ">
+            <a href="{{book.bookUrl}} ">Download <i class="fas fa-download "> </i></a>
 
 
-            <embed *ngIf="book.bookType == 'application/pdf'" [src]="srcPDF | safeUrl" type="application/pdf" class="file">
+            <embed *ngIf="book.bookType=='application/pdf' " [src]="srcPDF | safeUrl " type="application/pdf " class="file ">
         </div>
     </div>
 </div>
 
 
-<!-- Modal -->
-<div class="modal fade " id="bookModal " tabindex="-1 " role="dialog " aria-labelledby="bookModalTitle " aria-hidden="true " *ngIf="book ">
+<!-- Modal comment-->
+<div class="modal fade " id="commentModal" tabindex="-1 " role="dialog " aria-labelledby="commentModalTitle" aria-hidden="true " *ngIf="book ">
     <div class="modal-dialog modal-dialog-centered " role="document ">
         <div class="modal-content ">
             <div class="modal-header ">
-                <h5 class="modal-title " id="exampleModalLongTitle ">Borrow a book</h5>
-                <button type="button " class="close " data-bs-dismiss="modal " aria-label="Close ">
-        <span aria-hidden="true ">&times;</span>
+                <h5 class="modal-title " id="exampleModalLongTitle ">Get to interact with othe readers of this books by commenting</h5>
+                <button type="button " class="close " data-bs-dismiss="modal" aria-label="Close ">
+
       </button>
             </div>
 
             <div class="modal-body ">
-
-                <form (ngSubmit)="borrowBook() " role="form ">
-                    <div class=" form-group ">
-                        <label for="title "> Title</label>
-                        <input class="form-control " type="text " name="title " [(ngModel)]="book.title ">
-                    </div>
-                    <div class=" form-group ">
-                        <label for="author ">Author</label>
-                        <input class="form-control " type="text " name="author " [(ngModel)]="book.author ">
-                    </div>
-                    <div class=" form-group ">
-                        <label for="status ">Status</label>
-                        <input class="form-control " type="text " name="status " [(ngModel)]="book.status ">
-                    </div>
-                    <div></div>
-
+                <form name="comentForm " [formGroup]="commentForm " role="form " (ngSubmit)="createComment() ">
+                    Write your comment
+                    <textarea class="form-control mt-5 " type="text " name="content " cols="10 " rows="5 " formControlName="content "></textarea>
 
                 </form>
 
             </div>
             <div class="modal-footer ">
                 <button type="button " class="btn btn-secondary " data-bs-dismiss="modal ">Close</button>
-                <button type="button " class="btn btn-primary " (click)="borrowBook() " data-bs-dismiss="modal ">submit</button>
+                <button type="button " class="btn btn-success " (click)="createComment()" data-bs-dismiss="modal">send</button>
             </div>
         </div>
     </div>
@@ -113,48 +116,48 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
+<div class="modal fade " id="bookModal " tabindex="-1 " role="dialog " aria-labelledby="bookModalTitle " aria-hidden="true ">
+    <div class="modal-dialog modal-dialog-centered " role="document ">
+        <div class="modal-content ">
+            <div class="modal-header ">
+                <h5 class="modal-title " id="exampleModalLongTitle ">
                     Edit Book</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close ">
+        <span aria-hidden="true ">&times;</span>
       </button>
             </div>
 
-            <div class="modal-body">
-                <form name="bookForm" [formGroup]="bookForm" role="form" (ngSubmit)="updateBook(bookId)">
+            <div class="modal-body ">
+                <form name="bookForm " [formGroup]="bookForm " role="form " (ngSubmit)="updateBook(bookId) ">
 
-                    <div class="form-group">
-                        <label for="title">title</label>
-                        <input class="form-control" type="text" name="title" formControlName="title">
+                    <div class="form-group ">
+                        <label for="title ">title</label>
+                        <input class="form-control " type="text " name="title " formControlName="title ">
                     </div>
-                    <div class=" form-group">
-                        <label for="author">Author</label>
-                        <input class="form-control" type="text" name="author" formControlName="author">
+                    <div class=" form-group ">
+                        <label for="author ">Author</label>
+                        <input class="form-control " type="text " name="author " formControlName="author ">
                     </div>
-                    <div class=" form-group">
-                        <label for="imageUrl">ImageUrl</label>
-                        <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
+                    <div class=" form-group ">
+                        <label for="imageUrl ">ImageUrl</label>
+                        <input class="form-control " type="text " name="imageUrl " formControlName="imageUrl ">
 
                     </div>
-                    <div class=" form-group">
-                        <label for="isbn">ISBN</label>
-                        <input class="form-control" type="text" name="isbn" formControlName="isbn">
+                    <div class=" form-group ">
+                        <label for="isbn ">ISBN</label>
+                        <input class="form-control " type="text " name="isbn " formControlName="isbn ">
                     </div>
-                    <div class=" form-group">
-                        <label for="accessionNumber">Accession number</label>
-                        <input class="form-control" type="text" name="accessionNumber" formControlName="accessionNumber">
+                    <div class=" form-group ">
+                        <label for="accessionNumber ">Accession number</label>
+                        <input class="form-control " type="text " name="accessionNumber " formControlName="accessionNumber ">
 
                     </div>
 
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" (click)="updateBook(bookId)">submit</button>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal ">Close</button>
+                <button type="button " class="btn btn-primary " (click)="updateBook(bookId) ">submit</button>
             </div>
         </div>
     </div>
@@ -162,20 +165,20 @@
 
 
 <!-- delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Confirmation to delete book</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+<div class="modal fade " id="deleteModal " tabindex="-1 " role="dialog " aria-labelledby="exampleModalLabel " aria-hidden="true ">
+    <div class="modal-dialog " role="document ">
+        <div class="modal-content ">
+            <div class="modal-header ">
+                <h5 class="modal-title " id="exampleModalLabel ">Confirmation to delete book</h5>
+                <button type="button " class="close " data-dismiss="modal " aria-label="Close ">
+        <span aria-hidden="true ">&times;</span>
       </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body ">
                 Are you sure you want to deletete{{book.title}}?
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Delete</button>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal ">Close</button>
+                <button type="submit " class="btn btn-primary " data-bs-dismiss="modal ">Delete</button>
             </div>
         </div>

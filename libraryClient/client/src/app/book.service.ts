@@ -20,6 +20,11 @@ export class BookService {
 
 
   }
+  createComment(comment:any):Observable<any>{
+    return this.httpClient.post<any>(this.apiServerUrl+"/api/comments",comment);
+
+
+  }
   updateBook(book:Book):Observable<Book>{
     return this.httpClient.put<Book>(this.apiServerUrl+"/api/books/update/"+book.id,book);
   }
@@ -30,6 +35,12 @@ export class BookService {
 
   findbyId(id:number):Observable<any>{
     return this.httpClient.get<any>(this.apiServerUrl+"/api/books/"+id);
+  }
+  getHistoryByUser(user:any):Observable<any>{
+    return this.httpClient.get<any>(this.apiServerUrl+"/api/books/history/"+user);
+  }
+  getDiscussionByBook(book:any):Observable<any>{
+    return this.httpClient.get<any>(this.apiServerUrl+"/api/comments/get/"+book.id);
   }
 
    borrowBook(book:any):Observable<any>{

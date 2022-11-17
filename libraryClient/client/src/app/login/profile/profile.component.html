@@ -13,6 +13,35 @@
 
         </div>
 
+        <div class="card">
+            <table class="table table-stripped">
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>Title</td>
+                        <td>borrowedOn</td>
+                        <td>ReturnedOn</td>
+                        <td>Action</td>
+                        <td>history created on</td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let history of historyValues">
+                        <td>{{history.id}}</td>
+                        <td>{{history.book?.title}}</td>
+                        <td>{{history.book?.borrowedOn}}</td>
+                        <td>{{history.book?.returnedOn}}</td>
+                        <td>{{history.action}}</td>
+                        <td>{{history.createdOn}}</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+
+        </div>
+
     </div>
     <div class="card col-md-6 profile">
         <img src="/assets/images/prof.jpg">

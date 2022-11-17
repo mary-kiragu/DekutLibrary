@@ -1,8 +1,14 @@
+import { User } from "../login/user.model";
+
 export enum Status{
   ISSUED="ISSUED",
   BORROWED="BORROWED",
   AVAILABLE="AVAILABLE"
 
+}
+export enum Action{
+  BORROW="BORROW",
+  RETURN="RETURN"
 }
 
 export class Book{
@@ -72,3 +78,22 @@ bookUrl: any;
   }
 
 }
+
+export class BorrowHistory{
+  id?:number;
+  user?:User;
+  book?:Book;
+  action?:Action
+  createdOn?:string;
+
+  constructor(id?:number,user?:User,book?:Book,action?:Action,createdOn?:string){
+    this.id=id;
+    this.user=user;
+    this.book=book;
+    this,action=action;
+    this.createdOn=createdOn;
+
+
+  }
+}
+

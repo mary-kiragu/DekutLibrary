@@ -318,9 +318,9 @@ export class SectionsComponent implements OnInit {
     );
   }
 
-  filter(): void {
-    let filteredbooks = this.booksFromDB.filter((book)=>book.title?.includes(this.searchText))
-    console.log(filteredbooks)
+   filter(): void {
+    let filteredbooks = this.booksFromDB.filter((book)=>book.title?.toLowerCase().includes(this.searchText.toLowerCase()))
+    console.log("filteres",filteredbooks)
       this.booksToRender = filteredbooks;
       this.isFiltered = true;
     if(this.searchText == "") {

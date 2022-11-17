@@ -73,7 +73,6 @@ export class CategoriesComponent implements OnInit {
     this.getCurrentUser();
   }
 
-  notifyforPayment(): void {}
 
   getAll(): void {
     this.categoriesService.getAll().subscribe(

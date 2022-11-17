@@ -1,6 +1,19 @@
 <div class="container" *ngIf="category">
     <div class="top-sticky-section ">
 
+        <div class="relative">
+            <input type="text" class="base-input w-[300px] pl-8 placeholder:text-[#85B292] placeholder:font-light mt-3" name="searchText" [(ngModel)]="searchText" (keyup)="filter()" placeholder="Search category" aria-label="Categoryname" aria-describedby="button-addon2"
+            />
+
+            <button class="absolute left-3 top-[10px] mt-3" [ngClass]="{ 'activate-button': searchText }" (click)="filter()">
+    <i class="fas fa-search text-[#85B292]"></i>
+  </button>
+            <button *ngIf="isFiltered" class="absolute right-4 top-[10px]" [ngClass]="{ 'activate-button': searchText }" (click)="unfilter()">
+    <i class="fas fa-close"></i>
+  </button>
+
+        </div>
+
         <div class="row mx-0 ">
             <div class="col-md-8" style="display:flex;align-items:center">
                 <!-- <span (click)="toLanding()" class="nav-menu-item">Home</span> -->
