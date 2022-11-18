@@ -36,6 +36,9 @@ export class BookService {
   findbyId(id:number):Observable<any>{
     return this.httpClient.get<any>(this.apiServerUrl+"/api/books/"+id);
   }
+  findCommentbyId(id:number):Observable<any>{
+    return this.httpClient.get<any>(this.apiServerUrl+"/api/comments/"+id);
+  }
   getHistoryByUser(user:any):Observable<any>{
     return this.httpClient.get<any>(this.apiServerUrl+"/api/books/history/"+user);
   }
@@ -61,6 +64,10 @@ export class BookService {
   filterByParent(categoryId: number): Observable<any> {
 
     return this.httpClient.get(this.apiServerUrl + "/api/books/filter-by-category/" + categoryId);
+  }
+  filterCommentsByReferencedId(referencedCommentId: number): Observable<any> {
+
+    return this.httpClient.get(this.apiServerUrl + "/api/comments/filter-by-referenceId/" + referencedCommentId);
   }
   searchBooks(text?: string): Observable<any> {
     return this.httpClient.get(this.apiServerUrl + '/api/books/search?text='  + text);

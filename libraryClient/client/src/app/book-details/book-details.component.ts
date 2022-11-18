@@ -75,6 +75,7 @@ comment={
   lastUpdatedOn:'',
   lastUpdatedBy:''
 }
+foundComment:any;
 
 commentForm=this.formBuilder.group({
   content:[],
@@ -84,6 +85,7 @@ commentForm=this.formBuilder.group({
 })
 
 comments:any[]= [];
+replies:any[]= [];
 differenceInDays:any
 differenceInSeconds:any
 differenceInMinutes:any
@@ -147,7 +149,9 @@ differenceInHours:any
 
 
         }
-        this.getBookText()
+
+        this.getCommentByBook()
+
 
 
 
@@ -238,6 +242,17 @@ differenceInHours:any
       }
     );
   }
+//comments
+
+  getOneComment(id:number):void{
+    this.bookService.findCommentbyId(id).subscribe(
+      (res)=>{
+        console.log("one comment",res)
+        this.comment=res;
+        console.log("one comment",this.comment.id)
+        this.getReplies(this.comment.referencedCommentId)
+      })
+    }
 
   extractCommentDetails():any{
     return {
@@ -249,6 +264,17 @@ differenceInHours:any
 
 
   }
+  extractReplyDetails():any{
+    return {
+      content: this.commentForm.get('content')!.value,
+      referencedCommentId:this.comment.id,
+      book:this.book.id
+
+    }
+
+
+  }
+
 
 
   createComment():any{
@@ -264,6 +290,32 @@ differenceInHours:any
     )
 
   }
+
+
+  createCommentReply():any{
+    const commentdetail=this.extractReplyDetails()
+    console.log("coment before",commentdetail)
+    this.bookService.createComment(commentdetail).subscribe(
+     (res)=>{
+       console.log(res)
+     },
+     (err)=>{
+       console.log(err)
+     }
+    )
+
+   }
+
+   getReplies(referencedCommentId:any):void{
+    this.bookService.filterCommentsByReferencedId(referencedCommentId).subscribe(
+      (res)=>{
+        console.log("yeey",res)
+      }
+    )
+
+
+
+   }
   getCommentByBook():any{
     console.log("about to get")
     this.bookService.getDiscussionByBook(this.book).subscribe(
@@ -274,7 +326,7 @@ differenceInHours:any
         this.comments.forEach((comment:any)=>{
           let now= new Date(new Date().toJSON().slice(0, 10));
           var createdOn= new Date(comment.createdOn);
-          var differenceInTime = createdOn.getTime() -now.getTime() ;
+          var differenceInTime = now.getTime() -createdOn.getTime() ;
           console.log(differenceInTime)
           this.differenceInDays = differenceInTime / (1000 * 3600 * 24);
           console.log("Difference in dayS ", this.differenceInDays)
@@ -315,54 +367,55 @@ differenceInHours:any
 
 
 
-  getBookText() {
-    //this.loadingShortlisted = true;
-    console.log("=========================");
-    console.log("+++++", this.book.bookUrl);
+
+  // getBookText() {
+  //   //this.loadingShortlisted = true;
+  //   console.log("=========================");
+  //   console.log("+++++", this.book.bookUrl);
 
 
-    this.gettext(this.book.bookUrl).then((text: string) => {
-      this.extractedbookText = text;
-      // console.log("Extracted Resume", this.extractedResume)
-      console.log("wwhjjkkelkel");
-      console.log("extractedText", this.extractedbookText)
+  //   this.gettext(this.book.bookUrl).then((text: string) => {
+  //     this.extractedbookText = text;
+  //     // console.log("Extracted Resume", this.extractedResume)
+  //     console.log("wwhjjkkelkel");
+  //     console.log("extractedText", this.extractedbookText)
 
-      // this.extractResume();
+  //     // this.extractResume();
 
-    },
-      function (reason: string) {
-        console.error(reason);
-      }
-    );
-  }
+  //   },
+  //     function (reason: string) {
+  //       console.error(reason);
+  //     }
+  //   );
+  // }
 
-  gettext(pdfUrl: string) {
-   // this.loadingShortlisted = true;
-    //@ts-ignore
-    //pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
-    //pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/js/pdfjs/pdf.worker.js";
-    pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker
-    var pdf = pdfjsLib.getDocument(pdfUrl);
-    return pdf.promise.then(function (pdf: any) { // get all pages text
-      var maxPages = pdf.numPages;
-      var countPromises = []; // collecting all page promises
-      for (var j = 1; j <= maxPages; j++) {
-        var page = pdf.getPage(j);
+  // gettext(pdfUrl: string) {
+  //  // this.loadingShortlisted = true;
+  //   //@ts-ignore
+  //   //pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+  //   //pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/js/pdfjs/pdf.worker.js";
+  //   pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker
+  //   var pdf = pdfjsLib.getDocument(pdfUrl);
+  //   return pdf.promise.then(function (pdf: any) { // get all pages text
+  //     var maxPages = pdf.numPages;
+  //     var countPromises = []; // collecting all page promises
+  //     for (var j = 1; j <= maxPages; j++) {
+  //       var page = pdf.getPage(j);
 
-        var txt = "";
-        countPromises.push(page.then(function (page: any) { // add page promise
-          var textContent = page.getTextContent();
-          return textContent.then(function (text: any) { // return content promise
-            return text.items.map(function (s: any) { return s.str; }).join(''); // value page text
-          });
-        }));
-      }
-      // Wait for all pages and join text
-      return Promise.all(countPromises).then(function (texts) {
-        return texts.join('');
-      });
-    });
-  }
+  //       var txt = "";
+  //       countPromises.push(page.then(function (page: any) { // add page promise
+  //         var textContent = page.getTextContent();
+  //         return textContent.then(function (text: any) { // return content promise
+  //           return text.items.map(function (s: any) { return s.str; }).join(''); // value page text
+  //         });
+  //       }));
+  //     }
+  //     // Wait for all pages and join text
+  //     return Promise.all(countPromises).then(function (texts) {
+  //       return texts.join('');
+  //     });
+  //   });
+  // }
 
 
 

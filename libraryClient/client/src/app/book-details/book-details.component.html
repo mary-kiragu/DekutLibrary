@@ -42,34 +42,61 @@
       </button>
                     </div>
 
-                    <div class="card px-2" *ngIf="comment" style="overflow-y: scroll; height:400px;">
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <button type=" button " class="btn btn-outline-success edit " (click)="editBook(book) " data-bs-toggle="modal " data-bs-target="#bookModal ">
+                            <i class="fas fa-edit "></i>
+                            </button>
+                        <button class="btn btn-outline-success edit " type="submit " (click)="deleteBook(book.id) " data-bs-toggle="modal " data-bs-target="#deleteModal "> <i class="fa fa-trash-o " style="font-size:36px "></i></button>
+
+                    </div>
+
+
+
+                    <div class="card px-2" style="overflow-y: scroll; height:200px;">
                         <input type="text" class="text" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentModal" placeholder="write your comment as">
                         <h3>Comments</h3>
 
-                        <div class="card mx-3 mb-2 mt-2" *ngFor="let comment of comments">
+
+
+                        <div class="card mx-3 col-md-6 mb-2 mt-2" *ngFor="let comment of comments">
                             <div class="row">
                                 <p class="colmd-6"><small>by {{comment.createdBy}}</small></p>
                                 <p class="colmd-3"><small>sent{{comment.createdOn}} ago</small></p>
 
                             </div>
                             <p>{{comment.content}}</p>
+                            <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentReplyModal" (click)="getOneComment(comment.id)">Reply</button>
 
-                            <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentModal">Reply</button>
+
+                            <!-- <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentReplyModal" (click)="getOneComment(comment.id)">Reply</button> -->
+
+                            <div class="card mx-5 mb-2 mt-2" *ngFor="let reply of replies">
+                                <div class="row">
+                                    <p class="colmd-6"><small>by {{reply.createdBy}}</small></p>
+                                    <p class="colmd-3"><small>sent{{reply.createdOn}} ago</small></p>
+
+                                </div>
+                                <p>{{reply.content}}</p>
+
+                                <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentReplyModal" (click)="getReplies(comment.referencedCommentId)">Reply</button>
+
+                            </div>
 
                         </div>
+
                     </div>
-
-
-
-
                 </div>
-                <div>
-                    <button type=" button " class="btn btn-outline-success edit " (click)="editBook(book) " data-bs-toggle="modal " data-bs-target="#bookModal ">
-                  <i class="fas fa-edit "></i>
-                  </button>
-                    <button class="btn btn-outline-success edit " type="submit " (click)="deleteBook(book.id) " data-bs-toggle="modal " data-bs-target="#deleteModal "> <i class="fa fa-trash-o " style="font-size:36px "></i></button>
 
-                </div>
+
+
+
+            </div>
+            <div>
+
             </div>
         </div>
 
@@ -98,16 +125,42 @@
             </div>
 
             <div class="modal-body ">
-                <form name="comentForm " [formGroup]="commentForm " role="form " (ngSubmit)="createComment() ">
+                <form name="comentForm" [formGroup]="commentForm" role="form " (ngSubmit)="createComment()">
                     Write your comment
-                    <textarea class="form-control mt-5 " type="text " name="content " cols="10 " rows="5 " formControlName="content "></textarea>
+                    <textarea class="form-control mt-5 " type="text " name="content " cols="10 " rows="5 " formControlName="content"></textarea>
 
                 </form>
 
             </div>
             <div class="modal-footer ">
-                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal ">Close</button>
-                <button type="button " class="btn btn-success " (click)="createComment()" data-bs-dismiss="modal">send</button>
+                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
+                <button type="button " class="btn btn-success " (click)="createComment()" data-bs-dismiss="modal"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Reply -->
+<div class="modal fade " id="commentReplyModal" tabindex="-1 " role="dialog " aria-labelledby="commentModalTitle" aria-hidden="true " *ngIf="book ">
+    <div class="modal-dialog modal-dialog-centered " role="document ">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+
+    </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="comentForm" [formGroup]="commentForm" role="form " (ngSubmit)="createCommentReply()">
+                    Write your comment
+                    <textarea class="form-control mt-5 " type="text " name="content " cols="10 " rows="5 " formControlName="content"></textarea>
+
+                </form>
+
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
+                <button type="button " class="btn btn-success " (click)="createCommentReply()" data-bs-dismiss="modal"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
@@ -132,24 +185,24 @@
 
                     <div class="form-group ">
                         <label for="title ">title</label>
-                        <input class="form-control " type="text " name="title " formControlName="title ">
+                        <input class="form-control " type="text " name="title" formControlName="title">
                     </div>
                     <div class=" form-group ">
                         <label for="author ">Author</label>
-                        <input class="form-control " type="text " name="author " formControlName="author ">
+                        <input class="form-control " type="text " name="author" formControlName="author">
                     </div>
                     <div class=" form-group ">
                         <label for="imageUrl ">ImageUrl</label>
-                        <input class="form-control " type="text " name="imageUrl " formControlName="imageUrl ">
+                        <input class="form-control " type="text " name="imageUrl" formControlName="imageUrl">
 
                     </div>
                     <div class=" form-group ">
                         <label for="isbn ">ISBN</label>
-                        <input class="form-control " type="text " name="isbn " formControlName="isbn ">
+                        <input class="form-control " type="text " name="isbn" formControlName="isbn">
                     </div>
                     <div class=" form-group ">
                         <label for="accessionNumber ">Accession number</label>
-                        <input class="form-control " type="text " name="accessionNumber " formControlName="accessionNumber ">
+                        <input class="form-control " type="text " name="accessionNumber" formControlName="accessionNumber">
 
                     </div>
 
