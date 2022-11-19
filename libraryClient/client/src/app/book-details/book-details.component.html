@@ -1,237 +1,28 @@
-<div class="container-fluid" *ngIf="book">
-    <div class="row">
-        <div class="col-md-5 bookDetail">
-            <div class="row">
-
-                <div class="col-md-4 mt-5 mx-3">
-                    <img class="img-thumbnail" src="{{book.imageUrl || book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
-
-
-                </div>
-
-                <div class=" col-md-6 mt-5">
-
-                    <div class="row ">
-                        <label class="col-md-4 " for="id "><strong>Title:</strong> </label>
-                        <p class="col-md-5 ">{{book.title}}</p>
-                    </div>
-                    <div class="row ">
-                        <label class="col-md-4 "><strong>Author:</strong></label>
-                        <p class="col-md-5 ">{{book.author}}</p>
-                    </div>
-                    <div class="row " id="book-id">
-                        <label class="col-md-4"><strong>ISBN:</strong> </label>
-                        <p class="col-md-5 ">{{book.isbn}}</p>
-
-                    </div>
-
-                    <div class="row " id="book-id">
-                        <label class="col-md-4"><strong>Status:</strong></label>
-                        <p class="col-md-5 ">{{book.status}}</p>
-
-                    </div>
-
-
-                    <div>
-                        <button *ngIf="book.status!=='BORROWED' && !book.bookType " type="button " class="btn button-3 " (click)="borrowBook() ">
-              Borrow Book
-            </button>
-
-                        <button disabled *ngIf="book.status=='BORROWED' && !book.bookType" type="button" class="btn btn-outline-secondary btn-view">
-        Book Borrowed
-      </button>
-                    </div>
-
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <button type=" button " class="btn btn-outline-success edit " (click)="editBook(book) " data-bs-toggle="modal " data-bs-target="#bookModal ">
-                            <i class="fas fa-edit "></i>
-                            </button>
-                        <button class="btn btn-outline-success edit " type="submit " (click)="deleteBook(book.id) " data-bs-toggle="modal " data-bs-target="#deleteModal "> <i class="fa fa-trash-o " style="font-size:36px "></i></button>
-
-                    </div>
-
-
-
-                    <div class="card px-2" style="overflow-y: scroll; height:200px;">
-                        <input type="text" class="text" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentModal" placeholder="write your comment as">
-                        <h3>Comments</h3>
-
-
-
-                        <div class="card mx-3 col-md-6 mb-2 mt-2" *ngFor="let comment of comments">
-                            <div class="row">
-                                <p class="colmd-6"><small>by {{comment.createdBy}}</small></p>
-                                <p class="colmd-3"><small>sent{{comment.createdOn}} ago</small></p>
-
-                            </div>
-                            <p>{{comment.content}}</p>
-                            <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentReplyModal" (click)="getOneComment(comment.id)">Reply</button>
-
-
-                            <!-- <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentReplyModal" (click)="getOneComment(comment.id)">Reply</button> -->
-
-                            <div class="card mx-5 mb-2 mt-2" *ngFor="let reply of replies">
-                                <div class="row">
-                                    <p class="colmd-6"><small>by {{reply.createdBy}}</small></p>
-                                    <p class="colmd-3"><small>sent{{reply.createdOn}} ago</small></p>
-
-                                </div>
-                                <p>{{reply.content}}</p>
-
-                                <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#commentReplyModal" (click)="getReplies(comment.referencedCommentId)">Reply</button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-
-
-
-
-            </div>
-            <div>
-
-            </div>
+<div class="container-fluid base-page flex flex-col items-center" *ngIf="book">
+  <div class="lg:w-[70%] w-full">
+    <div class="flex p-4">
+      <div class="mb-4 overflow-hidden rounded-2xl">
+        <img
+          class="object-cover cursor-pointer h-[400px] w-[280px] rounded-2xl group-hover:scale-110"
+          src="{{ book.imageUrl || book.bookImageUrl }}"
+        />
+      </div>
+      <div class="px-4 w-[60%]">
+        <h1 class="text-4xl font-bold mb-4">{{ book.title }}</h1>
+        <h2 class="text-2xl mb-4">{{ book.author }}</h2>
+        <h3 class="text-xl font-light mb-4 max-h-[10%]">
+          It is a long established fact that a reader will be distracted by the
+          readable content of a page when looking at its layout. The point of
+          using Lorem Ipsum is that it has a more-or-less normal distribution of
+          letters, as opposed to using 'Content here, content here', making it
+          look like readable English. Many desktop publishing packages and web
+          page editors now use Lorem Ipsum as their default model text, and a
+          search for 'lorem ipsum' will uncover many web sites still
+        </h3>
+        <div class="flex gap-2">
+          <button class="base-btn py-2">Read</button>
         </div>
-
-
-
-
-        <div class="col-md-6 ">
-            <a href="{{book.bookUrl}} ">Download <i class="fas fa-download "> </i></a>
-
-
-            <embed *ngIf="book.bookType=='application/pdf' " [src]="srcPDF | safeUrl " type="application/pdf " class="file ">
-        </div>
+      </div>
     </div>
+  </div>
 </div>
-
-
-<!-- Modal comment-->
-<div class="modal fade " id="commentModal" tabindex="-1 " role="dialog " aria-labelledby="commentModalTitle" aria-hidden="true " *ngIf="book ">
-    <div class="modal-dialog modal-dialog-centered " role="document ">
-        <div class="modal-content ">
-            <div class="modal-header ">
-                <h5 class="modal-title " id="exampleModalLongTitle ">Get to interact with othe readers of this books by commenting</h5>
-                <button type="button " class="close " data-bs-dismiss="modal" aria-label="Close ">
-
-      </button>
-            </div>
-
-            <div class="modal-body ">
-                <form name="comentForm" [formGroup]="commentForm" role="form " (ngSubmit)="createComment()">
-                    Write your comment
-                    <textarea class="form-control mt-5 " type="text " name="content " cols="10 " rows="5 " formControlName="content"></textarea>
-
-                </form>
-
-            </div>
-            <div class="modal-footer ">
-                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
-                <button type="button " class="btn btn-success " (click)="createComment()" data-bs-dismiss="modal"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Create Reply -->
-<div class="modal fade " id="commentReplyModal" tabindex="-1 " role="dialog " aria-labelledby="commentModalTitle" aria-hidden="true " *ngIf="book ">
-    <div class="modal-dialog modal-dialog-centered " role="document ">
-        <div class="modal-content ">
-            <div class="modal-header">
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-
-    </button>
-            </div>
-
-            <div class="modal-body">
-                <form name="comentForm" [formGroup]="commentForm" role="form " (ngSubmit)="createCommentReply()">
-                    Write your comment
-                    <textarea class="form-control mt-5 " type="text " name="content " cols="10 " rows="5 " formControlName="content"></textarea>
-
-                </form>
-
-            </div>
-            <div class="modal-footer ">
-                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
-                <button type="button " class="btn btn-success " (click)="createCommentReply()" data-bs-dismiss="modal"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- Modal -->
-<div class="modal fade " id="bookModal " tabindex="-1 " role="dialog " aria-labelledby="bookModalTitle " aria-hidden="true ">
-    <div class="modal-dialog modal-dialog-centered " role="document ">
-        <div class="modal-content ">
-            <div class="modal-header ">
-                <h5 class="modal-title " id="exampleModalLongTitle ">
-                    Edit Book</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close ">
-        <span aria-hidden="true ">&times;</span>
-      </button>
-            </div>
-
-            <div class="modal-body ">
-                <form name="bookForm " [formGroup]="bookForm " role="form " (ngSubmit)="updateBook(bookId) ">
-
-                    <div class="form-group ">
-                        <label for="title ">title</label>
-                        <input class="form-control " type="text " name="title" formControlName="title">
-                    </div>
-                    <div class=" form-group ">
-                        <label for="author ">Author</label>
-                        <input class="form-control " type="text " name="author" formControlName="author">
-                    </div>
-                    <div class=" form-group ">
-                        <label for="imageUrl ">ImageUrl</label>
-                        <input class="form-control " type="text " name="imageUrl" formControlName="imageUrl">
-
-                    </div>
-                    <div class=" form-group ">
-                        <label for="isbn ">ISBN</label>
-                        <input class="form-control " type="text " name="isbn" formControlName="isbn">
-                    </div>
-                    <div class=" form-group ">
-                        <label for="accessionNumber ">Accession number</label>
-                        <input class="form-control " type="text " name="accessionNumber" formControlName="accessionNumber">
-
-                    </div>
-
-                </form>
-            </div>
-            <div class="modal-footer ">
-                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal ">Close</button>
-                <button type="button " class="btn btn-primary " (click)="updateBook(bookId) ">submit</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- delete Modal -->
-<div class="modal fade " id="deleteModal " tabindex="-1 " role="dialog " aria-labelledby="exampleModalLabel " aria-hidden="true ">
-    <div class="modal-dialog " role="document ">
-        <div class="modal-content ">
-            <div class="modal-header ">
-                <h5 class="modal-title " id="exampleModalLabel ">Confirmation to delete book</h5>
-                <button type="button " class="close " data-dismiss="modal " aria-label="Close ">
-        <span aria-hidden="true ">&times;</span>
-      </button>
-            </div>
-            <div class="modal-body ">
-                Are you sure you want to deletete{{book.title}}?
-            </div>
-            <div class="modal-footer ">
-                <button type="button " class="btn btn-secondary " data-bs-dismiss="modal ">Close</button>
-                <button type="submit " class="btn btn-primary " data-bs-dismiss="modal ">Delete</button>
-            </div>
-        </div>

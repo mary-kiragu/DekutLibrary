@@ -6,11 +6,6 @@ import { FormBuilder } from '@angular/forms';
 import { UserService } from '../user.service';
 import { User } from '../login/user.model';
 
-import * as pdfjsLib from 'pdfjs-dist';
-//const pdfjsWorker = await import('/Desktop/DekutApp/DekutLibrary/libraryClient/client/node_modules/pdfjs-dist/build/pdf.worker.entry.js');
-
-// const pdfjsWorker = await import('../node_modules/pdfjs-dist/build/pdf.worker.entry.js');
-
 @Component({
   selector: 'app-book-details',
   templateUrl: './book-details.component.html',
@@ -127,6 +122,7 @@ differenceInHours:any
       (res)=>{
         console.log(res);
         this.book = res;
+        this.getBookText()
         console.log("finding book ", this.book);
         if (res.bookType == 'application/pdf') {
           var arrrayBuffer = base64ToArrayBuffer(res.bookData); //data is the base64 encoded string
@@ -365,57 +361,164 @@ differenceInHours:any
     )
   }
 
+  getBookText() {
+    //this.loadingShortlisted = true;
+    console.log("=========================");
+    console.log("+++++", this.book.bookUrl);
+
+
+    this.gettext(this.book.bookUrl).then((text: string) => {
+     this.extractedbookText = text;
+      console.log("Extracted book", this.extractedbookText)
+
+     // this.extractResume();
+
+    },
+      function (reason: string) {
+        console.error(reason);
+      }
+    );
+  }
+
+  gettext(pdfUrl: string) {
+    //this.loadingShortlisted = true;
+    // @ts-ignore
+    var pdf = window.pdfjsLib.getDocument(pdfUrl);
+    return pdf.promise.then(function (pdf: any) { // get all pages text
+      var maxPages = pdf.numPages;
+      var countPromises = []; // collecting all page promises
+      for (var j = 1; j <= maxPages; j++) {
+        var page = pdf.getPage(j);
+
+        var txt = "";
+        countPromises.push(page.then(function (page: any) { // add page promise
+          var textContent = page.getTextContent();
+          return textContent.then(function (text: any) { // return content promise
+            return text.items.map(function (s: any) { return s.str; }).join(''); // value page text
+          });
+        }));
+      }
+      // Wait for all pages and join text
+      return Promise.all(countPromises).then(function (texts) {
+        return texts.join('');
+      });
+    });
+  }
+//   speak():any{
+
+//     const synth = window.speechSynthesis;
+
+//   const spokenbook = new SpeechSynthesisUtterance(this.extractedbookText);
+//   const voices=synth.getVoices();
+//   console.log("voices",voices)
+
+//   const amISpeaking = synth.speaking;
+//   console.log("jj",amISpeaking)
+// if(amISpeaking){
+//   synth.pause();
+//   return{}
+
+
+// }
+// if(!amISpeaking){
+//   synth.speak(spokenbook);
+// }
 
 
 
-  // getBookText() {
-  //   //this.loadingShortlisted = true;
-  //   console.log("=========================");
-  //   console.log("+++++", this.book.bookUrl);
+//   console.log("jj",amISpeaking)
 
 
-  //   this.gettext(this.book.bookUrl).then((text: string) => {
-  //     this.extractedbookText = text;
-  //     // console.log("Extracted Resume", this.extractedResume)
-  //     console.log("wwhjjkkelkel");
-  //     console.log("extractedText", this.extractedbookText)
+//   }
+//    getVoices():any {
 
-  //     // this.extractResume();
+//     window.speechSynthesis.getVoices();
+//   return window.speechSynthesis.getVoices();
+// }
 
-  //   },
-  //     function (reason: string) {
-  //       console.error(reason);
-  //     }
-  //   );
+
+
+  // pauseAndResume(): any{
+  //   const synth = window.speechSynthesis;
+  //   const spokenbook = new SpeechSynthesisUtterance(this.extractedbookText);
+
+  // const amISpeaking = synth.speaking;
+  // synth.pause();
+
+
   // }
 
-  // gettext(pdfUrl: string) {
-  //  // this.loadingShortlisted = true;
-  //   //@ts-ignore
-  //   //pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
-  //   //pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/js/pdfjs/pdf.worker.js";
-  //   pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker
-  //   var pdf = pdfjsLib.getDocument(pdfUrl);
-  //   return pdf.promise.then(function (pdf: any) { // get all pages text
-  //     var maxPages = pdf.numPages;
-  //     var countPromises = []; // collecting all page promises
-  //     for (var j = 1; j <= maxPages; j++) {
-  //       var page = pdf.getPage(j);
+ speak(text:any, config:any):any {
+    if (window.speechSynthesis) {
+      var msg = new SpeechSynthesisUtterance();
+    }
 
-  //       var txt = "";
-  //       countPromises.push(page.then(function (page: any) { // add page promise
-  //         var textContent = page.getTextContent();
-  //         return textContent.then(function (text: any) { // return content promise
-  //           return text.items.map(function (s: any) { return s.str; }).join(''); // value page text
-  //         });
-  //       }));
-  //     }
-  //     // Wait for all pages and join text
-  //     return Promise.all(countPromises).then(function (texts) {
-  //       return texts.join('');
-  //     });
-  //   });
-  // }
+    function getVoices() {
+      window.speechSynthesis.getVoices();
+      return window.speechSynthesis.getVoices();
+    }
+
+    function sayIt() {
+      var voices = getVoices();
+
+      //choose voice. Fallback to default
+      msg.voice =
+        config && config.voiceIndex ? voices[config.voiceIndex] : voices[0];
+      msg.volume = config && config.volume ? config.volume : 1;
+      msg.rate = config && config.rate ? config.rate : 1;
+      msg.pitch = config && config.pitch ? config.pitch : 1;
+
+      //message for speech
+      msg.text = text;
+
+      speechSynthesis.speak(msg);
+    }
+
+    return {
+      sayText: sayIt,
+      getVoices: getVoices
+    };
+  };
+
+// pitch:any
+// rate:any
+// volume:any
+
+
+
+    function (scope:any, timeout:any, speech:any) {
+        scope.support = false;
+        if (window.speechSynthesis) {
+          scope.support = true;
+
+          timeout(function () {
+            scope.voices = speech.getVoices();
+          }, 500);
+        }
+
+        scope.this.pitch = 1;
+        scope.this.rate = 1;
+        scope.this.volume = 1;
+
+
+        scope.submitEntry = function () {
+          var voiceIdx = scope.voices.indexOf(scope.optionSelected),
+            config = {
+              voiceIndex: voiceIdx,
+              rate: scope.rate,
+              pitch: scope.pitch,
+              volume: scope.volume
+            };
+
+          if (window.speechSynthesis) {
+            speech.sayText(scope.msg, config);
+          }
+        };
+      }
+
+
+
+
 
 
 
