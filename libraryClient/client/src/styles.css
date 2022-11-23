@@ -28,7 +28,6 @@
 body,
 app-root,app-categories,app-category-detail,app-sections {
     min-height: 100vh;
-    height: 100vh;
     display: block;
 }
 

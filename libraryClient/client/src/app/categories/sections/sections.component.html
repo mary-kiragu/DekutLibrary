@@ -1,117 +1,221 @@
-<div class="container" *ngIf="category">
+<div class="base-page" *ngIf="category">
+  <div class="flex justify-between items-center p-4">
+    <p class="text-2xl font-bold text-[#298e45]">{{ category.name }}</p>
+    <div class="relative">
+      <input
+        type="text"
+        class="base-input w-[300px] pl-8 placeholder:text-[#85B292] placeholder:font-light"
+        name="searchText"
+        [(ngModel)]="searchText"
+        (keyup)="filter()"
+        placeholder="Search Book"
+        aria-label="Categoryname"
+        aria-describedby="button-addon2"
+      />
 
-    <div class="flex justify-between items-center p-4">
-        <p class="text-2xl font-bold text-[#298e45]">{{ category.name }}</p>
-        <div class="relative">
-            <input type="text" class="base-input w-[300px] pl-8 placeholder:text-[#85B292] placeholder:font-light" name="searchText" [(ngModel)]="searchText" (keyup)="filter()" placeholder="Search Book" aria-label="Categoryname" aria-describedby="button-addon2" />
-
-            <button class="absolute left-3 top-[10px]" [ngClass]="{ 'activate-button': searchText }" (click)="filter()">
-    <i class="fas fa-search text-[#85B292]"></i>
-  </button>
-            <button *ngIf="isFiltered" class="absolute right-4 top-[10px]" [ngClass]="{ 'activate-button': searchText }" (click)="unfilter()">
-    <i class="fas fa-close"></i>
-  </button>
-            <!-- <button type="button" class="btn button-3">
+      <button
+        class="absolute left-3 top-[10px]"
+        [ngClass]="{ 'activate-button': searchText }"
+        (click)="filter()"
+      >
+        <i class="fas fa-search text-[#85B292]"></i>
+      </button>
+      <button
+        *ngIf="isFiltered"
+        class="absolute right-4 top-[10px]"
+        [ngClass]="{ 'activate-button': searchText }"
+        (click)="unfilter()"
+      >
+        <i class="fas fa-close"></i>
+      </button>
+      <!-- <button type="button" class="btn button-3">
     <i class="fas fa-search"></i>
   </button> -->
-        </div>
-        <div *ngIf="user.authority === 'ADMIN'">
-            <button type="button" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#bookModal" class="base-btn px-4 py-[12px] text-sm">
-    <i class="fa fa-plus-circle"></i> Upload Book
-  </button>
-        </div>
     </div>
-
-
-    <div class="grid grid-cols-4 items-center justify-items-center">
-
-        <div class="group relative lg:w-[300px] p-4 rounded-3xl bg-white shadow-lg shadow-black-500/50" *ngFor="let book of booksToRender">
-
-            <div class="mb-4 overflow-hidden rounded-2xl">
-                <img class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{book.imageUrl ||book.bookImageUrl}} " alt="{{book.bookImageUrl}} " [routerLink]="['/book-records',book.id]" />
-                <!-- <img *ngIf="book.imageUrl!==null" class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" /> -->
-            </div>
-            <p class="font-bold text-xl">{{ book.title}}</p>
-            <p class="font-semibold text-md mb-2 opacity-[0.8]">{{ book.author }}</p>
-            <p class="font-regular text-sm mb-2 opacity-[0.8]">ISBN : {{ book.isbn}}</p>
-            <div class="width-full flex items-center justify-center">
-                <div class="flex rounded-full items-center justify-left p-2" [ngClass]="book.status == 'ISSUED' ? 'bg-red-100' : 'bg-green-100'">
-                    <p class="py-1 px-3  rounded-full text-sm" [ngClass]="book.status == 'ISSUED' ? 'bg-red-300' : 'bg-green-300'">{{book.status}}</p>
-                </div>
-            </div>
-        </div>
+    <div *ngIf="user.authority === 'ADMIN'">
+      <button
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-toggle="modal"
+        data-bs-target="#bookModal"
+        class="base-btn px-4 py-[12px] text-sm"
+      >
+        <i class="fa fa-plus-circle"></i> Upload Book
+      </button>
     </div>
+  </div>
 
+  <div class="grid grid-cols-4 items-center justify-items-center gap-4">
+    <div
+      class="group relative lg:w-[300px] p-4 rounded-3xl bg-white shadow-lg shadow-black-500/50"
+      *ngFor="let book of booksToRender"
+    >
+      <div class="mb-4 overflow-hidden rounded-2xl">
+        <img
+          class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110"
+          src="{{ book.imageUrl || book.bookImageUrl }} "
+          alt="{{ book.bookImageUrl }} "
+          [routerLink]="['/book-records', book.id]"
+        />
+        <!-- <img *ngIf="book.imageUrl!==null" class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{book.imageUrl}} " alt="{{book.bookImageUrl}}" [routerLink]="['/book-records',book.id]" /> -->
+      </div>
+      <p class="font-bold text-xl">{{ book.title }}</p>
+      <p class="font-semibold text-md mb-2 opacity-[0.8]">{{ book.author }}</p>
+      <p class="font-regular text-sm mb-2 opacity-[0.8]">
+        ISBN : {{ book.isbn }}
+      </p>
+      <div class="width-full flex items-center justify-center">
+        <div
+          class="flex rounded-full items-center justify-left p-2"
+          [ngClass]="book.status == 'ISSUED' ? 'bg-red-100' : 'bg-green-100'"
+        >
+          <p
+            class="py-1 px-3 rounded-full text-sm"
+            [ngClass]="book.status == 'ISSUED' ? 'bg-red-300' : 'bg-green-300'"
+          >
+            {{ book.status }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-
 <!-- Modal -->
-<div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
-                    {{bookId ? 'Edit' : 'Add'}} Book</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+<div
+  class="modal fade"
+  id="bookModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="bookModalTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+          {{ bookId ? "Edit" : "Add" }} Book
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form
+          name="bookForm"
+          [formGroup]="bookForm"
+          role="form"
+          (ngSubmit)="save()"
+        >
+          <div class="form-group" *ngIf="!uploadFile">
+            <label for="imageUrl">ImageUrl</label>
+            <input
+              class="form-control"
+              type="text"
+              name="imageUrl"
+              formControlName="imageUrl"
+            />
+          </div>
+          <div>
+            <div *ngIf="uploadFile" class="form-group">
+              <label for="imageUrl">Browse image</label>
+
+              <input
+                accept="image/*"
+                class="form-control"
+                type="file"
+                name="imageUrl"
+                (change)="selectFile($event)"
+              />
+              <a style="cursor: pointer; color: blue"
+                ><small (click)="showInputUrl()"> or input image url</small></a
+              >
             </div>
-
-            <div class="modal-body">
-                <form name="bookForm" [formGroup]="bookForm" role="form" (ngSubmit)="save()">
-                    <div class=" form-group" *ngIf="!uploadFile">
-                        <label for="imageUrl">ImageUrl</label>
-                        <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl">
-
-                    </div>
-                    <div>
-
-                        <div *ngIf="uploadFile" class=" form-group">
-                            <label for="imageUrl">Browse image</label>
-
-                            <input accept="image/*" class="form-control" type="file" name="imageUrl" (change)="selectFile($event)">
-                            <a style="cursor: pointer; color: blue;"><small (click)="showInputUrl()"> or input image url</small></a>
-                        </div>
-                        <div *ngIf="!uploadFile">
-                            <a style="cursor: pointer;color: blue;"><small (click)="showUploadFile()"> upload image</small></a>
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="title">title</label>
-                        <input class="form-control" type="text" name="title" formControlName="title">
-                    </div>
-                    <div class=" form-group">
-                        <label for="author">Author</label>
-                        <input class="form-control" type="text" name="author" formControlName="author">
-                    </div>
-
-
-
-                    <div class=" form-group">
-                        <label for="isbn">ISBN</label>
-                        <input class="form-control" type="text" name="isbn" formControlName="isbn">
-
-                    </div>
-                    <div class=" form-group">
-                        <label for="accessionNumber">Accession number</label>
-                        <input class="form-control" type="text" name="accessionNumber" formControlName="accessionNumber">
-
-                    </div>
-                    <div *ngIf="uploadFile" class=" form-group">
-                        <label for="imageUrl">Browse book</label>
-
-                        <input accept=".pdf*" class="form-control" type="file" name="bookUrl" (change)="selectBook($event)">
-                    </div>
-
-
-                </form>
+            <div *ngIf="!uploadFile">
+              <a style="cursor: pointer; color: blue"
+                ><small (click)="showUploadFile()"> upload image</small></a
+              >
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="save()">submit</button>
-            </div>
-        </div>
+          </div>
+
+          <div class="form-group">
+            <label for="title">title</label>
+            <input
+              class="form-control"
+              type="text"
+              name="title"
+              formControlName="title"
+            />
+          </div>
+          <div class="form-group">
+            <label for="author">Author</label>
+            <input
+              class="form-control"
+              type="text"
+              name="author"
+              formControlName="author"
+            />
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <input
+              class="form-control"
+              type="text"
+              name="description"
+              formControlName="description"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="isbn">ISBN</label>
+            <input
+              class="form-control"
+              type="text"
+              name="isbn"
+              formControlName="isbn"
+            />
+          </div>
+          <div class="form-group">
+            <label for="accessionNumber">Accession number</label>
+            <input
+              class="form-control"
+              type="text"
+              name="accessionNumber"
+              formControlName="accessionNumber"
+            />
+          </div>
+          <div *ngIf="uploadFile" class="form-group">
+            <label for="imageUrl">Browse book</label>
+
+            <input
+              accept=".pdf*"
+              class="form-control"
+              type="file"
+              name="bookUrl"
+              (change)="selectBook($event)"
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="save()"
+        >
+          submit
+        </button>
+      </div>
     </div>
+  </div>
 </div>

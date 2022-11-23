@@ -33,6 +33,8 @@ public class BorrowHistory {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdOn;
 
+    private LocalDateTime dueDate;
+
 
 
 }

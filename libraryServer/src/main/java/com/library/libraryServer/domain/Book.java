@@ -48,6 +48,8 @@ public class Book implements Serializable {
     private String title;
     private String author;
 
+    private String description;
+
     private String accessionNumber;
     @Enumerated(EnumType.STRING)
     private Status status;

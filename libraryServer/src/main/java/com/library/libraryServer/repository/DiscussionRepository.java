@@ -8,4 +8,6 @@ import java.util.*;
 
 public interface DiscussionRepository extends JpaRepository<Discussion,Long> {
     List<DiscussionDTO> findByBook(Long book);
+
+    DiscussionDTO findByReferencedCommentId(Long referencedCommentId);
 }

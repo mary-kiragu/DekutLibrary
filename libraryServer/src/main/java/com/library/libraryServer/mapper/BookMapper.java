@@ -21,6 +21,7 @@ public class BookMapper {
         bookDTO.setIsbn(book.getIsbn());
         bookDTO.setImageUrl(book.getImageUrl());
         bookDTO.setAuthor(book.getAuthor());
+        bookDTO.setDescription(book.getDescription());
         bookDTO.setStatus(book.getStatus());
         bookDTO.setCategoryId(book.getCategoryId());
         bookDTO.setBorrowedBy(book.getBorrowedBy());

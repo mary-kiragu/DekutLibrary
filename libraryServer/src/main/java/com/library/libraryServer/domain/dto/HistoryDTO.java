@@ -12,6 +12,10 @@ public interface HistoryDTO {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     public LocalDateTime getCreatedOn();
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    public LocalDateTime getDueDate();
+
 
     public Actions getAction();
 
@@ -31,7 +35,10 @@ public interface HistoryDTO {
         public String getTitle();
         @JsonSerialize(using = LocalDateTimeSerializer.class)
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-        public LocalDateTime getBorrowedOn();
+        public LocalDateTime getIssuedOn();
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        public LocalDateTime getDueDate();
         @JsonSerialize(using = LocalDateTimeSerializer.class)
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         public LocalDateTime getReturnedOn();

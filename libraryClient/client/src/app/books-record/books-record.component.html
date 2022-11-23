@@ -1,185 +1,512 @@
 <div class="row">
-    <div>
-        <button type="button" class="btn button-3 mt-3 ml-2" (click)="resetBorrowBookForm()" data-bs-toggle="modal" data-bs-target="#bookModal">
-      <span><i class="fas fa-plus-circle"></i></span>
-      Add Book
-    </button>
-
-        <div class="row">
-            <div class="col-md-2 mx-3">
-                <button (click)="filter('AVAILABLE')">
-          < {{ totalAvailable }} >AVAILABLE
+  <div>
+    <div class="w-full flex items-center justify-between my-4 px-4">
+      <div class="w-[130px]"></div>
+      <div
+        class="flex gap-2 bg-white shadow-lg shadow-black-500/50 rounded-full p-2"
+      >
+        <button
+          [ngClass]="
+            activeFilter == 'all' ? 'bg-green-300 font-bold' : 'bg-white'
+          "
+          (click)="filter('all')"
+          class="w-[130px] py-2 rounded-full border-2 border-green-300/0 hover:border-green-300"
+        >
+          All
         </button>
-            </div>
-            <div class="col-md-2">
-                <button (click)="filter('BORROWED')">
-          {{ totalBorrowed }}BORROWED
+        <button
+          [ngClass]="
+            activeFilter == 'available' ? 'bg-green-300 font-bold' : 'bg-white'
+          "
+          (click)="filter('available')"
+          class="w-[130px] py-2 rounded-full border-2 border-green-300/0 hover:border-green-300"
+        >
+          {{ totalAvailable }} Available
         </button>
-            </div>
-            <div class="col-md-2">
-                <button (click)="filter('ISSUED')">{{ totalIssued }}ISSUED</button>
-            </div>
-        </div>
-
-        <table class="table table-hover mx-3">
-            <thead>
-                <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">Author</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">ISBN</th>
-                    <th scope="col">Accession number</th>
-                    <th scope="col">Borrowed by</th>
-                    <th scope="col">Borrowed on</th>
-                    <th scope="col">Returned on</th>
-                    <th scope="col">issued by</th>
-                    <!-- <th scope="col">imageUrl</th> -->
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr *ngFor="let book of booksToRender">
-                    <td>{{ book.title }}</td>
-                    <td>{{ book.author }}</td>
-                    <td>{{ book.status }}</td>
-                    <td>{{ book.isbn }}</td>
-                    <td>{{ book.accessionNumber }}</td>
-                    <td>{{ book.borrowedBy }}</td>
-                    <td>{{ book.borrowedOn }}</td>
-                    <td>{{ book.returnedOn }}</td>
-                    <td>{{ book.issuedBy }}</td>
-                    <!-- <td>
-                        <img *ngIf="book.imageUrl==null" src="{{book.bookImageUrl}}" height="50px" width="50px" />
-                        <img *ngIf="book.imageUrl!==null" src="{{book.imageUrl}}" height="50px" width="50px" />
-                    </td> -->
-                    <td class="justify-content-center">
-                        <i [routerLink]="['/book-records', book.id]" class="fa fa-eye" style="font-size: 36px"></i>
-                        <button type="button" class="btn btn-outline-success edit" (click)="editBook(book)" data-bs-toggle="modal" data-bs-target="#bookModal">
-              <i class="fas fa-edit"></i>
-            </button>
-                        <button class="btn btn-outline-success edit" type="submit" (click)="deleteBook(book.id)">
-              <i class="fa fa-trash-o" style="font-size: 36px"></i>
-            </button>
-                        <button *ngIf="book.status === 'ISSUED' && book.fine == 0" type="submit" (click)="returnBook(book)" class="btn btn-outline-success">
-              ReturnBook
-            </button>
-                        <button *ngIf="book.fine != 0" type="submit " class="mt-2 button-3" data-bs-toggle="modal" data-bs-target="#subscriptionModal" (click)="setBookId(book.id)">
-              Pay
-            </button>
-                        <button *ngIf="book.status === 'BORROWED'" type="submit" (click)="issueBook(book)" class="btn btn-outline-success">
-              Issue
-            </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <button
+          [ngClass]="
+            activeFilter == 'borrowed' ? 'bg-green-300 font-bold' : 'bg-white'
+          "
+          (click)="filter('borrowed')"
+          class="w-[130px] py-2 rounded-full border-2 border-green-300/0 hover:border-green-300"
+        >
+          {{ totalBorrowed }} Borrowed
+        </button>
+        <button
+          [ngClass]="
+            activeFilter == 'issued' ? 'bg-green-300 font-bold' : 'bg-white'
+          "
+          (click)="filter('issued')"
+          class="w-[130px] py-2 rounded-full border-2 border-green-300/0 hover:border-green-300"
+        >
+          {{ totalIssued }} Issued
+        </button>
+      </div>
+      <button
+        (click)="resetBorrowBookForm()"
+        class="base-btn py-[10px] px-3 text-sm"
+        data-bs-toggle="modal"
+        data-bs-target="#bookModal"
+      >
+        <i class="fas fa-plus-circle mr-2"></i> Add Book
+      </button>
     </div>
+    <div class="w-full flex items-start justify-center gap-4">
+      <div
+        class="bg-white shadow-lg shadow-black-500/50 rounded-2xl flex items-center w-[50%] p-4"
+      >
+        <table class="table table-hover">
+          <thead class="bg-green-600">
+            <tr>
+              <th scope="col" class="text-white">Title</th>
+              <th scope="col" class="text-white">Author</th>
+              <th scope="col" class="text-white text-center">ISBN</th>
+              <th scope="col" class="text-white text-center">Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="let book of booksToRender"
+              class="hover:bg-green-100"
+              (click)="selectedBook = book"
+            >
+              <td class="text-left">
+                {{ book.title }}
+              </td>
+              <td class="text-center py-0">{{ book.author }}</td>
+              <td class="text-center">{{ book.isbn }}</td>
+              <td class="flex items-center justify-end">
+                <div
+                  class="flex rounded-full items-center justify-left p-2"
+                  [ngClass]="
+                    book.status == 'ISSUED' ? 'bg-red-100' : 'bg-green-100'
+                  "
+                >
+                  <p
+                    class="py-1 px-3 rounded-full text-sm"
+                    [ngClass]="
+                      book.status == 'ISSUED' ? 'bg-red-300' : 'bg-green-300'
+                    "
+                  >
+                    {{ book.status }}
+                  </p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div
+        *ngIf="selectedBook"
+        class="p-4 rounded-3xl w-[40%] h-full bg-white shadow-lg shadow-black-500/50"
+      >
+        <div class="mb-4 overflow-hidden rounded-2xl">
+          <div class="flex gap-4">
+            <img
+              class="object-cover cursor-pointer h-[300px] w-[200px] rounded-2xl group-hover:scale-110"
+              src="{{ selectedBook.imageUrl || selectedBook.bookImageUrl }} "
+              alt="{{ selectedBook.bookImageUrl }} "
+            />
+            <div>
+              <h1 class="text-2xl font-bold mb-2">{{ selectedBook.title }}</h1>
+              <h2 class="text-xl mb-2">{{ selectedBook.author }}</h2>
+              <h2 class="text-base mb-3">
+                {{ selectedBook.description || "No Description" }}
+              </h2>
+              <div
+                *ngIf="selectedBook.borrowedOn"
+                class="flex rounded-full items-center justify-left p-2 bg-red-100"
+              >
+                <p class="text-sm mr-2">Borrowed on:</p>
+                <p class="py-1 px-3 rounded-full text-sm bg-red-300">
+                  {{ selectedBook.borrowedOn }}
+                </p>
+              </div>
+              <div>
+                <button
+                  class="px-3 py-2 hover:bg-red-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteModal"
+                  *ngIf="user.authority === 'ADMIN'"
+                  (click)="deleteBook(selectedBook.id)"
+                >
+                  <i
+                    class="fa fa-trash text-red-500"
+                    style="font-size: 24px"
+                  ></i>
+                </button>
+                <button
+                  class="px-3 py-2 hover:bg-amber-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editbookModal"
+                  (click)="setSelectedBook(selectedBook)"
+                  *ngIf="user.authority === 'ADMIN'"
+                >
+                  <i
+                    class="fas fa-edit text-orange-500"
+                    style="font-size: 24px"
+                  ></i>
+                </button>
+              </div>
+              <div>
+                <button
+                  *ngIf="
+                    selectedBook.status === 'ISSUED' && selectedBook.fine == 0
+                  "
+                  type="submit"
+                  (click)="returnBook(selectedBook)"
+                  class="flex rounded-full items-center justify-left p-2 bg-red-300"
+                >
+                  ReturnBook
+                </button>
+
+                <button
+                  *ngIf="selectedBook.status === 'BORROWED'"
+                  type="submit"
+                  (click)="issueBook(selectedBook)"
+                  class="flex rounded-full items-center justify-left p-2 bg-green-300"
+                >
+                  Issue
+                </button>
+                <button
+                  *ngIf="selectedBook.fine != 0"
+                  type="submit "
+                  class="flex rounded-full items-center justify-left p-2 bg-green-300"
+                  data-bs-toggle="modal"
+                  data-bs-target="#subscriptionModal"
+                  (click)="setBookId(selectedBook.id)"
+                >
+                  Pay for fines
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
-                    {{ bookId ? "Edit" : "Add" }} Book
-                </h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+<!-- Modal to create -->
+<div
+  class="modal fade rounded-3xl"
+  id="bookModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="bookModalTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+          {{ bookId ? "Edit" : "Add" }} Book
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
-            </div>
+      </div>
 
-            <div class="modal-body">
-                <form name="bookForm" [formGroup]="bookForm" role="form" (ngSubmit)="save()">
-                    <div class="form-group">
-                        <label for="title">title</label>
-                        <input class="form-control" type="text" name="title" formControlName="title" />
-                    </div>
-                    <div class="form-group">
-                        <label for="author">Author</label>
-                        <input class="form-control" type="text" name="author" formControlName="author" />
-                    </div>
-                    <div class="form-group">
-                        <label for="imageUrl">ImageUrl</label>
-                        <input class="form-control" type="text" name="imageUrl" formControlName="imageUrl" />
-                    </div>
-                    <div class="form-group">
-                        <label for="isbn">ISBN</label>
-                        <input class="form-control" type="text" name="isbn" formControlName="isbn" />
-                    </div>
-                    <div class="form-group">
-                        <label for="accessionNumber">Accession number</label>
-                        <input class="form-control" type="text" name="accessionNumber" formControlName="accessionNumber" />
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      <div class="modal-body">
+        <form
+          name="bookForm"
+          [formGroup]="bookForm"
+          role="form"
+          (ngSubmit)="save()"
+        >
+          <div class="form-group">
+            <label for="title">title</label>
+            <input
+              class="form-control"
+              type="text"
+              name="title"
+              formControlName="title"
+            />
+          </div>
+          <div class="form-group">
+            <label for="author">Author</label>
+            <input
+              class="form-control"
+              type="text"
+              name="author"
+              formControlName="author"
+            />
+          </div>
+          <div class="form-group">
+            <label for="imageUrl">ImageUrl</label>
+            <input
+              class="form-control"
+              type="text"
+              name="imageUrl"
+              formControlName="imageUrl"
+            />
+          </div>
+          <div class="form-group">
+            <label for="isbn">ISBN</label>
+            <input
+              class="form-control"
+              type="text"
+              name="isbn"
+              formControlName="isbn"
+            />
+          </div>
+          <div class="form-group">
+            <label for="accessionNumber">Accession number</label>
+            <input
+              class="form-control"
+              type="text"
+              name="accessionNumber"
+              formControlName="accessionNumber"
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
         </button>
-                <button type="button" class="btn btn-primary" (click)="save()">
+        <button type="button" class="btn btn-primary" (click)="save()">
           submit
         </button>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+</div>
+<!-- Modal to edit -->
+<div
+  class="modal fade rounded-3xl"
+  id="editbookModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="bookModalTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Edit Book</h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form
+          name="bookForm"
+          [formGroup]="bookForm"
+          role="form"
+          (ngSubmit)="save()"
+        >
+          <div class="form-group" *ngIf="!uploadFile">
+            <label for="imageUrl">ImageUrl</label>
+            <input
+              class="form-control"
+              type="text"
+              name="imageUrl"
+              formControlName="imageUrl"
+            />
+          </div>
+          <div>
+            <div *ngIf="uploadFile" class="form-group">
+              <label for="imageUrl">Browse image</label>
+
+              <input
+                accept="image/*"
+                class="form-control"
+                type="file"
+                name="imageUrl"
+                (change)="selectFile($event)"
+              />
+              <a style="cursor: pointer; color: blue"
+                ><small (click)="showInputUrl()"> or input image url</small></a
+              >
+            </div>
+            <div *ngIf="!uploadFile">
+              <a style="cursor: pointer; color: blue"
+                ><small (click)="showUploadFile()"> upload image</small></a
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="title">title</label>
+            <input
+              class="form-control"
+              type="text"
+              name="title"
+              formControlName="title"
+            />
+          </div>
+          <div class="form-group">
+            <label for="author">Author</label>
+            <input
+              class="form-control"
+              type="text"
+              name="author"
+              formControlName="author"
+            />
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <input
+              class="form-control"
+              type="text"
+              name="description"
+              formControlName="description"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="isbn">ISBN</label>
+            <input
+              class="form-control"
+              type="text"
+              name="isbn"
+              formControlName="isbn"
+            />
+          </div>
+          <div class="form-group">
+            <label for="accessionNumber">Accession number</label>
+            <input
+              class="form-control"
+              type="text"
+              name="accessionNumber"
+              formControlName="accessionNumber"
+            />
+          </div>
+          <div *ngIf="uploadFile" class="form-group">
+            <label for="imageUrl">Browse book</label>
+
+            <input
+              accept=".pdf*"
+              class="form-control"
+              type="file"
+              name="bookUrl"
+              (change)="selectBook($event)"
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="updateBook(selectedBook?.id)"
+        >
+          submit
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- delete Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                    Confirmation to delete book
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Confirmation to delete book
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to deletete{{ book.title }}?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      </div>
+      <div class="modal-body">
+        Are you sure you want to deletete{{ book.title }}?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
         </button>
-                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
           Delete
         </button>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Modal to create or update  payment plan  -->
-<div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Payment Details</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+<div
+  class="modal fade"
+  id="subscriptionModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="subscriptionModalTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Payment Details</h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
-            </div>
-            <form name="paymentRequestForm" [formGroup]="paymentRequestForm" (ngSubmit)="initiateFPayment()" role="form">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="phoneNumber"> PhoneNumber</label>
-                        <!-- <input class="form-control" type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="paymentRequest.phoneNumber"> -->
-                        <input class="form-control" type="text" name="phoneNumber" formControlName="phoneNumber" placeholder="Enter phone number starting with 254" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      </div>
+      <form
+        name="paymentRequestForm"
+        [formGroup]="paymentRequestForm"
+        (ngSubmit)="initiateFPayment()"
+        role="form"
+      >
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="phoneNumber"> PhoneNumber</label>
+            <!-- <input class="form-control" type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="paymentRequest.phoneNumber"> -->
+            <input
+              class="form-control"
+              type="text"
+              name="phoneNumber"
+              formControlName="phoneNumber"
+              placeholder="Enter phone number starting with 254"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
             Close
           </button>
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
             submit
           </button>
-                </div>
-            </form>
         </div>
+      </form>
     </div>
+  </div>
 </div>

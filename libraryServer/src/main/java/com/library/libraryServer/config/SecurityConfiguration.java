@@ -44,7 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //.antMatchers(HttpMethod.POST, "/api/comments").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/resource-files/upload").authenticated()
-                .antMatchers(HttpMethod.POST, "/api/discussion").authenticated()
+                //.antMatchers(HttpMethod.POST, "/api/discussion").authenticated()
                 .antMatchers("/api/**").permitAll()
                 .and()
                 .apply(securityConfigurerAdapter());

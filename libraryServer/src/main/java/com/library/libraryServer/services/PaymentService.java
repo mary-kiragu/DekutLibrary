@@ -295,6 +295,7 @@ public class PaymentService {
             customFields.put(callBackItem.getName(), callBackItem.getValue());
 
         }
+
         log.info("customfield {}",customFields);
         paymentDTO.setStatus("SUCCESS");
         paymentDTO.setStatusReason(callBackDTO.getBody().getStkCallBack().getResultDescription());
@@ -302,9 +303,27 @@ public class PaymentService {
         paymentDTO.setTransactionCode((String) customFields.get("MpesaReceiptNumber"));
         paymentDTO.setAmount((Double) customFields.get("Amount"));
         paymentDTO.setProfileId(payment.getUserId());
+        paymentDTO.setBookId(payment.getBookId());
 
         log.info("customfield {}",customFields);
 
+        if(payment.getBookId()!=null){
+            Optional<Book> bookOptional=bookService.getOneBook(payment.getBookId());
+            log.info("user id{}",bookOptional);
+            if(bookOptional.isPresent()){
+                Book book=bookOptional.get();
+                bookService.returnBook(book.getId());
+            }
+
+
+            payment.setTransactionCode(paymentDTO.getTransactionCode());
+            payment.setStatus(PaymentStatus.COMPLETE);
+            payment.setAmount(paymentDTO.getAmount());
+            updatePayment(payment);
+            return;
+
+
+        }
         User profile = userService.findById(payment.getUserId());
         log.info("user id{}",profile);
 
@@ -592,6 +611,11 @@ public class PaymentService {
         return darajaRequestResponseDTO;
 
 
+    }
+
+    public List<Payment> findByUser(Long userId){
+      List <Payment> payments=paymentRepository.findByUserId(userId);
+      return payments;
     }
 
 

@@ -141,13 +141,13 @@ public class BookResource {
         return new ResponseEntity(returnedBook,HttpStatus.OK);
     }
 
-    @PutMapping(path ="/update/{id}")
-    ResponseEntity updateBook(@RequestBody Book book, @PathVariable Long id){
+    @PutMapping(path ="/update")
+    ResponseEntity updateBook(@RequestBody Book book) throws UserNotFoundException {
         System.out.println("========================================================================================");
-        log.info("Hit update route");
+        log.info("Hit update route{}",book.getDescription());
         System.out.println("cnsjdnmckdsmckmk");
-        Optional<Book> updatedBook=null;
-        updatedBook=bookService.updateBook(id, book.getTitle(), book.getAuthor(), book.getImageUrl());
+        Book updatedBook=  bookService.updateBook(book);
+
         return new ResponseEntity(updatedBook,HttpStatus.OK);
     }
 

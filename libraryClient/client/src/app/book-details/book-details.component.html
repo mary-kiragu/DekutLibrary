@@ -1,5 +1,5 @@
 <div class="container-fluid base-page flex flex-col items-center" *ngIf="book">
-  <div class="lg:w-[70%] w-full">
+  <div class="relative lg:w-[70%] w-full">
     <div class="flex p-4">
       <div class="mb-4 overflow-hidden rounded-2xl">
         <img
@@ -10,18 +10,127 @@
       <div class="px-4 w-[60%]">
         <h1 class="text-4xl font-bold mb-4">{{ book.title }}</h1>
         <h2 class="text-2xl mb-4">{{ book.author }}</h2>
-        <h3 class="text-xl font-light mb-4 max-h-[10%]">
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page when looking at its layout. The point of
-          using Lorem Ipsum is that it has a more-or-less normal distribution of
-          letters, as opposed to using 'Content here, content here', making it
-          look like readable English. Many desktop publishing packages and web
-          page editors now use Lorem Ipsum as their default model text, and a
-          search for 'lorem ipsum' will uncover many web sites still
+        <h3 class="text-xl font-light mb-3 max-h-[50%] overflow-y-scroll">
+          {{ book.description }}
         </h3>
-        <div class="flex gap-2">
-          <button class="base-btn py-2">Read</button>
+        <div *ngIf="book.bookType == 'application/pdf'" class="flex gap-4">
+          <button
+            (click)="showPdfModal = true"
+            class="base-btn py-[10px] px-[80px] rounded-xl"
+          >
+            Read
+          </button>
         </div>
+        <div *ngIf="book.bookType != 'application/pdf'" class="flex gap-4">
+          <button
+            *ngIf="book.status == 'AVAILABLE'"
+            class="base-btn py-[10px] px-[80px] rounded-xl"
+            (click)="borrowBook()"
+          >
+            Book
+          </button>
+          <div
+            *ngIf="book.status == 'ISSUED' || book.status == 'BORROWED'"
+            class="flex rounded-full items-center justify-left p-2 bg-red-100"
+          >
+            <p class="py-1 px-3 rounded-full text-md font-bold bg-red-300">
+              {{ book.status }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full">
+      <form name="comentForm" [formGroup]="commentForm" role="form">
+        <input
+          type="text"
+          placeholder="Add a comment..."
+          class="p-2 bg-black/5 w-full rounded-lg mb-4"
+          formControlName="content"
+          (keyup.enter)="createComment()"
+        />
+      </form>
+      <div class="w-full max-h-[400px] overflow-y-scroll">
+        <div
+          *ngFor="let comment of comments"
+          class="flex gap-2 items-center justify-center mb-3"
+        >
+          <div
+            class="w-[40px] h-[40px] flex items-center justify-center rounded-full bg-black/5"
+          >
+            <p class="font-bold text-xl">
+              {{ comment.createdBy.charAt(0).toUpperCase() }}
+            </p>
+          </div>
+          <div class="flex flex-col w-full h-[40px] justify-between">
+            <div class="flex gap-2">
+              <p class="text-sm">{{ comment.createdBy }}</p>
+              <p class="text-sm">{{ comment.createdOn }}</p>
+            </div>
+            <p>
+              {{ comment.content }}
+            </p>
+          </div>
+
+          <button
+            *ngIf="comment.createdBy === user.email"
+            type="submit"
+            (click)="deleteComment(comment.id)"
+          >
+            delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="book.bookType == 'application/pdf'"
+    class="fixed top-0 w-full bg-black/70 flex items-center justify-center overflow-hidden"
+    [ngClass]="showPdfModal ? 'h-full p-4' : 'h-[0%] p-0'"
+  >
+    <div class="relative w-[75%] h-full">
+      <iframe
+        [src]="srcPDF | safeUrl"
+        class="w-full h-full"
+        frameborder="0"
+      ></iframe>
+      <!-- <embed type="application/pdf " class="w-full h-full" /> -->
+      <div
+        class="absolute bottom-[10px] left-[50%] translate-x-[-50%] gap-2 flex bg-white rounded-full p-2 shadow-lg shadow-black-600/100"
+      >
+        <button
+          (click)="showPdfModal = false; stop()"
+          class="base-btn bg-red-500 py-2 px-4 font-medium text-base"
+        >
+          <i class="fa-solid fa-close rate_review mr-2"></i>
+
+          Close
+        </button>
+        <button
+          *ngIf="speechState === 'off'"
+          (click)="speak()"
+          class="base-btn bg-green-500 py-2 px-4 font-medium text-base"
+        >
+          <i class="fa-solid fa-play rate_review mr-2"></i>
+          Play
+        </button>
+        <!-- <button
+          *ngIf="speechState === 'paused'"
+          (click)="resume()"
+          class="base-btn bg-green-500 py-2 px-4 font-medium text-base"
+        >
+          Resume
+        </button> -->
+        <button
+          *ngIf="speechState === 'speaking'"
+          (click)="stop()"
+          class="base-btn bg-orange-500 py-2 px-4 font-medium text-base"
+        >
+          <i class="fa-solid fa-stop rate_review mr-2"></i>
+
+          Stop
+        </button>
       </div>
     </div>
   </div>

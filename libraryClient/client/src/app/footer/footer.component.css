@@ -1,6 +1,7 @@
 .footer {
     background-color: rgba(29, 69, 4, 0.924);
     color: white;
+    margin-top: 40px;
 }
 
 .quicklinks a {

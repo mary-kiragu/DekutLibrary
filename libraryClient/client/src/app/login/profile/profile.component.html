@@ -1,53 +1,87 @@
 <div class="row">
-    <div class="card col-md-5 texty">
-        <div class="row mt-5">
-            <label for="Email"> <strong>Email :</strong> {{user.email}}</label>
-
-        </div>
-        <div class="row">
-            <label for="name"> <strong>Name :</strong> {{user.name}}</label>
-
-        </div>
-        <div class="row">
-            <label for="password"> <strong>Password :</strong> {{user.password}}</label>
-
-        </div>
-
-        <div class="card">
-            <table class="table table-stripped">
-                <thead>
-                    <tr>
-                        <td>id</td>
-                        <td>Title</td>
-                        <td>borrowedOn</td>
-                        <td>ReturnedOn</td>
-                        <td>Action</td>
-                        <td>history created on</td>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <tr *ngFor="let history of historyValues">
-                        <td>{{history.id}}</td>
-                        <td>{{history.book?.title}}</td>
-                        <td>{{history.book?.borrowedOn}}</td>
-                        <td>{{history.book?.returnedOn}}</td>
-                        <td>{{history.action}}</td>
-                        <td>{{history.createdOn}}</td>
-                    </tr>
-                </tbody>
-
-            </table>
-
-
-        </div>
-
+  <div class="card col-md-7 texty">
+    <div class="row mt-5">
+      <label for="Email"> <strong>Email :</strong> {{ user.email }}</label>
     </div>
-    <div class="card col-md-6 profile">
+    <div class="row">
+      <label for="name"> <strong>Name :</strong> {{ user.name }}</label>
+    </div>
+    <div class="row">
+      <label for="password">
+        <strong>Password :</strong> {{ user.password }}</label
+      >
+    </div>
+    <div class="row">
+      <label for="nextBillingDate">
+        <strong>Next Billing date :</strong> {{ user.nextBillingDate }}</label
+      >
+    </div>
+    <div class="row">
+      <label for="paymentPlan">
+        <strong>PaymentPlan :</strong> {{ user.plan }}</label
+      >
+    </div>
+
+    <div
+      class="card bg-white shadow-lg mt-3 shadow-black-500/50 rounded-2xl flex items-center w-[70%] max-h-[250px] overflow-y-scroll p-4"
+    >
+      <table class="table table-hover">
+        <thead class="bg-green-600">
+          <tr>
+            <td scope="col" class="text-white">Title</td>
+
+            <td scope="col" class="text-white">Returned On</td>
+
+            <td scope="col" class="text-white">Action</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let history of returnedBooks">
+            <td>{{ history.book?.title }}</td>
+
+            <td>{{ history.createdOn }}</td>
+
+            <td>{{ history.action }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div
+      class="card bg-white shadow-lg mt-3 shadow-black-500/50 rounded-2xl flex items-center w-[70%] max-h-[250px] overflow-y-scroll p-4"
+    >
+      <table class="table table-hover">
+        <thead class="bg-green-600">
+          <tr>
+            <td scope="col" class="text-white">Title</td>
+            <td scope="col" class="text-white">Due Date</td>
+            <td scope="col" class="text-white">Picked On</td>
+
+            <td scope="col" class="text-white">Action</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let history of borrowedBooks">
+            <td>{{ history.book?.title }}</td>
+            <td>{{ history.dueDate }}</td>
+            <td>{{ history.createdOn }}</td>
+
+            <td>{{ history.action }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <img
+      class="object-cover w-full h-[100vh]"
+      style="height: 100vh"
+      src="../../assets/images/prof.jpg"
+    />
+  </div>
+  <!-- <div class="card col-md-6 profile">
         <img src="/assets/images/prof.jpg">
 
 
 
-    </div>
-
+    </div> -->
 </div>

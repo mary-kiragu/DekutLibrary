@@ -43,7 +43,7 @@ public class DarajaRequestDTO {
         this.businessShortCode = 174379L;
         this.transactionType = "CustomerPayBillOnline";
         this.partyB = 174379L;
-        this.callBackUrl = "https://0262-102-222-147-158.in.ngrok.io/api/payment/callback";
+        this.callBackUrl = "https://b142-102-222-147-158.in.ngrok.io/api/payment/callback";
         this.accountReference = "DEKUT Library";
         this.transactionDesc = "Account Payment/Renewal";
     }

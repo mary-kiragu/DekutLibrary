@@ -16,7 +16,7 @@ export class User{
   email?:string;
   password?:string;
   authority?:Authority;
-  paymentPlan!: PaymentPlan;
+  plan?: PaymentPlan;
   accountStatus?: AccountStatus;
   nextBillingDate?: string;
   lastBillingDate?: string;
@@ -31,7 +31,7 @@ export class User{
     this.password=password;
     this.authority=authority;
     this.accountStatus=accountStatus;
-    this.paymentPlan=this.paymentPlan;
+    this.plan=this.plan;
     this.lastBillingDate=lastBillingDate;
     this.nextBillingDate=nextBillingDate;
 

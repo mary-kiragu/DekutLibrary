@@ -1,56 +1,50 @@
 <!-- Footer -->
 <footer class="footer">
-
-    <div class="container">
-        <div class="row">
-            <h2></h2>
-            <div class="row mt-5">
-
-                <div class="col-md-3">
-
-                    <img class="logo" src="../../assets/images/dkutlogo.png" alt="logo">
-
-                </div>
-
-
-                <div class="col-6 col-md-3 quicklinks">
-                    <h4>Quick links</h4>
-                    <div *ngIf="user" class="" id="navbarTogglerDemo02">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" [routerLink]="'/categories'">Categories</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" [routerLink]="'/'">login</a>
-                            </li>
-                            <li class="nav-item" *ngIf="user.authority ==='ADMIN'">
-                                <a class="nav-link" [routerLink]="'/book-records'">Admin</a>
-                            </li>
-                            <li class="nav-item" *ngIf="user.authority ==='SUBSCRIBER'">
-                                <a class="nav-link" [routerLink]="'/subscribe'">Payment Plan</a>
-                            </li>
-
-
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="social-links">
-                        <h4>Follow us</h4>
-                        <a href="https://twitter.com/DeKUTkenya" target="_blank">
-                            <span> <i class="fa-brands fa-twitter "></i></span> Twitter
-                        </a>
-                        <br/>
-                        <a href="https://www.linkedin.com/school/dedan-kimathi-university-of-technology/" target="_blank">
-                            <span> <i class="fa-brands fa-linkedin"></i></span> Linked in
-                        </a>
-
-                    </div>
-                </div>
-
-            </div>
+  <div class="container">
+    <div class="row">
+      <h2></h2>
+      <div class="row mt-5">
+        <div class="col-md-3">
+          <img class="logo" src="../../assets/images/dkutlogo.png" alt="logo" />
         </div>
+
+        <div class="col-6 col-md-3 quicklinks">
+          <h4>Quick links</h4>
+          <div *ngIf="user" class="" id="navbarTogglerDemo02">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" [routerLink]="'/categories'">Categories</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [routerLink]="'/'">login</a>
+              </li>
+              <li class="nav-item" *ngIf="user.authority === 'ADMIN'">
+                <a class="nav-link" [routerLink]="'/book-records'">Admin</a>
+              </li>
+              <li class="nav-item" *ngIf="user.authority === 'SUBSCRIBER'">
+                <a class="nav-link" [routerLink]="'/subscribe'">Payment Plan</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="social-links">
+            <h4>Follow us</h4>
+            <a href="https://twitter.com/DeKUTkenya" target="_blank">
+              <span> <i class="fa-brands fa-twitter"></i></span> Twitter
+            </a>
+            <br />
+            <a
+              href="https://www.linkedin.com/school/dedan-kimathi-university-of-technology/"
+              target="_blank"
+            >
+              <span> <i class="fa-brands fa-linkedin"></i></span> Linked in
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </footer>
 <!-- Footer -->

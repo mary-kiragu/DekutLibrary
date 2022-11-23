@@ -14,6 +14,8 @@ public class BookDTO {
 
     private Long isbn;
 
+    private String description;
+
     private String accessionNumber;
 
     private String title;

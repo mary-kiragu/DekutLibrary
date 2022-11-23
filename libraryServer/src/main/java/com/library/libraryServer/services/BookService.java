@@ -50,7 +50,7 @@ public class BookService {
         log.info("-------------------------------------------------------------------------");
         List<Book> allBooks = bookRepository.findAll();
         for (Book book : allBooks) {
-            if (book.getBorrowedBy() != null && book.getDueDate() != null) {
+            if (book.getIssuedOn() != null && book.getDueDate() != null) {
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 log.info("due date {}",book.getDueDate());
@@ -107,7 +107,7 @@ public class BookService {
 
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
-            if (book.getBorrowedBy() != null && book.getDueDate() != null) {
+            if (book.getIssuedOn() != null && book.getDueDate() != null) {
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime bookDueDate = book.getDueDate();
@@ -116,6 +116,7 @@ public class BookService {
                 if (now.compareTo(bookDueDate) > 0) {
                     long compute = daysBetween * 10;
                     book.setFine((int) compute);
+                    //book.setFine(1);
                 }
 
             }
@@ -207,18 +208,23 @@ public class BookService {
             log.info("current user email", SecurityUtils.getCurrentUserLogin());
             book.setIssuedBy(SecurityUtils.getCurrentUserLogin().orElse(null));
 
+            BorrowHistory borrowHistory = new BorrowHistory();
+
             assert user != null;
             if (user.getAuthority().equals(Authority.STUDENT)) {
                 book.setDueDate(LocalDateTime.now().plusDays(14));
+                borrowHistory.setDueDate(LocalDateTime.now().plusDays(14));
 
             } else if (user.getAuthority().equals(Authority.STAFF)) {
 
                 book.setDueDate(LocalDateTime.now().plusDays(21));
+                borrowHistory.setDueDate(LocalDateTime.now().plusDays(21));
 
 
             } else if (user.getAuthority().equals(Authority.SUBSCRIBER)) {
 
                 book.setDueDate(LocalDateTime.now().plusDays(30));
+                borrowHistory.setDueDate(LocalDateTime.now().plusDays(30));
 
 
             }
@@ -227,10 +233,11 @@ public class BookService {
 
             book = bookRepository.save(book);
             user = userService.save(user);
-            BorrowHistory borrowHistory = new BorrowHistory();
+            //BorrowHistory borrowHistory = new BorrowHistory();
             borrowHistory.setBook(book);
             borrowHistory.setUser(user);
             borrowHistory.setAction(Actions.BORROW);
+            borrowHistory.setDueDate(book.getDueDate());
             borrowHistory.setCreatedOn(LocalDateTime.now());
             log.info("borrow hist {}", borrowHistory);
             borrowHistoryRepository.save(borrowHistory);
@@ -295,33 +302,24 @@ public class BookService {
         return null;
     }
 
-    public Optional<Book> updateBook(Long id, String title, String author, String imageUrl) {
-        Optional<Book> bookOptional = bookRepository.findById(id);
-        log.info("Book found with id {}", id);
+    public Book updateBook(Book book) throws UserNotFoundException {
+        Optional<Book> bookOptional = bookRepository.findById(book.getId());
+
         if (bookOptional.isPresent()) {
-            Book book = bookOptional.get();
-            if (id != null && id > 0 && !Objects.equals(bookOptional.get(), id)) {
-                book.setId(id);
-
-            }
-            if (title != null && title.length() > 0 && !Objects.equals(bookOptional.get(), title)) {
-                book.setTitle(title);
-
-            }
-            if (author != null && author.length() > 0 && !Objects.equals(bookOptional.get(), author)) {
-                book.setAuthor(author);
-
-            }
-            if (imageUrl != null && imageUrl.length() > 0 && !Objects.equals(bookOptional.get(), imageUrl)) {
-                book.setImageUrl(imageUrl);
-
-            }
-            book = bookRepository.save(book);
-            log.info("Updated book with id {}:", book.getId());
-            return Optional.of(book);
+            log.info("Book found");
+            Book bookDetails = bookOptional.get();
+            bookDetails.setTitle(book.getTitle());
+            bookDetails.setAuthor(book.getAuthor());
+            bookDetails.setDescription(book.getDescription());
+            bookDetails.setAccessionNumber(book.getAccessionNumber());
+            bookDetails.setIsbn(book.getIsbn());
+            return bookRepository.save(bookDetails);
+        }else {
+            log.info("book found");
+            throw new UserNotFoundException("No internship found with id ");
         }
 
-        return bookOptional;
+
 
     }
 
@@ -330,7 +328,7 @@ public class BookService {
         List<BookDTO> bookDTOList = new ArrayList<>();
 
         for (Book book : bookRepository.findByCategoryId(categoryId)) {
-            if (book.getBorrowedBy() != null && book.getDueDate() != null) {
+            if (book.getIssuedOn() != null && book.getDueDate() != null) {
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime bookDueDate = book.getDueDate();
@@ -339,6 +337,7 @@ public class BookService {
                 if (now.compareTo(bookDueDate) > 0) {
                     long compute = daysBetween * 10;
                     book.setFine((int) compute);
+                   // book.setFine(1);
                 }
 
             }
@@ -363,7 +362,7 @@ public class BookService {
             long daysBetween = Math.abs(ChronoUnit.DAYS.between(now, book.getDueDate()));
 
             if (now.compareTo(book.getDueDate()) > 0) {
-                long compute = daysBetween * 10;
+                long compute = daysBetween * 1;
                 book.setFine((int) compute);
             }
             bookDTOList.add(bookMapper.toDTO(book));
