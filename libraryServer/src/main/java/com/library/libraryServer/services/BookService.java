@@ -59,7 +59,8 @@ public class BookService {
 
                 if (now.compareTo(bookDueDate) > 0) {
                     long compute = daysBetween * 10;
-                    book.setFine((int) compute);
+                   // book.setFine((int) compute);
+                    book.setFine(1);
                 }
 
             }
@@ -115,8 +116,8 @@ public class BookService {
 
                 if (now.compareTo(bookDueDate) > 0) {
                     long compute = daysBetween * 10;
-                    book.setFine((int) compute);
-                    //book.setFine(1);
+                    //book.setFine((int) compute);
+                    book.setFine(1);
                 }
 
             }

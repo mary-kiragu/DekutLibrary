@@ -1,202 +1,390 @@
-<div class="container text-align-center align-item-center" *ngIf="paymentPlan">
-    <h2 class="text-align-center">Subscribe</h2>
-    <h4>Take your design plan to get access to our library</h4>
-    <div>
-        <button type="button" class="btn button-3" data-bs-toggle="modal" data-bs-target="#planModal" *ngIf="user.authority ==='ADMIN'">
-  Add Plan
-</button>
-        <div class="row justify-content-center mt-5">
-            <div class="card col-md-2 plan-card align-item-center" *ngFor="let paymentPlan of paymentPlans">
-
-                <div class="paymentplans mt-5">
-
-                    <h3 class=""> <strong>{{paymentPlan.name}}</strong> </h3>
-                    <h4 class=""> Ksh :<strong>{{paymentPlan.paymentAmount}}</strong>
-                    </h4>
-                    <h6 class=""> <strong>{{paymentPlan.paymentDuration}}</strong> </h6>
-                    <p [innerHTML]="paymentPlan.description"></p>
-
-                    <div>
-
-                        <button type="submit " class=" mt-2 button-3" data-bs-toggle="modal" data-bs-target="#subscriptionModal" (click)="setPaymentPlanId(paymentPlan.id)">Pay</button>
-                        <div class="mt-3" *ngIf="user.authority ==='ADMIN'" (click)="setPaymentPlanId(paymentPlan.id)">
-                            <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa fa-trash-o" style="font-size:24px"></i></button>
-
-                            <button class="btn btn-outline-success edit" data-bs-toggle="modal" data-bs-target="#updatePlanModal" (click)="setSelectedPlan(paymentPlan)"><i class="fas fa-edit" style="font-size:24px"></i></button>
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-
-                </div>
-
-
-            </div>
-
-
-
-        </div>
-    </div>
-    <!-- Modal to create or update  payment plan  -->
-    <div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Payment Details</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-                </div>
-                <form name="paymentRequestForm" [formGroup]="paymentRequestForm" (ngSubmit)="initiatePayment()" role="form">
-
-
-                    <div class="modal-body">
-                        <div class=" form-group">
-                            <label for="phoneNumber"> PhoneNumber</label>
-                            <!-- <input class="form-control" type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="paymentRequest.phoneNumber"> -->
-                            <input class="form-control" type="text" name="phoneNumber" formControlName="phoneNumber" placeholder="Enter phone number starting with 254">
-                        </div>
-
-
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-    <!--Create Modal -->
-    <div class="modal fade" id="planModal" tabindex="-1" role="dialog" aria-labelledby="planModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">
-                        {{paymentPlan.id ? 'Edit' : 'Add'}} Payment plan</h5>
-                    thisijs{{paymentPlan.id}}
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+<div
+  class="relative flex-col flex w-full bg-white base-page"
+  *ngIf="paymentPlan"
+>
+  <div class="top-sticky-section">
+    <div class="flex justify-between items-center p-3 mb-3 px-5">
+      <h2 class="text-xl font-bold left-3 top-[10px]">
+        Subscribe to our library
+      </h2>
+      <button
+        type="button"
+        class="base-btn px-4 py-[12px] text-sm absolute right-4 top-[10px]"
+        data-bs-toggle="modal"
+        data-bs-target="#planModal"
+        *ngIf="user.authority === 'ADMIN'"
+      >
+        <span><i class="fas fa-plus-circle"></i></span>
+        Add Plan
       </button>
-                </div>
-
-                <div class="modal-body">
-                    <form name="paymentPlanForm" [formGroup]="paymentPlanForm" role="form" (ngSubmit)="save()">
-
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input class="form-control" type="text" name="name" formControlName="name">
-                        </div>
-                        <div class=" form-group">
-                            <label for="paymentAmount">Amount</label>
-                            <input class="form-control" type="text" name="paymentAmount" formControlName="paymentAmount">
-                        </div>
-                        <div class=" form-group">
-                            <label for="paymentDuration">Duration</label>
-                            <!-- <input class="form-control" type="text" name="paymentDuration" formControlName="paymentDuration"> -->
-                            <select class=" form-control form-select form-select-sm" name="paymentDuration" formControlName="paymentDuration" aria-label=".form-select-sm example">
-                              <option *ngFor="let pay of paymentDurations" [value]="pay">
-                                {{duration2LabelMapping[pay]}}
-                            </option>
-
-                            </select>
-
-                        </div>
-                        <div class="form-group">
-
-                            <angular-editor class="form-control" name="description" formControlName="description" placeholder="Description"></angular-editor>
-
-                        </div>
-
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" (click)="save()">submit</button>
-                </div>
-            </div>
-        </div>
     </div>
+    <p class="text-2xl font-md left-3 p-4">
+      Hi <i class="text-[#298e45]"> {{ user.name }} ! </i> Please pick your
+      payment plan to get access to our library.
+    </p>
+  </div>
 
-    <!-- update Modal -->
-    <div class="modal fade" id="updatePlanModal" tabindex="-1" role="dialog" aria-labelledby="planModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">
-                        Edit Payment plan</h5>
+  <div>
+    <div
+      class="grid grid-cols-4 items-center justify-items-center gap-5 justify-between mt-5 py-2"
+    >
+      <div
+        class="group relative lg:w-[300px] p-4 rounded-3xl bg-white shadow-lg shadow-black-500/50"
+        *ngFor="let paymentPlan of paymentPlans"
+      >
+        <div class="paymentplans mt-5">
+          <div class="mb-2">
+            <p class="text-sm font-light">Plan Name</p>
+            <p class="text-lg font-bold">{{ paymentPlan.name }}</p>
+          </div>
+          <div class="mb-2">
+            <p class="text-sm font-light">Amount</p>
+            <p class="text-lg">{{ paymentPlan.paymentAmount }}ksh</p>
+          </div>
+          <div class="mb-2">
+            <p class="text-sm font-light">Duration</p>
+            <p class="text-lg font-bold">
+              {{ paymentPlan.paymentDuration }}
+            </p>
+          </div>
+          <div class="mb-2">
+            <p class="text-sm font-bold">Description</p>
+            <p [innerHTML]="paymentPlan.description"></p>
+          </div>
+          <button
+            type="submit "
+            class="base-btn px-4 py-[12px] text-sm overflow-y-scroll"
+            data-bs-toggle="modal"
+            data-bs-target="#subscriptionModal"
+            (click)="setPaymentPlanId(paymentPlan.id)"
+          >
+            Pay
+          </button>
 
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-                </div>
+          <div>
+            <div
+              class="mt-3"
+              *ngIf="user.authority === 'ADMIN'"
+              (click)="setPaymentPlanId(paymentPlan.id)"
+            >
+              <button
+                class="px-3 py-2 hover:bg-red-100"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal"
+              >
+                <i class="fa fa-trash text-red-500" style="font-size: 24px"></i>
+              </button>
 
-                <div class="modal-body">
-                    <form name="paymentPlanForm" [formGroup]="paymentPlanForm" role="form" (ngSubmit)="updatePlan()">
-
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input class="form-control" type="text" name="name" formControlName="name">
-                        </div>
-                        <div class=" form-group">
-                            <label for="paymentAmount">Amount</label>
-                            <input class="form-control" type="text" name="paymentAmount" formControlName="paymentAmount">
-                        </div>
-                        <div class=" form-group">
-                            <label for="paymentDuration">Duration</label>
-                            <!-- <input class="form-control" type="text" name="paymentDuration" formControlName="paymentDuration"> -->
-                            <select class=" form-control form-select form-select-sm" name="paymentDuration" formControlName="paymentDuration" aria-label=".form-select-sm example">
-                            <option *ngFor="let pay of paymentDurations" [value]="pay">
-                              {{duration2LabelMapping[pay]}}
-                          </option>
-
-                          </select>
-
-                        </div>
-                        <div class="form-group">
-
-                            <angular-editor class="form-control" name="description" formControlName="description" placeholder="Description"></angular-editor>
-
-                        </div>
-
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" (click)="updatePlan()">submit</button>
-                </div>
+              <button
+                class="px-3 py-2 hover:bg-amber-100"
+                data-bs-toggle="modal"
+                data-bs-target="#updatePlanModal"
+                (click)="setSelectedPlan(paymentPlan)"
+              >
+                <i
+                  class="fas fa-edit text-orange-500"
+                  style="font-size: 24px"
+                ></i>
+              </button>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-
-
-    <!-- delete Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirmation to delete Payment plan</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete</p>
-                    <p>{{paymentPlan.id}}</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="removeSelectedPlan()">Close</button>
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="deletePlan()">Delete</button>
-                </div>
+  </div>
+  <!-- Modal to create or update  payment plan  -->
+  <div
+    class="modal fade"
+    id="subscriptionModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="subscriptionModalTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">
+            Payment Details
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form
+          name="paymentRequestForm"
+          [formGroup]="paymentRequestForm"
+          (ngSubmit)="initiatePayment()"
+          role="form"
+        >
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="phoneNumber"> PhoneNumber</label>
+              <!-- <input class="form-control" type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="paymentRequest.phoneNumber"> -->
+              <input
+                class="form-control"
+                type="text"
+                name="phoneNumber"
+                formControlName="phoneNumber"
+                placeholder="Enter phone number starting with 254"
+              />
             </div>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              submit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+
+  <!--Create Modal -->
+  <div
+    class="modal fade"
+    id="planModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="planModalTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">
+            {{ paymentPlan.id ? "Edit" : "Add" }} Payment plan
+          </h5>
+          thisijs{{ paymentPlan.id }}
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form
+            name="paymentPlanForm"
+            [formGroup]="paymentPlanForm"
+            role="form"
+            (ngSubmit)="save()"
+          >
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input
+                class="form-control"
+                type="text"
+                name="name"
+                formControlName="name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="paymentAmount">Amount</label>
+              <input
+                class="form-control"
+                type="text"
+                name="paymentAmount"
+                formControlName="paymentAmount"
+              />
+            </div>
+            <div class="form-group">
+              <label for="paymentDuration">Duration</label>
+              <!-- <input class="form-control" type="text" name="paymentDuration" formControlName="paymentDuration"> -->
+              <select
+                class="form-control form-select form-select-sm"
+                name="paymentDuration"
+                formControlName="paymentDuration"
+                aria-label=".form-select-sm example"
+              >
+                <option *ngFor="let pay of paymentDurations" [value]="pay">
+                  {{ duration2LabelMapping[pay] }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <angular-editor
+                class="form-control"
+                name="description"
+                formControlName="description"
+                placeholder="Description"
+              ></angular-editor>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" (click)="save()">
+            submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- update Modal -->
+  <div
+    class="modal fade"
+    id="updatePlanModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="planModalTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">
+            Edit Payment plan
+          </h5>
+
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form
+            name="paymentPlanForm"
+            [formGroup]="paymentPlanForm"
+            role="form"
+            (ngSubmit)="updatePlan()"
+          >
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input
+                class="form-control"
+                type="text"
+                name="name"
+                formControlName="name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="paymentAmount">Amount</label>
+              <input
+                class="form-control"
+                type="text"
+                name="paymentAmount"
+                formControlName="paymentAmount"
+              />
+            </div>
+            <div class="form-group">
+              <label for="paymentDuration">Duration</label>
+              <!-- <input class="form-control" type="text" name="paymentDuration" formControlName="paymentDuration"> -->
+              <select
+                class="form-control form-select form-select-sm"
+                name="paymentDuration"
+                formControlName="paymentDuration"
+                aria-label=".form-select-sm example"
+              >
+                <option *ngFor="let pay of paymentDurations" [value]="pay">
+                  {{ duration2LabelMapping[pay] }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <angular-editor
+                class="form-control"
+                name="description"
+                formControlName="description"
+                placeholder="Description"
+              ></angular-editor>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" (click)="updatePlan()">
+            submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- delete Modal -->
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="deleteModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Confirmation to delete Payment plan
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete</p>
+          <p>{{ paymentPlan.id }}</p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="removeSelectedPlan()"
+          >
+            Close
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            data-bs-dismiss="modal"
+            (click)="deletePlan()"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

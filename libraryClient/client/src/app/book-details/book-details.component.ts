@@ -18,7 +18,7 @@ export class BookDetailsComponent implements OnInit {
     title: "",
     author: "",
     imageUrl: "",
-    description:"",
+    description: "",
     bookImageUrl: "",
     status: "",
     name: "",
@@ -38,7 +38,7 @@ export class BookDetailsComponent implements OnInit {
     isbn: [],
     title: [],
     author: [],
-    description:[],
+    description: [],
     imageUrl: [],
     bookImageUrl: [],
     name: [],
@@ -106,6 +106,7 @@ export class BookDetailsComponent implements OnInit {
     if (id) {
       this.getOne(id);
     }
+    this.getCurrentUser();
   }
   getCurrentUser(): void {
     this.userService.getProfile().subscribe((userProfile) => {

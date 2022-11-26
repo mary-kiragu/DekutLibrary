@@ -1,23 +1,24 @@
-import { Injectable } from '@angular/core';
-import { catchError, Observable, of, shareReplay } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { User } from './login/user.model';
+import { Injectable } from "@angular/core";
+import { catchError, Observable, of, shareReplay } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "src/environments/environment";
+import { User } from "./login/user.model";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class UserService {
-  private apiServerUrl=environment.API_ENDPOINT;
+  private apiServerUrl = environment.API_ENDPOINT;
   private userProfile!: Observable<any>;
   private accountCache$?: Observable<any | null>;
 
-
-  constructor(private httpClient:HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   getProfile(force?: boolean): Observable<any> {
     if (!this.userProfile || force) {
-      this.userProfile = this.httpClient.get(this.apiServerUrl + "/api/user/profile");
+      this.userProfile = this.httpClient.get(
+        this.apiServerUrl + "/api/user/profile"
+      );
     }
     return this.userProfile;
   }
@@ -31,15 +32,22 @@ export class UserService {
     }
     return this.accountCache$;
   }
-
-
-
-
-
-  register(entry:any):Observable<User>{
-    return this.httpClient.post<User>(this.apiServerUrl+"/api/register",entry);
+  getPaymentsByUser(userId: any): Observable<any> {
+    return this.httpClient.get<any>(
+      this.apiServerUrl + "/api/payment/" + userId
+    );
   }
-  authenticate(entry:any):Observable<any>{
-    return this.httpClient.post<any>(this.apiServerUrl+"/api/authenticate",entry);
+
+  register(entry: any): Observable<User> {
+    return this.httpClient.post<User>(
+      this.apiServerUrl + "/api/register",
+      entry
+    );
+  }
+  authenticate(entry: any): Observable<any> {
+    return this.httpClient.post<any>(
+      this.apiServerUrl + "/api/authenticate",
+      entry
+    );
   }
 }

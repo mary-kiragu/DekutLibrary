@@ -37,7 +37,7 @@ public class Payment {
 
     private double amount;
 
-    private LocalDateTime initiatedOn;
+    private String initiatedOn;
 
     public Payment(String email, String phoneNumber, String transactionCode, Long profileId, String merchantRequestId) {
         this.email = email;

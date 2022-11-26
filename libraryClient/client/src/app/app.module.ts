@@ -24,6 +24,7 @@ import { AuthorityDirective } from './authority.directive';
 import { FilterPipe } from './filter.pipe';
 import { ProfileComponent } from './login/profile/profile.component';
 import { SafeUrlPipe } from './safe-url.pipe';
+import { HomeComponent } from './home/home.component';
 
 
 
@@ -45,6 +46,7 @@ import { SafeUrlPipe } from './safe-url.pipe';
     FilterPipe,
     ProfileComponent,
     SafeUrlPipe,
+    HomeComponent,
 
   ],
   imports: [

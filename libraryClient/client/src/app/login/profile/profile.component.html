@@ -1,87 +1,100 @@
-<div class="row">
-  <div class="card col-md-7 texty">
-    <div class="row mt-5">
-      <label for="Email"> <strong>Email :</strong> {{ user.email }}</label>
-    </div>
-    <div class="row">
-      <label for="name"> <strong>Name :</strong> {{ user.name }}</label>
-    </div>
-    <div class="row">
-      <label for="password">
-        <strong>Password :</strong> {{ user.password }}</label
-      >
-    </div>
-    <div class="row">
-      <label for="nextBillingDate">
-        <strong>Next Billing date :</strong> {{ user.nextBillingDate }}</label
-      >
-    </div>
-    <div class="row">
-      <label for="paymentPlan">
-        <strong>PaymentPlan :</strong> {{ user.plan }}</label
-      >
-    </div>
-
-    <div
-      class="card bg-white shadow-lg mt-3 shadow-black-500/50 rounded-2xl flex items-center w-[70%] max-h-[250px] overflow-y-scroll p-4"
-    >
-      <table class="table table-hover">
-        <thead class="bg-green-600">
-          <tr>
-            <td scope="col" class="text-white">Title</td>
-
-            <td scope="col" class="text-white">Returned On</td>
-
-            <td scope="col" class="text-white">Action</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let history of returnedBooks">
-            <td>{{ history.book?.title }}</td>
-
-            <td>{{ history.createdOn }}</td>
-
-            <td>{{ history.action }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div
-      class="card bg-white shadow-lg mt-3 shadow-black-500/50 rounded-2xl flex items-center w-[70%] max-h-[250px] overflow-y-scroll p-4"
-    >
-      <table class="table table-hover">
-        <thead class="bg-green-600">
-          <tr>
-            <td scope="col" class="text-white">Title</td>
-            <td scope="col" class="text-white">Due Date</td>
-            <td scope="col" class="text-white">Picked On</td>
-
-            <td scope="col" class="text-white">Action</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let history of borrowedBooks">
-            <td>{{ history.book?.title }}</td>
-            <td>{{ history.dueDate }}</td>
-            <td>{{ history.createdOn }}</td>
-
-            <td>{{ history.action }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="col-md-4">
+<div
+  class="relative flex-col flex items-center justify-center w-full bg-white base-page"
+>
+  <button
+    (click)="logOut()"
+    class="absolute top-[10px] right-[10%] base-btn py-2 px-4 bg-red-500 text-base"
+  >
+    LogOut
+  </button>
+  <div class="flex flex-col items-center justify-center">
     <img
-      class="object-cover w-full h-[100vh]"
-      style="height: 100vh"
-      src="../../assets/images/prof.jpg"
+      class="w-[50px] h-[50px]"
+      src="https://avatars.dicebear.com/api/bottts/mary.svg"
     />
+    <p>Hello</p>
+    <p class="text-xl font-bold">{{ user.name }}</p>
   </div>
-  <!-- <div class="card col-md-6 profile">
-        <img src="/assets/images/prof.jpg">
+  <div class="shadow-xl m-3 mb-4 p-3 rounded-2xl shadow-black-500/50 w-[400px]">
+    <p class="text-2xl font-bold text-center mb-2">Personal Details</p>
+    <div class="mb-2">
+      <p class="text-sm font-light">Name</p>
+      <p class="text-lg">{{ user.name }}</p>
+    </div>
+    <div class="mb-2">
+      <p class="text-sm font-light">Email</p>
+      <p class="text-lg">{{ user.email }}</p>
+    </div>
+  </div>
 
+  <div class="grid grid-cols-4 flex gap-2 items-center justify-between">
+    <div
+      class="shadow-lg m-3 p-3 rounded-2xl shadow-black-500/50 w-[400px] max-h-[400px] overflow-y-scroll"
+    >
+      <p class="text-2xl font-bold text-center mb-2">Borrowed Books</p>
+      <div *ngFor="let book of borrowedBooks" class="mb-4">
+        <div class="mb-2">
+          <p class="text-lg font-bold">{{ book.book?.title }}</p>
+        </div>
+        <div class="grid grid-cols-3">
+          <div class="mb-2">
+            <p class="text-sm font-light">Borrowed on</p>
+            <p class="text-lg">{{ book.createdOn }}</p>
+          </div>
+          <div class="mb-2">
+            <p class="text-sm font-light">Return By</p>
+            <p class="text-lg">{{ book.dueDate || "None" }}</p>
+          </div>
+          <div class="mb-2">
+            <p class="text-sm font-light">Fine</p>
+            <p class="text-lg text-bold text-red-500">
+              {{ book.book?.fine || "0" }} ksh
+            </p>
+          </div>
+        </div>
+        <hr class="w-full h-[2px] bg-black" />
+      </div>
+    </div>
 
+    <div
+      class="shadow-lg m-3 p-3 rounded-2xl shadow-black-500/50 w-[400px] max-h-[400px] overflow-y-scroll"
+    >
+      <p class="text-2xl font-bold text-center mb-2">Returned Books</p>
+      <div *ngFor="let book of returnedBooks" class="mb-4">
+        <div class="mb-2">
+          <p class="text-lg font-bold">{{ book.book?.title }}</p>
+        </div>
+        <div class="grid grid-cols-3">
+          <div class="mb-2">
+            <p class="text-sm font-light">Return On</p>
+            <p class="text-lg">{{ book.createdOn || "None" }}</p>
+          </div>
+        </div>
+        <hr class="w-full h-[2px] bg-black" />
+      </div>
+    </div>
 
-    </div> -->
+    <div
+      class="shadow-lg m-3 p-3 rounded-2xl shadow-black-500/50 w-[400px] max-h-[400px] overflow-y-scroll"
+    >
+      <p class="text-2xl font-bold text-center mb-2">Payments</p>
+      <div *ngFor="let payment of payments" class="mb-4">
+        <div class="grid grid-cols-3">
+          <div class="mb-2">
+            <p class="text-sm font-light">ID</p>
+            <p class="text-lg">{{ payment.id }}</p>
+          </div>
+          <div class="mb-2">
+            <p class="text-sm font-light">Amount</p>
+            <p class="text-lg">{{ payment.amount }} ksh</p>
+          </div>
+          <div class="mb-2">
+            <p class="text-sm font-light">Date</p>
+            <p class="text-lg">{{ payment.initiatedOn }}</p>
+          </div>
+        </div>
+        <hr class="w-full h-[2px] bg-black" />
+      </div>
+    </div>
+  </div>
 </div>

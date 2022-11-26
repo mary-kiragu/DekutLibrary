@@ -155,7 +155,7 @@ public class PaymentService {
                 paymentRequestDTO.getUserId(),
                 darajaACKDTO.getMerchantRequestId()
         );
-        payment.setInitiatedOn(LocalDateTime.now());
+        payment.setInitiatedOn(String.valueOf(LocalDateTime.now()));
 
 
         log.info("About to save payment with merchant id : {}", darajaACKDTO.getMerchantRequestId());
@@ -589,8 +589,8 @@ public class PaymentService {
             }
             log.info("About to set payment plan for user");
             User loggedInUser = userService.getCurrentLoggedInUser();
-            user.setPlan(Math.toIntExact(finePaymentRequestDTO.getBookId()));
-            userService.update(user);
+
+
             // save payment
             Payment payment = new Payment(
                     user.getEmail(),
@@ -599,7 +599,9 @@ public class PaymentService {
                     finePaymentRequestDTO.getUserId(),
                     darajaACKDTO.getMerchantRequestId()
             );
-            payment.setInitiatedOn(LocalDateTime.now());
+            payment.setInitiatedOn(String.valueOf(LocalDateTime.now()));
+            payment.setBookId(finePaymentRequestDTO.getBookId());
+            payment.setEmail(book.getBorrowedBy());
 
 
             log.info("About to save payment with merchant id : {}", darajaACKDTO.getMerchantRequestId());

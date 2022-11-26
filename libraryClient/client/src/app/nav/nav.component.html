@@ -1,33 +1,43 @@
-<nav class="navbar navbar-expand-lg">
-    <a class="navbar-brand py-0" routerLink="/">
-        <div class="row">
-            <img class="img-thumbnail col-md-3 mt-3 logo" href="/" src="../../assets/images/dkutlogo.png" alt="./assets/images/billionare.jpeg" />
-            <h1 class="navbar-brand col-md-2 text-white fs-4 text-center mt-3" href="/">Book Center</h1>
-
-        </div>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse justify-content-end" id="navbarTogglerDemo02">
-        <ul *ngIf="user" class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="'/categories'">Categories</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="'/'" *ngIf!="isLoggedIn">login</a>
-            </li>
-            <li class="nav-item" *ngIf="user.authority ==='ADMIN'">
-                <a class="nav-link" [routerLink]="'/book-records'">Admin</a>
-            </li>
-            <li class="nav-item" *ngIf="user.authority ==='SUBSCRIBER'">
-                <a class="nav-link" [routerLink]="'/subscribe'">Payment Plan</a>
-            </li>
-            <li><button class="button1P " (click)="logOut()"> <i class="fas fa-sign-out-alt"></i>Log out</button></li>
-
-
-        </ul>
+<nav class="bg-[#1d4504ec]">
+  <div *ngIf="user" class="p-2 flex justify-between items-center">
+    <img
+      [routerLink]="['/categories']"
+      class="h-[40px] cursor-pointer"
+      href="/"
+      src="../../assets/images/dkutlogo.png"
+    />
+    <div class="flex gap-4">
+      <p
+        *ngIf="user.authority == 'ADMIN'"
+        [routerLink]="['/book-records']"
+        [ngClass]="currentURL == '/book-records' ? 'font-bold underline' : ''"
+        class="text-white cursor-pointer hover:underline"
+      >
+        Dashboard <i class="fa fa-bookmark" aria-hidden="true"></i>
+      </p>
+      <p
+        [routerLink]="['/categories']"
+        [ngClass]="currentURL == '/categories' ? 'font-bold underline' : ''"
+        class="text-white cursor-pointer hover:underline"
+      >
+        Categories <i class="fa fa-list" aria-hidden="true"></i>
+      </p>
+      <p
+        [routerLink]="['/subscribe']"
+        [ngClass]="currentURL == '/subscribe' ? 'font-bold underline' : ''"
+        class="text-white cursor-pointer hover:underline"
+      >
+        Subscribe <i class="fa fa-star" aria-hidden="true"></i>
+      </p>
     </div>
-
+    <div
+      class="group bg-white p-2 rounded-full cursor-pointer"
+      [routerLink]="['/profile']"
+    >
+      <img
+        class="w-[30px] h-[30px] group-hover:scale-110"
+        src="https://avatars.dicebear.com/api/bottts/mary.svg"
+      />
+    </div>
+  </div>
 </nav>

@@ -1,57 +1,62 @@
-import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
-import { NavigationStart, Router } from '@angular/router';
-import { TokenService } from '../token.service';
+import { Component, OnInit } from "@angular/core";
+import { UserService } from "../user.service";
+import {
+  NavigationStart,
+  Router,
+  ActivatedRoute,
+  NavigationEnd,
+} from "@angular/router";
+import { TokenService } from "../token.service";
 
 @Component({
-  selector: 'app-nav',
-  templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.css']
+  selector: "app-nav",
+  templateUrl: "./nav.component.html",
+  styleUrls: ["./nav.component.css"],
 })
 export class NavComponent implements OnInit {
-
-  user:any;
-  isLoggedIn=true
-
-  constructor(private userService:UserService,private router:Router,private tokenService:TokenService) {
+  user: any;
+  isLoggedIn = true;
+  currentURL = "/";
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private tokenService: TokenService
+  ) {
     router.events.forEach((event) => {
       if (event instanceof NavigationStart) {
         this.user = this.tokenService.getUserFromStorage();
-        console.log("The user is,  ",this.user);
+        this.getCurrentUser();
+        console.log("The user is,  ", this.user);
+        console.log("+++++++++++++++++");
+        console.log(event.url);
+        this.currentURL = event.url;
       }
     });
   }
 
   ngOnInit(): void {
     this.getCurrentUser();
-
-
+    console.log("====================");
+    console.log(this.router.url);
   }
   getCurrentUser(): void {
-    this.userService.getProfile().subscribe(
-      userProfile => {
-         this.user = userProfile;
-        console.log("user profs",this.user);
-
-
-      });
-
+    this.userService.getProfile().subscribe((userProfile) => {
+      this.user = userProfile;
+      console.log("user profs", this.user);
+      if (!this.user) {
+        this.router.navigate(["/"]);
+      }
+    });
   }
-  reload(){
-
-      window.location.reload();
+  goToProfileOrAdmin() {
+    if (this.user.authority == "ADMIN") {
+      this.router.navigate(["/book-records"]);
+    } else {
+      this.router.navigate(["/profile"]);
+    }
   }
-
-   logOut(): void{
-    //delete token
-    this.tokenService.clearToken();
-
-    //delete user from storage
-    this.tokenService.clearUser();
-    this.isLoggedIn=false
-    //route to login
-    this.router.navigate(['/']);
-   }
-
-
+  reload() {
+    window.location.reload();
+  }
 }
