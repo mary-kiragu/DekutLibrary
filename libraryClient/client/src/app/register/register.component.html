@@ -1,23 +1,41 @@
-<div class="realtive flex items-center justify-center w-full bg-[#206734] h-[100vh]">
-    <form role="form" class="base-form">
-        <div class="base-form-header">
-            <h2 class="text-4xl font-bold text-white">Sign Up</h2>
-        </div>
-        <div class="p-4">
-            <div class="w-full mb-4">
-                <label class="text-lg block mb-2" for="email"> Email</label>
-                <input class="base-input" type="text" name="email" [(ngModel)]="entry.email" />
-            </div>
-            <div class="w-full mb-4">
-                <label class="text-lg block mb-2" for="password ">Password</label>
-                <input class="base-input" type="password" name="password" [(ngModel)]="entry.password" />
-            </div>
-            <div class="w-full mb-4">
-                <label class="text-lg block mb-2" for="name ">Full Name</label>
-                <input class="base-input" type="name" name="name" [(ngModel)]="entry.name" />
-            </div>
-            <div class="w-full mb-4">
-                <label class="text-lg block mb-2" for="phoneNumber ">Phone Number</label
+<div
+  class="realtive flex items-center justify-center w-full bg-[#206734] h-[100vh]"
+>
+  <form role="form" class="base-form">
+    <div class="base-form-header">
+      <h2 class="text-4xl font-bold text-white">Sign Up</h2>
+    </div>
+    <div class="p-4">
+      <div class="w-full mb-4">
+        <label class="text-lg block mb-2" for="email"> Email</label>
+        <input
+          class="base-input"
+          type="text"
+          name="email"
+          [(ngModel)]="entry.email"
+        />
+      </div>
+      <div class="w-full mb-4">
+        <label class="text-lg block mb-2" for="password ">Password</label>
+        <input
+          class="base-input"
+          type="password"
+          name="password"
+          [(ngModel)]="entry.password"
+        />
+      </div>
+      <div class="w-full mb-4">
+        <label class="text-lg block mb-2" for="name ">Full Name</label>
+        <input
+          class="base-input"
+          type="name"
+          name="name"
+          [(ngModel)]="entry.name"
+        />
+      </div>
+      <div class="w-full mb-4">
+        <label class="text-lg block mb-2" for="phoneNumber "
+          >Phone Number</label
         >
         <input
           class="base-input"
@@ -28,11 +46,7 @@
       </div>
 
       <div class="flex items-center justify-center w-full">
-        <button
-          type="submit "
-          class="base-btn"
-          (click)="register()"
-        >
+        <button type="submit " class="base-btn" (click)="register()">
           Register
         </button>
       </div>
@@ -43,10 +57,14 @@
       >
         {{ registerFailure }}
       </div>
-      <a [routerLink]="['/']" class="base-link mt-4">Login Instead</a>
+      <a [routerLink]="['/login']" class="base-link mt-4">Login Instead</a>
     </div>
   </form>
   <div class="absolute w-full h-full">
-    <img class="object-cover w-full h-[100vh]" style="height:100vh ;" src="../../assets/images/logiin.jpg">
+    <img
+      class="object-cover w-full h-[100vh]"
+      style="height: 100vh"
+      src="../../assets/images/logiin.jpg"
+    />
   </div>
 </div>

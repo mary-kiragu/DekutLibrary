@@ -1,80 +1,74 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SubscriptionService } from '../subscription.service';
-import { PaymentPlan, PaymentDuration , duration2LabelMapping} from './paymentPlanModel';
-import { UserService } from '../user.service';
-import { AccountStatus } from '../login/user.model';
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { SubscriptionService } from "../subscription.service";
+import {
+  PaymentPlan,
+  PaymentDuration,
+  duration2LabelMapping,
+} from "./paymentPlanModel";
+import { UserService } from "../user.service";
+import { AccountStatus } from "../login/user.model";
 
 interface Plan {
-  id?:number;
-  name?:string;
-  paymentAmount?:number;
-  paymentDuration?:PaymentDuration;
-  description :[];
+  id?: number;
+  name?: string;
+  paymentAmount?: number;
+  paymentDuration?: PaymentDuration;
+  description: [];
 }
 
-
 @Component({
-  selector: 'app-subscription',
-  templateUrl: './subscription.component.html',
-  styleUrls: ['./subscription.component.css']
+  selector: "app-subscription",
+  templateUrl: "./subscription.component.html",
+  styleUrls: ["./subscription.component.css"],
 })
 export class SubscriptionComponent implements OnInit {
-
-
-
-
-
   public duration2LabelMapping = duration2LabelMapping;
 
   public paymentDurations = Object.values(PaymentDuration);
 
-  planId!:number;
-  paymentRequest:any;
+  planId!: number;
+  paymentRequest: any;
 
-  //paymentPlan!:PaymentPlan;
+  selectedPlan: any;
 
-  selectedPlan:any;
-
-  paymentRequestForm=this.fb.group({
-    paymentPlan:[''],
-    phoneNumber:[''],
-    userId:['']
-  })
+  paymentRequestForm = this.fb.group({
+    paymentPlan: [""],
+    phoneNumber: [""],
+    userId: [""],
+  });
 
   paymentPlanForm = this.fb.group({
     id: [],
-    name: [''],
-    paymentAmount: [''],
-    paymentDuration: [''],
-    description: [''],
+    name: [""],
+    paymentAmount: [""],
+    paymentDuration: [""],
+    description: [""],
+  });
 
-
-  })
-
-  callback={
-    merchantRequestId:'',
-    checkOutRequestId:'',
-    resultCode:'',
-    resultDescription:''
-
-  }
+  callback = {
+    merchantRequestId: "",
+    checkOutRequestId: "",
+    resultCode: "",
+    resultDescription: "",
+  };
   paymentPlan: PaymentPlan = {} as PaymentPlan;
   paymentPlans: any = [];
-  user:any;
+  user: any;
 
-  isProcessing=false;
+  isProcessing = false;
 
   constructor(
-    private subscriptionService:SubscriptionService,
-    private userService:UserService,
-    protected fb: FormBuilder,private route:ActivatedRoute,
+    private subscriptionService: SubscriptionService,
+    private userService: UserService,
+    protected fb: FormBuilder,
+    private route: ActivatedRoute,
     private router: Router
-    ) { }
+  ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = Number(this.route.snapshot.paramMap.get("id"));
     if (id) {
       this.getOne(id);
     }
@@ -83,19 +77,15 @@ export class SubscriptionComponent implements OnInit {
   }
 
   getCurrentUser(): void {
-    this.userService.getProfile().subscribe(
-      userProfile => {
-         this.user = userProfile;
-        console.log("user profs",this.user);
-
-      });
-
+    this.userService.getProfile().subscribe((userProfile) => {
+      this.user = userProfile;
+      console.log("user profs", this.user);
+    });
   }
-
 
   getAll(): void {
     this.subscriptionService.getAll().subscribe((res) => {
-      console.log('Array of books available', res);
+      console.log("Array of books available", res);
 
       this.paymentPlans = res;
     });
@@ -104,39 +94,38 @@ export class SubscriptionComponent implements OnInit {
   addPlan(): any {
     const planDetails = this.extractPaymentFormDetails();
     console.log(planDetails);
-    return
 
     this.subscriptionService.save(planDetails).subscribe(
       (res) => {
-        console.log('created paymentPlan', res);
+        console.log("created paymentPlan", res);
         this.getAll();
+        this.reset();
       },
       (err) => {
-        console.log('plan not created');
+        console.log("plan not created");
       }
     );
   }
   protected extractPaymentFormDetails(): any {
     return {
-      id: this.paymentPlanForm.get('id')!.value,
-      name: this.paymentPlanForm.get('name')!.value,
-      paymentAmount:this.paymentPlanForm.get('paymentAmount')!.value,
-      paymentDuration:this.paymentPlanForm.get('paymentDuration')!.value,
-      description:this.paymentPlanForm.get('description')!.value,
-
+      id: this.paymentPlanForm.get("id")!.value,
+      name: this.paymentPlanForm.get("name")!.value,
+      paymentAmount: this.paymentPlanForm.get("paymentAmount")!.value,
+      paymentDuration: this.paymentPlanForm.get("paymentDuration")!.value,
+      description: this.paymentPlanForm.get("description")!.value,
     };
   }
 
   updatePlan(): void {
     const paymentPlanDetails = this.extractPaymentFormDetails();
-    console.log('payment plan details', paymentPlanDetails);
+    console.log("payment plan details", paymentPlanDetails);
     this.subscriptionService.update(paymentPlanDetails).subscribe(
       (res) => {
-        console.log('updated plan', res);
+        console.log("updated plan", res);
         this.getAll();
       },
       (err) => {
-        console.log('plan not updated book', err);
+        console.log("plan not updated book", err);
       }
     );
   }
@@ -156,110 +145,80 @@ export class SubscriptionComponent implements OnInit {
         this.paymentPlan = res;
       },
       (err) => {
-        console.log('plan not found');
+        console.log("plan not found");
       }
     );
   }
 
-  setPaymentPlanId(paymentPlanID: number){
+  setPaymentPlanId(paymentPlanID: number) {
     this.paymentPlan.id = paymentPlanID;
-    console.log(this.paymentPlan.id)
+    console.log(this.paymentPlan.id);
   }
 
-  setSelectedPlan(paymentPlan:PaymentPlan){
-    this.selectedPlan=paymentPlan;
-    this.paymentPlanForm=this.fb.group(paymentPlan)
+  setSelectedPlan(paymentPlan: PaymentPlan) {
+    this.selectedPlan = paymentPlan;
+    this.paymentPlanForm = this.fb.group(paymentPlan);
   }
 
-
-  initiatePayment():any{
-    this.paymentRequest=this.extractPaymentRequestDetails();
-    console.log("about to initiate payment",this.paymentRequest)
+  initiatePayment(): any {
+    this.paymentRequest = this.extractPaymentRequestDetails();
+    console.log("about to initiate payment", this.paymentRequest);
     this.subscriptionService.initiatePayment(this.paymentRequest).subscribe(
-      (res)=>{
-
-        console.log("paymentrequest",res);
+      (res) => {
+        console.log("paymentrequest", res);
 
         this.wait(25000);
-        console.log("wait")
-        this.user=this.getCurrentUser();
+        console.log("wait");
+        this.user = this.getCurrentUser();
 
-        if(this.user.accountStatus==="PAID"){
-          this.router.navigate(['/categories']);
+        if (this.user.accountStatus === "PAID") {
+          this.router.navigate(["/categories"]);
         }
-
       },
-      (err)=>{
-        console.log("error",err);
-
-      }
-    )
-  }
-
-  wait(ms:number):any{
-    var start = new Date().getTime();
-    var end = start;
-    while(end < start + ms) {
-      end = new Date().getTime();
-   }
- }
-
-
-
-  processPayment():any{
-    this.subscriptionService.processPayment(this.callback).subscribe(
-      (res)=>{
-
-        console.log("callback",res);
-
-      },
-      (err)=>{
-        console.log("callback error",err);
-
+      (err) => {
+        console.log("error", err);
       }
     );
+  }
 
+  wait(ms: number): any {
+    var start = new Date().getTime();
+    var end = start;
+    while (end < start + ms) {
+      end = new Date().getTime();
+    }
   }
 
   extractPaymentRequestDetails(): any {
-    return{
-      phoneNumber:this.paymentRequestForm.get('phoneNumber')!.value,
-      paymentPlan:this.paymentPlan.id,
-      userId:this.user.id
-
-    }
-
+    return {
+      phoneNumber: this.paymentRequestForm.get("phoneNumber")!.value,
+      paymentPlan: this.paymentPlan.id,
+      userId: this.user.id,
+    };
   }
 
-  setSelectedCategory(plan: Plan){
+  setSelectedCategory(plan: Plan) {
     this.selectedPlan = plan;
   }
 
-  deletePlan(): any {
-    this.subscriptionService.deleteOne(this.paymentPlan?.id as number ).subscribe(
-      (res) => {
-        console.log('deleted plan', res);
-        this.getAll();
-      },
-      (error) => {
-        console.log('plan not deleted');
-      }
-    );
-
+  reset(): void {
+    this.paymentPlanForm.reset();
   }
-  removeSelectedPlan(){
+
+  deletePlan(): any {
+    this.subscriptionService
+      .deleteOne(this.paymentPlan?.id as number)
+      .subscribe(
+        (res) => {
+          console.log("deleted plan", res);
+          this.getAll();
+        },
+        (error) => {
+          console.log("plan not deleted");
+        }
+      );
+  }
+  removeSelectedPlan() {
     this.selectedPlan = null;
   }
-
-
-
-
-  }
-
-
-
-
-
-
-
-
+}

@@ -37,8 +37,6 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log("===================");
-
     console.log(this.route);
 
     const id = Number(this.route.snapshot.paramMap.get("id"));
@@ -100,7 +98,7 @@ export class ProfileComponent implements OnInit {
         });
         this.filter();
         this.filterReturned();
-        this.getPyments();
+        this.getPayments();
       },
       (err) => {
         console.log("my failed", err);
@@ -108,7 +106,7 @@ export class ProfileComponent implements OnInit {
     );
   }
 
-  getPyments() {
+  getPayments() {
     this.userService.getPaymentsByUser(this.user.id).subscribe((res) => {
       console.log("payments", res);
       this.payments = res;

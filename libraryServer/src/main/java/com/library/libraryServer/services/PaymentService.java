@@ -156,6 +156,7 @@ public class PaymentService {
                 darajaACKDTO.getMerchantRequestId()
         );
         payment.setInitiatedOn(String.valueOf(LocalDateTime.now()));
+        payment.setType(PaymentType.SUBSCRIPTION);
 
 
         log.info("About to save payment with merchant id : {}", darajaACKDTO.getMerchantRequestId());
@@ -602,6 +603,7 @@ public class PaymentService {
             payment.setInitiatedOn(String.valueOf(LocalDateTime.now()));
             payment.setBookId(finePaymentRequestDTO.getBookId());
             payment.setEmail(book.getBorrowedBy());
+            payment.setType(PaymentType.FINE);
 
 
             log.info("About to save payment with merchant id : {}", darajaACKDTO.getMerchantRequestId());

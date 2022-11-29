@@ -289,6 +289,7 @@ export class BookDetailsComponent implements OnInit {
     this.bookService.deleteComment(id).subscribe(
       (res) => {
         console.log("deleted comment", res);
+        this.getCommentByBook();
       },
       (error) => {
         console.log("comment not deleted");
@@ -427,69 +428,4 @@ export class BookDetailsComponent implements OnInit {
     window.speechSynthesis.getVoices();
     return window.speechSynthesis.getVoices();
   }
-
-  // speak(text: any, config: any): any {
-  //   if (window.speechSynthesis) {
-  //     var msg = new SpeechSynthesisUtterance();
-  //   }
-
-  //   function getVoices() {
-  //     window.speechSynthesis.getVoices();
-  //     return window.speechSynthesis.getVoices();
-  //   }
-
-  //   function sayIt() {
-  //     var voices = getVoices();
-
-  //     //choose voice. Fallback to default
-  //     msg.voice =
-  //       config && config.voiceIndex ? voices[config.voiceIndex] : voices[0];
-  //     msg.volume = config && config.volume ? config.volume : 1;
-  //     msg.rate = config && config.rate ? config.rate : 1;
-  //     msg.pitch = config && config.pitch ? config.pitch : 1;
-
-  //     //message for speech
-  //     msg.text = text;
-
-  //     speechSynthesis.speak(msg);
-  //   }
-
-  //   return {
-  //     sayText: sayIt,
-  //     getVoices: getVoices,
-  //   };
-  // }
-
-  // // pitch:any
-  // // rate:any
-  // // volume:any
-
-  // function(scope: any, timeout: any, speech: any) {
-  //   scope.support = false;
-  //   if (window.speechSynthesis) {
-  //     scope.support = true;
-
-  //     timeout(function () {
-  //       scope.voices = speech.getVoices();
-  //     }, 500);
-  //   }
-
-  //   scope.this.pitch = 1;
-  //   scope.this.rate = 1;
-  //   scope.this.volume = 1;
-
-  //   scope.submitEntry = function () {
-  //     var voiceIdx = scope.voices.indexOf(scope.optionSelected),
-  //       config = {
-  //         voiceIndex: voiceIdx,
-  //         rate: scope.rate,
-  //         pitch: scope.pitch,
-  //         volume: scope.volume,
-  //       };
-
-  //     if (window.speechSynthesis) {
-  //       speech.sayText(scope.msg, config);
-  //     }
-  //   };
-  // }
 }

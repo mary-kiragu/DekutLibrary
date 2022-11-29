@@ -116,12 +116,20 @@ export class BooksRecordComponent implements OnInit {
     this.bookService.findbyId(id).subscribe(
       (res) => {
         console.log(res);
-        // this.book = res;
+        res.borrowedOn = this.fixDate(res.borrowedOn);
+        res.issuedOn = this.fixDate(res.issuedOn);
+        res.returnedOn = this.fixDate(res.returnedOn);
       },
       (err) => {
         console.log("book not found");
       }
     );
+  }
+  fixDate(dateArr: any) {
+    const arr = dateArr;
+    const pd = `${arr[0]}/${arr[1]}/${arr[2]}`;
+    const date = new Date(pd);
+    return date.toLocaleDateString();
   }
   url: any;
   msg = "";
@@ -191,7 +199,6 @@ export class BooksRecordComponent implements OnInit {
     };
   }
 
-
   extractBookDetails(): any {
     return {
       author: this.bookForm.get("author")!.value,
@@ -217,8 +224,12 @@ export class BooksRecordComponent implements OnInit {
     this.bookService.getAllBooks().subscribe((res: any) => {
       console.log("Array of books available", res);
       this.books = res;
-      this.booksToRender = res as Book[];
+      this.booksToRender = res.reverse() as Book[];
       this.getSubtotalsByStatus(res);
+      this.booksToRender.forEach((book: Book) => {
+        book.borrowedOn = this.fixDate(book.borrowedOn);
+        book.issuedOn = this.fixDate(book.issuedOn);
+      });
     });
   }
   getSubtotalsByStatus(allBooks: Book[]): any {

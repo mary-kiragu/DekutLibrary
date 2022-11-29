@@ -87,9 +87,9 @@
   </div>
 </div>
 
-<!-- Create Topic Modal -->
+<!-- Create Category/topic Modal -->
 <div
-  class="modal fade"
+  class="modal fade rounded-3xl"
   id="createTopicModal"
   tabindex="-1 "
   aria-labelledby="createTopicModal"
@@ -119,7 +119,7 @@
 
               <input
                 type="text "
-                class="form-control"
+                class="form-control rounded-3xl"
                 name="name"
                 formControlName="name"
               />
@@ -154,11 +154,6 @@
                 ><small (click)="showInputUrl()"> or input image url</small></a
               >
             </div>
-            <!-- <div class="col-md-12 ">
-                            <label class="form-control-label " for="categoryImageUrl ">Image url</label>
-
-                            <input type="text " class="form-control" name="categoryImageUrl" formControlName="categoryImageUrl" />
-                        </div> -->
           </div>
 
           <div class="form-group row mt-2">
@@ -167,12 +162,6 @@
               formControlName="description"
               placeholder="Description"
             ></angular-editor>
-
-            <!-- <div class="col-md-12 ">
-                          <label class="form-control-label " for="description ">Description</label>
-
-                          <textarea class="form-control " id="description " name="description " formControlName="description" placeholder="Briefly describe what the category contains "></textarea> -->
-            <!-- </div> -->
           </div>
         </form>
       </div>
@@ -180,7 +169,7 @@
         <button
           id="closeCreateCategoryModal"
           type="button "
-          class="btn btn-cancel"
+          class="btn btn-cancel px-3 py-2 hover:bg-red-200 rounded-full bg-red-400 px-4 py-[12px] text-sm"
           data-bs-dismiss="modal"
           (click)="reset()"
         >
@@ -188,7 +177,7 @@
         </button>
         <button
           type="submit "
-          class="btn btn-submit text-black"
+          class="px-3 py-2 hover:bg-green-400 base-btn px-4 py-[12px] text-sm"
           (click)="saveCategory()"
           data-bs-dismiss="modal"
         >
@@ -225,24 +214,24 @@
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete</p>
-        <p>{{ selectedCategory?.name }}</p>
+        <p>{{ selectedCategory?.name }} ?</p>
       </div>
       <div class="modal-footer">
         <button
           type="button"
-          class="btn btn-secondary"
+          class="px-3 py-2 hover:bg-red-100 bg-red-400 rounded-full"
           data-bs-dismiss="modal"
           (click)="removeSelectedCategory()"
         >
-          Close
+          No
         </button>
         <button
           type="submit"
-          class="btn btn-primary"
+          class="px-3 py-2 hover:bg-green-100 bg-green-400 rounded-full"
           data-bs-dismiss="modal"
           (click)="deleteCategory()"
         >
-          Delete
+          Yes
         </button>
       </div>
     </div>
@@ -280,9 +269,9 @@
 
         <div class="modal-body">
           <div class="form-group">
-            <label for="name">name</label>
+            <label for="name"> Name</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl p-2"
               type="text"
               name="name"
               formControlName="name"
@@ -328,17 +317,18 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-cancel px-3 py-2 hover:bg-red-200 rounded-full bg-red-400 px-4 py-[12px] text-sm"
             data-bs-dismiss="modal"
+            (click)="reset()"
           >
-            Close
+            Cancel
           </button>
           <button
             type="button"
-            class="btn btn-primary"
+            class="px-3 py-2 hover:bg-green-400 base-btn px-4 py-[12px] text-sm"
             (click)="updateCategory()"
           >
-            submit
+            Submit
           </button>
         </div>
       </div>

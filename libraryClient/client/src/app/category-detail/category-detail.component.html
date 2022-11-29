@@ -1,98 +1,182 @@
 <div class="container" *ngIf="category">
-    <div class="top-sticky-section">
-        <div class="flex justify-between items-center p-3 mb-3 px-5">
-            <p class="text-2xl font-bold text-[#298e45]">{{ category.name }}</p>
-            <div class="relative">
-                <input type="text" class="base-input w-[300px] pl-8 placeholder:text-[#85B292] placeholder:font-light mt-3" name="searchText" [(ngModel)]="searchText" (keyup)="filter()" placeholder="Search" aria-label="Categoryname" aria-describedby="button-addon2" />
+  <div class="top-sticky-section">
+    <div class="flex justify-between items-center p-3 mb-3 px-5">
+      <p class="text-2xl font-bold text-[#298e45]">{{ category.name }}</p>
+      <div class="relative">
+        <input
+          type="text"
+          class="base-input w-[300px] pl-8 placeholder:text-[#85B292] placeholder:font-light mt-3"
+          name="searchText"
+          [(ngModel)]="searchText"
+          (keyup)="filter()"
+          placeholder="Search"
+          aria-label="Categoryname"
+          aria-describedby="button-addon2"
+        />
 
-                <button class="absolute left-3 top-[10px] mt-3" [ngClass]="{ 'activate-button': searchText }" (click)="filter()">
+        <button
+          class="absolute left-3 top-[10px] mt-3"
+          [ngClass]="{ 'activate-button': searchText }"
+          (click)="filter()"
+        >
           <i class="fas fa-search text-[#85B292]"></i>
         </button>
-                <button *ngIf="isFiltered" class="absolute right-4 top-[10px]" [ngClass]="{ 'activate-button': searchText }" (click)="unfilter()">
+        <button
+          *ngIf="isFiltered"
+          class="absolute right-4 top-[10px]"
+          [ngClass]="{ 'activate-button': searchText }"
+          (click)="unfilter()"
+        >
           <i class="fas fa-close"></i>
         </button>
-            </div>
-            <button *ngIf="category?.categoryType == 'CATEGORY'" class="base-btn px-4 py-[12px] text-sm" data-bs-toggle="modal" data-bs-target="#createSectionModal" id="openCreateSectionModal">
+      </div>
+      <button
+        *ngIf="category?.categoryType == 'CATEGORY'"
+        class="base-btn px-4 py-[12px] text-sm"
+        data-bs-toggle="modal"
+        data-bs-target="#createSectionModal"
+        id="openCreateSectionModal"
+      >
         <span><i class="fas fa-plus-circle"></i></span>&nbsp; Create
         Sub-category
       </button>
+    </div>
+
+    <div class="row mx-0">
+      <div
+        class="grid grid-cols-4 items-center justify-items-center"
+        *ngIf="category?.categoryType == 'CATEGORY'"
+      >
+        <div
+          class="text-center my-5"
+          *ngIf="!loadingSubCats && subCategories && subCategories.length === 0"
+        >
+          <span>No sub categories found</span>
         </div>
 
-        <div class="row mx-0">
-            <div class="grid grid-cols-4 items-center justify-items-center" *ngIf="category?.categoryType == 'CATEGORY'">
-                <div class="text-center my-5" *ngIf="!loadingSubCats && subCategories && subCategories.length === 0">
-                    <span>No sub categories found</span>
-                </div>
+        <div class="donut-wrapper" *ngIf="loadingCats || loadingSubCats">
+          <div class="donut multi"></div>
+        </div>
 
-                <div class="donut-wrapper" *ngIf="loadingCats || loadingSubCats">
-                    <div class="donut multi"></div>
-                </div>
+        <div
+          class="group relative lg:w-[300px] p-4 rounded-3xl bg-white shadow-lg shadow-black-500/50"
+          *ngFor="let category of subCategories"
+        >
+          <div class="" *ngIf="!loadingCats && !loadingSubCats">
+            <div
+              class="mb-4 overflow-hidden rounded-2xl"
+              (click)="toCategoryDetail(category.id)"
+            >
+              <img
+                *ngIf="category.categoryImageUrl"
+                class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110"
+                src="{{ category.imageUrl || category.categoryImageUrl }} "
+                alt=""
+                [routerLink]="['/categories/', category.id]"
+              />
+              <!-- <img *ngIf="category.imageUrl" class="img-thumbnail" src="{{category.imagerl}} " alt="{{category.image}} " [routerLink]="['/categories/',category.id]" /> -->
+              <!-- <img *ngIf="!category.categoryImageUrl" src="../../assets/images/pexels-wallace-chuck-3728085.jpg" alt="book thumbnail"> -->
+            </div>
 
-                <div class="group relative lg:w-[300px] p-4 rounded-3xl bg-white shadow-lg shadow-black-500/50" *ngFor="let category of subCategories">
-                    <div class="" *ngIf="!loadingCats && !loadingSubCats">
-                        <div class="mb-4 overflow-hidden rounded-2xl" (click)="toCategoryDetail(category.id)">
-                            <img *ngIf="category.categoryImageUrl" class="object-cover cursor-pointer h-[200px] w-[300px] rounded-2xl group-hover:scale-110" src="{{ category.imageUrl || category.categoryImageUrl }} " alt="" [routerLink]="['/categories/', category.id]" />
-                            <!-- <img *ngIf="category.imageUrl" class="img-thumbnail" src="{{category.imagerl}} " alt="{{category.image}} " [routerLink]="['/categories/',category.id]" /> -->
-                            <!-- <img *ngIf="!category.categoryImageUrl" src="../../assets/images/pexels-wallace-chuck-3728085.jpg" alt="book thumbnail"> -->
-                        </div>
-
-                        <div class="flex-div">
-                            <p class="vid-title">
-                                <strong>{{
+            <div class="flex-div">
+              <p class="vid-title">
+                <strong>{{
                   category.name.length > 85
                     ? (category.name | slice: 0:85) + "..."
                     : category.name
                 }}</strong>
-                            </p>
-                            <div class="absolute hidden bg-white width-full shadow-lg shadow-black-500/50 rounded-3xl left-0 p-4 bottom-[0px] translate-y-[100%] group-hover:block">
-                                <p [innerHTML]="category.description"></p>
-                            </div>
+              </p>
+              <div
+                class="absolute hidden bg-white width-full shadow-lg shadow-black-500/50 rounded-3xl left-0 p-4 bottom-[0px] translate-y-[100%] group-hover:block"
+              >
+                <p [innerHTML]="category.description"></p>
+              </div>
 
-                            <!-- <p class="vid-title" [innerHTML]="category.description"> -->
-
-                            <!-- {{category.description.length > 85 ? (category.description | slice:0:85) + '...' : category.description}} -->
-                            <!-- </p> -->
-                            <div class="absolute overflow-hidden bottom-[10px] right-[10px] bg-white shadow-lg shadow-black-500/50 rounded-full scale-0 group-hover:scale-100">
-                                <button class="px-3 py-2 hover:bg-red-100" data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="setSelectedCategory(category)" *ngIf="user.authority === 'ADMIN'">
+              <div
+                class="absolute overflow-hidden bottom-[10px] right-[10px] bg-white shadow-lg shadow-black-500/50 rounded-full scale-0 group-hover:scale-100"
+              >
+                <button
+                  class="px-3 py-2 hover:bg-red-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteModal"
+                  (click)="setSelectedCategory(category)"
+                  *ngIf="user.authority === 'ADMIN'"
+                >
                   <i
                     class="fa fa-trash text-red-500"
                     style="font-size: 24px"
                   ></i>
                 </button>
-                                <button class="px-3 py-2 hover:bg-amber-100" data-bs-toggle="modal" data-bs-target="#editModal" (click)="setSelectedCategory(category)" *ngIf="user.authority === 'ADMIN'">
+                <button
+                  class="px-3 py-2 hover:bg-amber-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editModal"
+                  (click)="setSelectedCategory(category)"
+                  *ngIf="user.authority === 'ADMIN'"
+                >
                   <i
                     class="fas fa-edit text-orange-500"
                     style="font-size: 24px"
                   ></i>
                 </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- create section modal -->
-        <form name="categoryForm" [formGroup]="categoryForm" (ngSubmit)="saveSection()">
-            <div class="modal fade" id="createSectionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Create section</h5>
-                            <button type="button" class="btn-close" (click)="reset()" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group row">
-                                <div class="col-md-10">
-                                    <label class="form-control-label" for="fieldName">Name</label>
+    <!-- create section modal -->
+    <form
+      name="categoryForm"
+      [formGroup]="categoryForm"
+      (ngSubmit)="saveSection()"
+    >
+      <div
+        class="modal fade"
+        id="createSectionModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Create section</h5>
+              <button
+                type="button"
+                class="btn-close"
+                (click)="reset()"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group row">
+                <div class="col-md-10">
+                  <label class="form-control-label" for="fieldName">Name</label>
 
-                                    <input type="text" class="form-control" id="fieldName" name="fieldName" placeholder="Section name" formControlName="name" />
-                                </div>
-                                <div *ngIf="uploadFile" class="form-group">
-                                    <label for="imageUrl">Browse image</label>
+                  <input
+                    type="text"
+                    class="form-control rounded-3xl"
+                    id="fieldName"
+                    name="fieldName"
+                    placeholder="Section name"
+                    formControlName="name"
+                  />
+                </div>
+                <div *ngIf="uploadFile" class="form-group">
+                  <label for="imageUrl">Browse image</label>
 
-                                    <input accept="image/*" class="form-control" type="file" name="categoryImageUrl" (change)="selectFile($event)" />
-                                    <a style="cursor: pointer; color: blue"><small (click)="showInputUrl()">
+                  <input
+                    accept="image/*"
+                    class="form-control rounded-3xl"
+                    type="file"
+                    name="categoryImageUrl"
+                    (change)="selectFile($event)"
+                  />
+                  <a style="cursor: pointer; color: blue"
+                    ><small (click)="showInputUrl()">
                       or input image url</small
                     ></a
                   >
@@ -101,7 +185,7 @@
                   <div class="form-group">
                     <label for="imageUrl">ImageUrl</label>
                     <input
-                      class="form-control"
+                      class="form-control rounded-3xl"
                       type="text"
                       name="imageUrl"
                       formControlName="imageUrl"
@@ -125,13 +209,18 @@
               <button
                 id="closeCreateCategoryModal"
                 type="button"
-                class="btn btn-cancel"
+                class="btn btn-cancel px-3 py-2 hover:bg-red-200 rounded-full bg-red-400 px-4 py-[12px] text-sm"
                 (click)="reset()"
                 data-bs-dismiss="modal"
               >
                 CANCEL
               </button>
-              <button type="submit" class="btn btn-submit">SUBMIT</button>
+              <button
+                type="submit"
+                class="px-3 py-2 hover:bg-green-400 base-btn px-4 py-[12px] text-sm"
+              >
+                SUBMIT
+              </button>
             </div>
           </div>
         </div>
@@ -164,23 +253,23 @@
           </div>
           <div class="modal-body">
             <p>Are you sure you want to delete</p>
-            <p>{{ selectedCategory?.name }}</p>
+            <p>{{ selectedCategory?.name }}?</p>
           </div>
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="px-3 py-2 hover:bg-red-100 bg-red-400 rounded-full"
               data-bs-dismiss="modal"
             >
-              Close
+              No
             </button>
             <button
               type="submit"
-              class="btn btn-primary"
+              class="px-3 py-2 hover:bg-green-100 bg-green-400 rounded-full"
               data-bs-dismiss="modal"
               (click)="deleteCategory()"
             >
-              Delete
+              Yes
             </button>
           </div>
         </div>
@@ -220,9 +309,9 @@
 
             <div class="modal-body">
               <div class="form-group">
-                <label for="name">name</label>
+                <label for="name">Name</label>
                 <input
-                  class="form-control"
+                  class="form-control rounded-3xl"
                   type="text"
                   name="name"
                   formControlName="name"
@@ -233,7 +322,7 @@
 
                 <input
                   accept="image/*"
-                  class="form-control"
+                  class="form-control rounded-3xl"
                   type="file"
                   name="categoryImageUrl"
                   (change)="selectFile($event)"
@@ -248,7 +337,7 @@
                 <div class="form-group">
                   <label for="imageUrl ">ImageUrl</label>
                   <input
-                    class="form-control"
+                    class="form-control rounded-3xl"
                     type="text "
                     name="categoryImageUrl "
                     formControlName="imageUrl "
@@ -267,15 +356,16 @@
             </div>
             <div class="modal-footer">
               <button
-                type="button "
-                class="btn btn-secondary"
-                data-bs-dismiss="modal "
+                type="button"
+                class="btn btn-cancel px-3 py-2 hover:bg-red-200 rounded-full bg-red-400 px-4 py-[12px] text-sm"
+                data-bs-dismiss="modal"
+                (click)="reset()"
               >
                 Close
               </button>
               <button
                 type="button "
-                class="btn btn-primary"
+                class="px-3 py-2 hover:bg-green-400 base-btn px-4 py-[12px] text-sm"
                 (click)="updateCategory()"
               >
                 submit

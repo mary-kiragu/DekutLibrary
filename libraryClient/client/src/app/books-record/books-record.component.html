@@ -115,12 +115,23 @@
                 {{ selectedBook.description || "No Description" }}
               </h2>
               <div
-                *ngIf="selectedBook.borrowedOn"
+                *ngIf="selectedBook.status === 'ISSUED'"
+                class="flex rounded-full items-center justify-left p-2 bg-red-100"
+              >
+                <p class="text-sm mr-2">IssuedOn on:</p>
+                <p class="py-1 px-3 rounded-full text-sm bg-red-300">
+                  {{ fixDate(selectedBook.issuedOn) }}
+                </p>
+              </div>
+              <div
+                *ngIf="
+                  selectedBook.borrowedOn && selectedBook.status === 'BORROWED'
+                "
                 class="flex rounded-full items-center justify-left p-2 bg-red-100"
               >
                 <p class="text-sm mr-2">Borrowed on:</p>
                 <p class="py-1 px-3 rounded-full text-sm bg-red-300">
-                  {{ selectedBook.borrowedOn }}
+                  {{ fixDate(selectedBook.borrowedOn) }}
                 </p>
               </div>
               <div>
@@ -220,10 +231,41 @@
           role="form"
           (ngSubmit)="save()"
         >
-          <div class="form-group">
-            <label for="title">title</label>
+          <div class="form-group" *ngIf="!uploadFile">
+            <label for="imageUrl">ImageUrl</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
+              type="text"
+              name="imageUrl"
+              formControlName="imageUrl"
+            />
+          </div>
+          <div>
+            <div *ngIf="uploadFile" class="form-group">
+              <label for="imageUrl">Browse image</label>
+
+              <input
+                accept="image/*"
+                class="form-control rounded-3xl"
+                type="file"
+                name="imageUrl"
+                (change)="selectFile($event)"
+              />
+              <a style="cursor: pointer; color: blue"
+                ><small (click)="showInputUrl()"> or input image url</small></a
+              >
+            </div>
+            <div *ngIf="!uploadFile">
+              <a style="cursor: pointer; color: blue"
+                ><small (click)="showUploadFile()"> upload image</small></a
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input
+              class="form-control rounded-3xl"
               type="text"
               name="title"
               formControlName="title"
@@ -232,25 +274,26 @@
           <div class="form-group">
             <label for="author">Author</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="author"
               formControlName="author"
             />
           </div>
           <div class="form-group">
-            <label for="imageUrl">ImageUrl</label>
+            <label for="description">Description</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
-              name="imageUrl"
-              formControlName="imageUrl"
+              name="description"
+              formControlName="description"
             />
           </div>
+
           <div class="form-group">
             <label for="isbn">ISBN</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="isbn"
               formControlName="isbn"
@@ -259,19 +302,38 @@
           <div class="form-group">
             <label for="accessionNumber">Accession number</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="accessionNumber"
               formControlName="accessionNumber"
             />
           </div>
+          <div *ngIf="uploadFile" class="form-group">
+            <label for="imageUrl">Browse book</label>
+
+            <input
+              accept=".pdf*"
+              class="form-control rounded-3xl"
+              type="file"
+              name="bookUrl"
+              (change)="selectBook($event)"
+            />
+          </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button
+          type="button"
+          class="btn btn-cancel px-3 py-2 hover:bg-red-200 rounded-full bg-red-400 px-4 py-[12px] text-sm"
+          data-bs-dismiss="modal"
+        >
           Close
         </button>
-        <button type="button" class="btn btn-primary" (click)="save()">
+        <button
+          type="button"
+          class="px-3 py-2 hover:bg-green-400 base-btn px-4 py-[12px] text-sm"
+          (click)="save()"
+        >
           submit
         </button>
       </div>
@@ -311,7 +373,7 @@
           <div class="form-group" *ngIf="!uploadFile">
             <label for="imageUrl">ImageUrl</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="imageUrl"
               formControlName="imageUrl"
@@ -323,7 +385,7 @@
 
               <input
                 accept="image/*"
-                class="form-control"
+                class="form-control rounded-3xl"
                 type="file"
                 name="imageUrl"
                 (change)="selectFile($event)"
@@ -342,7 +404,7 @@
           <div class="form-group">
             <label for="title">title</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="title"
               formControlName="title"
@@ -351,7 +413,7 @@
           <div class="form-group">
             <label for="author">Author</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="author"
               formControlName="author"
@@ -360,7 +422,7 @@
           <div class="form-group">
             <label for="description">Description</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="description"
               formControlName="description"
@@ -370,7 +432,7 @@
           <div class="form-group">
             <label for="isbn">ISBN</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="isbn"
               formControlName="isbn"
@@ -379,7 +441,7 @@
           <div class="form-group">
             <label for="accessionNumber">Accession number</label>
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="accessionNumber"
               formControlName="accessionNumber"
@@ -390,7 +452,7 @@
 
             <input
               accept=".pdf*"
-              class="form-control"
+              class="form-control rounded-3xl"
               type="file"
               name="bookUrl"
               (change)="selectBook($event)"
@@ -399,12 +461,16 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button
+          type="button"
+          class="btn btn-cancel px-3 py-2 hover:bg-red-200 rounded-full bg-red-400 px-4 py-[12px] text-sm"
+          data-bs-dismiss="modal"
+        >
           Close
         </button>
         <button
           type="button"
-          class="btn btn-primary"
+          class="px-3 py-2 hover:bg-green-400 base-btn px-4 py-[12px] text-sm"
           (click)="updateBook(selectedBook?.id)"
         >
           submit
@@ -438,15 +504,23 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body rounded-3xl">
         Are you sure you want to deletete{{ book.title }}?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
+        <button
+          type="button"
+          class="btn btn-cancel px-3 py-2 hover:bg-red-200 rounded-full bg-red-400 px-4 py-[12px] text-sm"
+          data-bs-dismiss="modal"
+        >
+          No
         </button>
-        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
-          Delete
+        <button
+          type="submit"
+          class="px-3 py-2 hover:bg-green-400 base-btn px-4 py-[12px] text-sm"
+          data-bs-dismiss="modal"
+        >
+          Yes
         </button>
       </div>
     </div>
@@ -484,9 +558,8 @@
         <div class="modal-body">
           <div class="form-group">
             <label for="phoneNumber"> PhoneNumber</label>
-            <!-- <input class="form-control" type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="paymentRequest.phoneNumber"> -->
             <input
-              class="form-control"
+              class="form-control rounded-3xl"
               type="text"
               name="phoneNumber"
               formControlName="phoneNumber"
@@ -497,12 +570,16 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-cancel px-3 py-2 hover:bg-red-200 rounded-full bg-red-400 px-4 py-[12px] text-sm"
             data-bs-dismiss="modal"
           >
             Close
           </button>
-          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+          <button
+            type="submit"
+            class="px-3 py-2 hover:bg-green-400 base-btn px-4 py-[12px] text-sm"
+            data-bs-dismiss="modal"
+          >
             submit
           </button>
         </div>

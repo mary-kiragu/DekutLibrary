@@ -37,6 +37,9 @@ public class Payment {
 
     private double amount;
 
+    @Enumerated(EnumType.STRING)
+    private PaymentType type;
+
     private String initiatedOn;
 
     public Payment(String email, String phoneNumber, String transactionCode, Long profileId, String merchantRequestId) {
