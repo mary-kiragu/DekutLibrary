@@ -1,5 +1,8 @@
 <nav class="bg-[#1d4504ec]">
-  <div *ngIf="user" class="p-2 flex justify-between items-center">
+  <div
+    *ngIf="user && r?.url != '/'"
+    class="p-2 flex justify-between items-center"
+  >
     <img
       [routerLink]="['/']"
       class="h-[40px] cursor-pointer"

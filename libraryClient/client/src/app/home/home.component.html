@@ -1,12 +1,34 @@
-<div class="flex justify-center">
-  <div class="">
-    <h1 class="left top-[10px]">Book Center</h1>
-  </div>
-  <div class="">
-    <h1 style="font-size: 30px">There is no friend as Loyal as a book</h1>
-    <button [routerLink]="['/login']">Get started</button>
-  </div>
-  <div class="w-full ml">
-    <img src="../../assets/images/another alt.jpg" />
+<div class="relative flex flex-col h-[100vh] w-[100vw] p-8">
+  <img
+    class="absolute top-0 right-0 w-[100%] h-full object-fit"
+    src="../../assets/images/bg.png"
+    alt="background image"
+  />
+
+  <div
+    class="relative z-10 w-[40%] h-full flex flex-col items-start justify-between"
+  >
+    <div class="flex flex-col gap-[80px]">
+      <img
+        src="../../assets/images/logo.png"
+        alt="Logo"
+        class="w-[90px] saturate-[0.6]"
+      />
+      <div class="flex flex-col gap-[30px]">
+        <h1 class="text-6xl font-black text-[#298E45]">Dkut E-Library</h1>
+        <h2 class="text-2xl">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa
+          mi. Aliquam
+        </h2>
+        <h3 class="text-xl font-light">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa
+          mi. Aliquam
+        </h3>
+      </div>
+    </div>
+
+    <button class="base-btn rounded-full" [routerLink]="['/login']">
+      <p>Get Started</p>
+    </button>
   </div>
 </div>

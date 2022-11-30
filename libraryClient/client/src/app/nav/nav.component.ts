@@ -17,6 +17,7 @@ export class NavComponent implements OnInit {
   user: any;
   isLoggedIn = true;
   currentURL = "/";
+  r: Router | null = null;
   constructor(
     private userService: UserService,
     private router: Router,
@@ -24,6 +25,7 @@ export class NavComponent implements OnInit {
     private tokenService: TokenService
   ) {
     router.events.forEach((event) => {
+      this.r = router;
       if (event instanceof NavigationStart) {
         this.user = this.tokenService.getUserFromStorage();
         this.getCurrentUser();
@@ -45,7 +47,7 @@ export class NavComponent implements OnInit {
       this.user = userProfile;
       console.log("user profs", this.user);
       if (!this.user) {
-        this.router.navigate(["/"]);
+        this.router.navigate(["/login"]);
       }
     });
   }
