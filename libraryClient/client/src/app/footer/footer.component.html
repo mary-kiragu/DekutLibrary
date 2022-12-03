@@ -8,29 +8,30 @@
           <img class="logo" src="../../assets/images/dkutlogo.png" alt="logo" />
         </div>
 
-        <!-- <div class="col-6 col-md-3 quicklinks">
-          <h4>Quick links</h4> -->
-        <!-- <div *ngIf="user" class="" id="navbarTogglerDemo02">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" [routerLink]="'/categories'">Categories</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" [routerLink]="'/'">login</a>
-              </li>
-              <li class="nav-item" *ngIf="user.authority === 'ADMIN'">
-                <a class="nav-link" [routerLink]="'/book-records'">Admin</a>
-              </li>
-              <li class="nav-item" *ngIf="user.authority === 'SUBSCRIBER'">
-                <a class="nav-link" [routerLink]="'/subscribe'">Subscribe</a>
-              </li>
-            </ul>
+        <div class="col-md-3 quicklinks">
+          <h4 class="cursor-pointer hover:underline">Contacts</h4>
+          <div class="flex flex-col gap-3">
+            <label for="">Email : librarian@dkut.ac.ke</label>
+            <label for="">Phone : +254-724-245-756</label>
+            <p>
+              <i class="fa-solid fa-location-dot"></i> Along Nyeri-Mweiga
+              Road<br />
+              Dedan Kimathi University of Tecnology
+            </p>
           </div>
-        </div> -->
+        </div>
+        <div class="col-md-3">
+          <h4 class="cursor-pointer hover:underline text-l">Open Hours</h4>
+          <div class="flex flex-col gap-3">
+            <label for="">Week days : 8:00am – 9:00pm</label>
+            <label for="">Saturday : 9:00am – 4:00pm</label>
+            <label for="">Sundays & Holidays : Closed</label>
+          </div>
+        </div>
 
-        <div class="">
+        <div class="col-md-3">
           <div class="social-links">
-            <h4>Follow us</h4>
+            <h4 class="cursor-pointer hover:underline">Follow us</h4>
             <a href="https://twitter.com/DeKUTkenya" target="_blank">
               <span> <i class="fa-brands fa-twitter"></i></span> Twitter
             </a>

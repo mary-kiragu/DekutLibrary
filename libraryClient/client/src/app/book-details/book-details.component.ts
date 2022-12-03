@@ -312,6 +312,7 @@ export class BookDetailsComponent implements OnInit {
         this.comments = res.reverse();
         console.log("comments", this.comments);
         this.comments.forEach((comment: any) => {
+          console.log("--createdOn", comment.createdOn);
           comment.createdOn = this.timeSince(new Date(comment.createdOn));
         });
       },
@@ -406,7 +407,7 @@ export class BookDetailsComponent implements OnInit {
     console.log(voices);
 
     console.log(voices[8]);
-    console.log(this.extractedbookText);
+    console.log("text to read", this.extractedbookText);
 
     const spokenbook = new SpeechSynthesisUtterance(this.extractedbookText);
     spokenbook.voice = voices[8];

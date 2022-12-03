@@ -11,6 +11,14 @@
     />
     <div class="flex gap-4">
       <p
+        *ngIf="currentURL !== '/'"
+        [routerLink]="['/']"
+        [ngClass]="currentURL == '/' ? 'font-bold underline' : ''"
+        class="text-white cursor-pointer hover:underline"
+      >
+        Home <i class="fa-solid fa-house"></i>
+      </p>
+      <p
         *ngIf="user.authority == 'ADMIN'"
         [routerLink]="['/book-records']"
         [ngClass]="currentURL == '/book-records' ? 'font-bold underline' : ''"
@@ -37,6 +45,7 @@
       class="group bg-white p-2 rounded-full cursor-pointer"
       [routerLink]="['/profile']"
     >
+      <!-- <i class="fa-solid fa-user p-3"></i> -->
       <img
         class="w-[30px] h-[30px] group-hover:scale-110"
         src="https://avatars.dicebear.com/api/bottts/mary.svg"

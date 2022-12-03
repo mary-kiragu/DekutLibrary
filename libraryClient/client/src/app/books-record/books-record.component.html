@@ -173,7 +173,7 @@
                 </button>
 
                 <button
-                  *ngIf="selectedBook.status === 'BORROWED'"
+                  *ngIf="selectedBook.status !== 'ISSUED'"
                   type="submit"
                   (click)="issueBook(selectedBook)"
                   class="flex rounded-full items-center justify-left p-2 bg-green-300"

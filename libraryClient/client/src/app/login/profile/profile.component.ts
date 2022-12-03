@@ -51,7 +51,7 @@ export class ProfileComponent implements OnInit {
     //delete user from storage
     this.tokenService.clearUser();
     //route to login
-    this.router.navigate(["/"]);
+    this.router.navigate(["/login"]);
   }
   getCurrentUser(): void {
     this.userService.getProfile().subscribe((userProfile) => {
